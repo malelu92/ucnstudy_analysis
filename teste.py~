@@ -1,0 +1,78 @@
+import numpy as np
+import scipy as sci
+import pandas as pd
+
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+%matplotlib inline 
+
+from bokeh.plotting import figure, show, output_notebook
+from bokeh.charts import *
+
+from collections import defaultdict
+from datetime import datetime, timedelta
+
+from model.Base import Base
+from model.User import User
+from model.Device import Device
+from model.DeviceTraffic import DeviceTraffic
+from model.DeviceAppTraffic import DeviceAppTraffic
+from model.HttpReq import HttpReq
+from model.DnsReq import DnsReq
+from model.Location import Location
+from model.user_devices import user_devices;
+
+from sqlalchemy import create_engine, text, func
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import NullPool
+
+import datautils
+
+from IPython.display import display
+
+output_notebook()
+
+DB='postgresql+psycopg2:///ucnstudy'
+
+engine = create_engine(DB, echo=False, poolclass=NullPool)
+Base.metadata.bind = engine
+Session = sessionmaker(bind=engine) 
+
+
+# Traffic distribution
+ses = Session()
+
+totalbytes = ses.query(func.sum(DeviceAppTraffic.bytes_in)).scalar() + ses.query(func.sum(DeviceAppTraffic.bytes_out)).scalar()
+totalpkts = ses.query(func.sum(DeviceAppTraffic.packets_in)).scalar() + ses.query(func.sum(DeviceAppTraffic.packets_out)).scalar()
+
+q = ses.query(DeviceAppTraffic.dstport, 
+              DeviceAppTraffic.service, 
+              func.sum(DeviceAppTraffic.bytes_in), 
+              func.sum(DeviceAppTraffic.bytes_out), 
+              func.sum(DeviceAppTraffic.packets_in), 
+              func.sum(DeviceAppTraffic.packets_out)).group_by(
+                DeviceAppTraffic.dstport, 
+                DeviceAppTraffic.service).order_by(DeviceAppTraffic.dstport)
+              
+traffic = defaultdict(list)
+for row in q.all():
+    if (row[4]+row[5]<=10):
+        continue
+        
+    traffic['port'].append(row[0])
+    traffic['service'].append(str(row[1]))
+    traffic['bytes_in'].append(row[2])
+    traffic['bytes_out'].append(row[3])
+    traffic['pkts_in'].append(row[4])
+    traffic['pkts_out'].append(row[5])
+    traffic['bytes'].append(row[2]+row[3])
+    traffic['pkts'].append(row[4]+row[5])
+    traffic['bytes (%)'].append((row[2]+row[3])*100.0/totalbytes)
+    traffic['pkts (%)'].append((row[4]+row[5])*100.0/totalpkts)
+    
+ses.close()
+
+tdf = pd.DataFrame(traffic)
+tdf = tdf.sort_values('bytes', ascending=False)
+display(tdf.loc[:100,]) 
