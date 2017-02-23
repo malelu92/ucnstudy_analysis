@@ -37,6 +37,15 @@ for user in users:
         sql_domains_accessed = text('select dnsreqs.query_domain, count(*) from dnsreqs, user_devices where dnsreqs.devid =:devid group by dnsreqs.query_domain').bindparams(devid = devices.device_id)
         domains_accessed = ses.execute(sql_domains_accessed)
         print ("device: " + str(devices.device_id))
+        dom = []
+        accesses = []
+        length = 0
         for domains in domains_accessed:
             print (domains.query_domain, domains.count)
-
+            dom.append(domains.query_domain)
+            accesses.append(domains.count)
+            length = length + 1
+        x = np.arange(length)
+        plt.bar(x, accesses)
+        plt.show()
+            
