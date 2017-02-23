@@ -6,8 +6,9 @@ import matplotlib.pyplot as plt
 from model.Base import Base
 from model.DeviceAppTraffic import DeviceAppTraffic
 from model.DnsReq import DnsReq
-from model.User import User;
-from model.user_devices import user_devices;
+from model.Flow import Flow 
+from model.User import User
+from model.user_devices import user_devices
 
 from sqlalchemy import create_engine, text, func
 from sqlalchemy.orm import sessionmaker
@@ -24,11 +25,19 @@ def main():
 
 
     # analizing domains used
-    analyse_domains(Session) 
+    #analyse_domains(Session) 
     
-    
-    
+    analyse_beg_end_day(Session)
             
+
+def analyse_beg_end_day(Session):
+    ses = Session()
+
+    sql_beg_day = text("SELECT devid, startts FROM flows join (SELECT DATE(startts) as date_entered, MIN(startts) as min_time FROM flows WHERE devid = 1 GROUP BY date(startts)) AS grp ON grp.min_time = flows.startts order by flows.startts limit 400;")
+    result_beg_day = ses.execute(sql_beg_day)
+
+    sql_end_day = text("SELECT devid, endts FROM flows join (SELECT DATE(endts) as date_entered, MAX(endts) as max_time FROM flows WHERE devid = 1 GROUP BY date(endts)) AS grp ON grp.max_time = flows.endts order by flows.endts limit 400;")
+    result_end_day = ses.execute(sql_end_day)
 
 def analyse_domains (Session):
 
