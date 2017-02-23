@@ -3,6 +3,8 @@ import pandas as pd
 
 import matplotlib.pyplot as plt
 
+from collections import defaultdict
+
 from model.Base import Base
 from model.DeviceAppTraffic import DeviceAppTraffic
 from model.DnsReq import DnsReq
@@ -13,6 +15,8 @@ from model.user_devices import user_devices
 from sqlalchemy import create_engine, text, func
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
+
+from IPython.display import display
 
 #output_notebook()
 
@@ -33,11 +37,24 @@ def main():
 def analyse_beg_end_day(Session):
     ses = Session()
 
+    sql_end_day = text("SELECT devid, endts FROM flows join (SELECT DATE(endts) as date_entered, MAX(endts) as max_time FROM flows WHERE devid = 1 GROUP BY date(endts)) AS grp ON grp.max_time = flows.endts order by flows.endts limit 400;")
+    result_end_day = ses.execute(sql_end_day)
+
+    info = defaultdict(list)
+    for row in result_end_day:
+        info['devid'].append(str(row[0]))
+        info['end'].append(row[1])
+
     sql_beg_day = text("SELECT devid, startts FROM flows join (SELECT DATE(startts) as date_entered, MIN(startts) as min_time FROM flows WHERE devid = 1 GROUP BY date(startts)) AS grp ON grp.min_time = flows.startts order by flows.startts limit 400;")
     result_beg_day = ses.execute(sql_beg_day)
 
-    sql_end_day = text("SELECT devid, endts FROM flows join (SELECT DATE(endts) as date_entered, MAX(endts) as max_time FROM flows WHERE devid = 1 GROUP BY date(endts)) AS grp ON grp.max_time = flows.endts order by flows.endts limit 400;")
-    result_end_day = ses.execute(sql_end_day)
+    for row in result_beg_day:
+        info['start'].append(row[1])
+
+    table = pd.DataFrame(info)
+    display(table)
+
+    ses.close()
 
 def analyse_domains (Session):
 
