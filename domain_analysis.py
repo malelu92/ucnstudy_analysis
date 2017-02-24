@@ -113,13 +113,23 @@ def analyse_beg_end_day(Session):
 
         #df = pd.DataFrame(info)
         #display(df)
-
         
-        print('data')
-        if (info['start']):
-            day = info['start'][0]
-            print(day, day.weekday())
 
+        #create table with times for each week day
+        info_week = defaultdict(list)
+        if (info['start']):
+            for timst in info['start']:
+                day = timst
+                weekday = day.strftime('%A')
+                info_week[weekday].append(day)
+                #print(day, day.strftime('%A'))
+        #print (info_week)
+        days_str = {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'}
+        for name in days_str:
+            df_week = pd.DataFrame(info_week[name])
+            display(df_week)
+        
+        
     ses.close()
     return info
 
