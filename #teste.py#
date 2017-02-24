@@ -87,6 +87,8 @@ for u in ses.query(User).all():
         
 df = pd.DataFrame(utable, index=idx)
 
+
+#################
 totalbytes = ses.query(func.sum(DeviceAppTraffic.bytes_in)).scalar() + ses.query(func.sum(DeviceAppTraffic.bytes_out)).scalar()
 totalpkts = ses.query(func.sum(DeviceAppTraffic.packets_in)).scalar() + ses.query(func.sum(DeviceAppTraffic.packets_out)).scalar()
 

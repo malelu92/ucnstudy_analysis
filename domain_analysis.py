@@ -17,6 +17,9 @@ from sqlalchemy import create_engine, text, func
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
 
+import datautils
+import datetime
+
 from IPython.display import display
 
 #output_notebook()
@@ -33,23 +36,59 @@ def main():
     
     table_info = analyse_beg_end_day(Session)
             
-    create_graph_beg_end_day(table_info)
+    #create_graph_beg_end_day(table_info,Session)
 
-def create_graph_beg_end_day(table_info):
+    #simple_plot(table_info)
 
-    print ('entrou')
+
+
+def simple_plot(table_info):
+  #  data = {'x':[], 'y':[], 'label':[]}
+    #data['y'].append(table_info['start'])
+    #plt.figure(figsize=(12,8))
+    #plt.title('test')
+    #plt.ylabel('y')
+    #plt.scatter(data['x'],data['y'],marker = 'o')
+
+    vals = table_info['start']
+    plt.plot([1,2,3,4,5,6,7,8,9,10,11], vals, 'ro')
+    plt.show()
+
+def create_graph_beg_end_day(table_info, Session):
+    ses = Session()
+    uname = 'bridgeman'
+
+    xstart = None
+    xend = None
+
+    ts = datautils.utctocc(table_info['start'], 'UK')
+    if (xstart == None):
+        xstart = ts
+        xend = ts
+    xstart = xstart if xstart < ts else ts
+    xend = xend if xend > ts else ts
+
+    x.append(ts)
+    y.append(ts.hour+ts.minute/60.0)
+
     f, ax1 = plt.subplots(1, 1, figsize=(12, 8))
+
+
     ax1.set_title('Beginning and End Times of Daily Usage [user=%s]'%('lalalalalal'))#%(uname))    
     ax1.set_ylim((0,24))
     ax1.set_ylabel('Hour of Day')
     ax1.set_xlim(xstart,xend)
     ax1.legend(loc='best')
 
-    plt.tight_layout()
-    plt.show()
+    print (table_info['start'][0])
+    #ax1.set_xlim((table_info['start']
 
-    #x = table_info[2]
-    #y = defaultdict(list)
+
+   # plt.tight_layout()
+   # plt.show()
+
+    
+    
 
 def analyse_beg_end_day(Session):
     ses = Session()
@@ -72,9 +111,15 @@ def analyse_beg_end_day(Session):
         for row in result_beg_day:
             info['start'].append(row[1])
 
-        df = pd.DataFrame(info)
-        display(df)
-    print("888888888888888888")
+        #df = pd.DataFrame(info)
+        #display(df)
+
+        
+        print('data')
+        if (info['start']):
+            day = info['start'][0]
+            print(day, day.weekday())
+
     ses.close()
     return info
 
