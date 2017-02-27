@@ -34,13 +34,37 @@ def main():
     # analizing domains used
     #analyse_domains(Session) 
     
-    table_info = analyse_beg_end_day(Session)
+    users_dev_usage = analyse_beg_end_day(Session)
+
+    #for device in users_dev_usage:
+    analyze_week_per_user(Session, users_dev_usage)
             
     #create_graph_beg_end_day(table_info,Session)
 
     #simple_plot(table_info)
 
+def analyze_week_per_user(Session, users_dev_usage):
 
+    ses = Session()
+    users = ses.query(User)
+    
+    for user in users:
+
+        sql_user_devices = text('select * from user, user_devices where user_devices.user_id =:user').bindparams(user = user.id)
+        user_devices = ses.execute(sql_user_devices)
+
+        print (user.id)
+        for dev in user_devices:
+            for item in users_dev_usage[user.id][dev.device_id]:
+                print(item)
+    
+    
+        #print (item.keys())
+    #print (users_dev_usage['1'].keys())
+    #print("hjsdhfsihf")
+    #print(users_dev_usage['1']['6start'])
+    #print("=====")
+    #print (users_dev_usage['1'])    
 
 def simple_plot(table_info):
   #  data = {'x':[], 'y':[], 'label':[]}
@@ -99,12 +123,17 @@ def analyse_beg_end_day(Session):
 
     users = ses.query(User)
 
+    users_week_device_info = defaultdict(list)
     for user in users:
+        #creates user dictionary
+        users_week_device_info[user.id] = {}
+
         sql_user_devices = text('select * from user, user_devices where user_devices.user_id =:user').bindparams(user = user.id)
         user_devices = ses.execute(sql_user_devices)
 
-        print ("user: " + str(user.id))
+        print ("user: " + str(user.id) + "=======================")
         for dev in user_devices:
+            #users_week_device_info[user.id[dev.device_id]] = {}
 
             sql_end_day = text("SELECT distinct devid, flows.endts FROM flows join (SELECT DATE(endts) as date_entered, MAX(endts) as max_time FROM flows WHERE devid =:d_id GROUP BY date(endts)) AS grp ON grp.max_time = flows.endts order by flows.endts;").bindparams(d_id = dev.device_id)
             result_end_day = ses.execute(sql_end_day)
@@ -137,6 +166,16 @@ def analyse_beg_end_day(Session):
             #df = pd.DataFrame(info)
             #display(df)
         
+            
+            #users_week_device_info[user.id[dev.device_id]].append(info['start'])
+            #users_week_device_info[user.id[dev.device_id]].append(info['end'])
+            user_dev = defaultdict(list)
+            start_times = str(dev.device_id)+'start'
+            user_dev[start_times].append(info['start'])
+            end_times = str(dev.device_id)+'end'
+            user_dev[end_times].append(info['end'])
+            #user_dev['device'] = dev.device_id
+            users_week_device_info[user.id][dev.device_id] = user_dev
 
             #create table with times for each week day
             #info['start'].sort()
@@ -161,14 +200,12 @@ def analyse_beg_end_day(Session):
                 df_col['device'] = str(dev.device_id)
                 df_col[name+' beg'] = info_week[name+' start']
                 df_col[name+' end'] = info_week[name+' end']
-                #print(df_col[name+' beg'])
-                #print(df_col[name+' end'])
                 df_week = pd.DataFrame(df_col)
-                #df_week.columns = [name+' start', name + ' end']
-                display(df_week)
+                #display(df_week)
         
     ses.close()
-    return info
+    #return info
+    return users_week_device_info
 
 def analyse_domains (Session):
 
