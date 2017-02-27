@@ -103,7 +103,7 @@ def analyse_beg_end_day(Session):
         sql_user_devices = text('select * from user, user_devices where user_devices.user_id =:user').bindparams(user = user.id)
         user_devices = ses.execute(sql_user_devices)
 
-        print ("user: " + str(user.id))
+        print ("user: " + str(user.id) + "=======================")
         for dev in user_devices:
 
             sql_end_day = text("SELECT distinct devid, flows.endts FROM flows join (SELECT DATE(endts) as date_entered, MAX(endts) as max_time FROM flows WHERE devid =:d_id GROUP BY date(endts)) AS grp ON grp.max_time = flows.endts order by flows.endts;").bindparams(d_id = dev.device_id)
