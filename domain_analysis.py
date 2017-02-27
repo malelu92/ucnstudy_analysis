@@ -105,29 +105,59 @@ def analyse_beg_end_day(Session):
             info['devid'].append(str(row[0]))
             info['end'].append(row[1])
 
-        sql_beg_day = text("SELECT distinct devid, flows.startts FROM flows join (SELECT DATE(startts) as date_entered, MIN(startts) as min_time FROM flows WHERE devid =:d_id GROUP BY date(startts)) AS grp ON grp.min_time = flows.startts order by flows.startts;").bindparams(d_id = dev.id)
-        result_beg_day = ses.execute(sql_beg_day)
+        sql_beg_day = text("SELECT distinct devid, flows.startts FROM flows join (SELECT DATE(startts) as date_entered, MIN(startts) as min_time FROM flows WHERE devid =:d_id and extract (hour from startts) > 3 GROUP BY date(startts)) AS grp ON grp.min_time = flows.startts order by flows.startts;").bindparams(d_id = dev.id)
 
+        sql_startts = text("select devid, startts from flows where devid = :d_id order by startts").bindparams(d_id = dev.id)
+        result_beg_day = ses.execute(sql_beg_day)
+        result_startts = ses.execute(sql_startts)
+            
         for row in result_beg_day:
             info['start'].append(row[1])
+
+        #add days that only have value before 3 am
+        for row in result_startts:
+            timst = row[1]
+            in_list = False
+            for date in info['start']:
+                if date.day == timst.day and date.month == timst.month and date.year == timst.year:
+                    in_list = True
+            if in_list == False:
+                info['start'].append(timst)
 
         #df = pd.DataFrame(info)
         #display(df)
         
 
         #create table with times for each week day
+        info['start'].sort()
         info_week = defaultdict(list)
         if (info['start']):
             for timst in info['start']:
                 day = timst
                 weekday = day.strftime('%A')
-                info_week[weekday].append(day)
+                key = weekday + ' start'
+                info_week[key].append(day)
                 #print(day, day.strftime('%A'))
-        #print (info_week)
+        
+            for timst in info['end']:
+                day = timst
+                weekday = day.strftime('%A')
+                key = weekday + ' end'
+                info_week[key].append(day)
+
         days_str = {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'}
         for name in days_str:
-            df_week = pd.DataFrame(info_week[name])
+            df_col = defaultdict(list)
+            df_col['device'] = str(dev.id)
+            df_col[name+' beg'] = info_week[name+' start']
+            df_col[name+' end'] = info_week[name+' end']
+            #print(df_col[name+' beg'])
+            #print(df_col[name+' end'])
+            df_week = pd.DataFrame(df_col)
+            #df_week.columns = [name+' start', name + ' end']
             display(df_week)
+        
+        
         
         
     ses.close()
