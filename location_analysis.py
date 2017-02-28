@@ -80,65 +80,22 @@ vices.user_id =:user').bindparams(user = user.id)
                 info_beg['beg'].append(row[1])
                 info_beg['location'].append(row[2])
             
-            #for row in result_entertime:
-            #    info['lala'].append(row[1])
-
-            #print('lala')
-            #print(len(info['lala']))
-        
+            print('beg')
+            print(len(info_beg['beg']))
             #add days that only have value before 3 am
             for row in result_entertime:
                 timst = row[1]
-                #print('timst')
-                #print (timst)
                 in_list = False
                 for dt in info_beg['beg']:
                     if dt.day == timst.day and dt.month == timst.month and dt.year == timst.year:
                         in_list = True
-                    if in_list == False:
-                        info_beg['beg'].append(timst)
-                        info_beg['devid'].append(row[0])
-                        info_beg['location'].append(row[2])
-                            
-            #print('beg')
-            #print(len(info['beg']))
-            #print('end')
-            #print(len(info['end']))
-            #if len(info['beg']) > len(info['end']):
-            #    print('entrou beg')
-            #    for timst in info['beg']:
-            #        in_both = False
-            #        for end_timst in info['end']:
-            #            if timst.day == end_timst.day and timst.month == end_timst.month and timst.year == timst.year:
-            #                in_both = True
-            #        if in_both == False:
-            #            info['end'].append(timst)
-            #elif len(info['beg']) < len(info['end']):
-            #    print('entrou end')
-            #    for timst in info['end']:
-            #        in_both = False
-            #        for beg_timst in info['beg']:
-            #            if timst.day == beg_timst.day and timst.month == beg_timst.month and timst.year == beg_timst.year:
-            #                in_both = True
-            #        if in_both == False:
-            #            info['beg'].append(timst)
-                
+                if in_list == False:
+                    info_beg['beg'].append(timst)
+                    info_beg['devid'].append(row[0])
+                    info_beg['location'].append(row[2])
 
-            #print('beg')
-            #print(len(info['beg']))
-            #print('end')
-            #print(len(info['end']))
-            #print('!!!!!!!!!!!')
-                #print('dev')
-            #print(len(info['devid']))
-                #print('beg')
-                #print(len(info['beg']))
-                #print('end')
-                #print(len(info['end']))
-                #print (info['end'])
-
-            #info['beg'].sort()
-            #info['end'].sort()
+            print('beg apos')
+            print(len(info_beg['beg']))
             df_beg = pd.DataFrame(info_beg)
             display(df_beg)
             df_end = pd.DataFrame(info_end)
