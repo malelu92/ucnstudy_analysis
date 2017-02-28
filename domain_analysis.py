@@ -37,7 +37,7 @@ def main():
     users_dev_usage = analyse_beg_end_day(Session)
 
     #for device in users_dev_usage:
-    analyze_week_per_user(Session, users_dev_usage)
+    #analyze_week_per_user(Session, users_dev_usage)
             
     #create_graph_beg_end_day(table_info,Session)
 
@@ -54,17 +54,53 @@ def analyze_week_per_user(Session, users_dev_usage):
         user_devices = ses.execute(sql_user_devices)
 
         print (user.id)
+        #will get the starting time and ending times considering all devices 
+        info = defaultdict(list)
+        info['start'] = defaultdict(list)
+        info['end'] = defaultdict(list)
         for dev in user_devices:
             for item in users_dev_usage[user.id][dev.device_id]:
+                timsts = users_dev_usage[user.id][dev.device_id][item]
+                if item[-1] == 't':
+                    update_time_lists(timsts, info, 'start')
+                elif item[-1] == 'd':
+                    update_time_lists(timsts, info, 'end')
+                            
                 print(item)
+                #print (users_dev_usage[user.id][dev.device_id][item])    
     
-    
-        #print (item.keys())
-    #print (users_dev_usage['1'].keys())
-    #print("hjsdhfsihf")
-    #print(users_dev_usage['1']['6start'])
-    #print("=====")
-    #print (users_dev_usage['1'])    
+        df_col = defaultdict(list)
+        
+        df_col['beg'] = info['start']
+        df_col['end'] = info['end']
+        df = pd.DataFrame(df_col)
+        display(df)
+
+
+def update_time_lists(timsts, info, key):
+    if info[key] == None:
+        info[key].append(timsts)
+    else:
+        #if date is the same and other devices started earlier, get them
+        if timsts != None:
+            #print ('timst')
+            #print(timsts)
+            for item in timsts:
+                for datetime in item:
+                    print('datetime')
+                    print (datetime)
+                    if datetime.date in info[key]:
+                        update_time(datetime, info, key)
+                    else:
+                        info[key].append(datetime)
+
+
+def update_time(datetime, info, key):
+    for item in info[key]:
+        if item.date == datetime.date:
+            if item.time > datetime.date:
+                item = datetime
+   
 
 def simple_plot(table_info):
   #  data = {'x':[], 'y':[], 'label':[]}
@@ -176,6 +212,7 @@ def analyse_beg_end_day(Session):
             user_dev[end_times].append(info['end'])
             #user_dev['device'] = dev.device_id
             users_week_device_info[user.id][dev.device_id] = user_dev
+            #print (users_week_device_info[user.id][dev.device_id][start_times])
 
             #create table with times for each week day
             #info['start'].sort()
@@ -201,7 +238,7 @@ def analyse_beg_end_day(Session):
                 df_col[name+' beg'] = info_week[name+' start']
                 df_col[name+' end'] = info_week[name+' end']
                 df_week = pd.DataFrame(df_col)
-                #display(df_week)
+                display(df_week)
         
     ses.close()
     #return info

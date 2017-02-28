@@ -1,0 +1,91 @@
+import numpy as np
+import pandas as pd
+
+import matplotlib.pyplot as plt
+
+from collections import defaultdict
+
+from model.Base import Base
+from model.Location import Location
+from model.User import User
+from model.user_devices import user_devices
+
+from sqlalchemy import create_engine, text, func
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import NullPool
+
+from IPython.display import display
+
+def main():
+    DB='postgresql+psycopg2:///ucnstudy'
+
+    engine = create_engine(DB, echo=False, poolclass=NullPool)
+    Base.metadata.bind = engine
+    Session = sessionmaker(bind=engine)
+
+    print('lala')
+    analyze_locations_user(Session)
+
+
+def analyze_locations_per_user(Session):
+
+    ses = Session()
+    users = ses.query(User)
+
+    for user in users:
+        sql_user_devices = text('select * from user, user_devices where user_de\
+vices.user_id =:user').bindparams(user = user.id)
+        user_devices = ses.execute(sql_user_devices)
+
+        #will get the starting time and ending times considering all devices
+        print ("user: " + str(user.id) + "=======================")
+        for dev in user_devices:
+
+            sql_beg_day = text('SELECT distinct devid, locations.entertime, name \
+            FROM locations join\
+            (SELECT DATE(entertime) as date_entered, MIN(entertime) as min_time\
+            FROM locations\
+            WHERE devid = :d_id and extract (hour from entertime) > 3\
+            GROUP BY date(entertime))\
+            AS grp ON grp.min_time = locations.entertime order by locations.entertime;').bindparams(d_id = dev.device_id)
+            result_beg_day = ses.execute(sql_beg_day)
+
+            sql_end_day = text('SELECT distinct devid, locations.exittime, name \
+            FROM locations join\
+            (SELECT DATE(exittime) as date_entered, MIN(exittime) as min_time\
+            FROM locations\
+            WHERE devid = :d_id\
+            GROUP BY date(exittime))\
+            AS grp ON grp.min_time = locations.exittime order by locations.exittime;').bindparams(d_id = dev.device_id)
+            result_end_day = ses.execute(sql_end_day)
+
+            sql_entertime = text("SELECT devid, entertime, name\
+            FROM locations\
+            WHERE devid = :d_id order by startts").bindparams(d_id = dev.device_id)
+            result_entertime = ses.execute(sql_entertime)
+
+            info = defaultdict(list)
+            for row in result_end_day:
+                info['devid'].append(str(row[0]))
+                info['end'].append(row[1])
+                info['location'].append(row[2])
+
+            for row in result_beg_day:
+                info['beg'].append(row[1])
+
+            #add days that only have value before 3 am
+            for row in result_entertime:
+                timst = row[1]
+                print('timst')
+                print (timst)
+                in_list = False
+                for dt in info['beg']:
+                    if dt.date == timst.date:
+                        in_list = True
+                    if in_list == False:
+                        info['beg'].append(timst)
+
+            info['beg'].sort()
+
+            df = pd.DataFrame(info)
+            display(df)
