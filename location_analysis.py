@@ -52,11 +52,11 @@ vices.user_id =:user').bindparams(user = user.id)
 
             sql_end_day = text('SELECT distinct devid, locations.exittime, name \
             FROM locations join\
-            (SELECT DATE(exittime) as date_entered, MIN(exittime) as min_time\
+            (SELECT DATE(exittime) as date_entered, MAX(exittime) as max_time\
             FROM locations\
             WHERE devid = :d_id\
             GROUP BY date(exittime))\
-            AS grp ON grp.min_time = locations.exittime order by locations.exittime;').bindparams(d_id = dev.device_id)
+            AS grp ON grp.max_time = locations.exittime order by locations.exittime;').bindparams(d_id = dev.device_id)
             result_end_day = ses.execute(sql_end_day)
 
             sql_entertime = text('SELECT distinct devid, locations.entertime, name \

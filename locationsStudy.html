@@ -11786,6 +11786,7 @@ div#notebook {
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
 
 <span class="kn">from</span> <span class="nn">model.Base</span> <span class="kn">import</span> <span class="n">Base</span>
+<span class="kn">from</span> <span class="nn">model.Device</span> <span class="kn">import</span> <span class="n">Device</span>
 <span class="kn">from</span> <span class="nn">model.Location</span> <span class="kn">import</span> <span class="n">Location</span>
 <span class="kn">from</span> <span class="nn">model.User</span> <span class="kn">import</span> <span class="n">User</span>
 <span class="kn">from</span> <span class="nn">model.user_devices</span> <span class="kn">import</span> <span class="n">user_devices</span>
@@ -11810,7 +11811,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span></span><span class="n">ses</span> <span class="o">=</span> <span class="n">Session</span><span class="p">()</span>
@@ -11852,6 +11853,11 @@ div#notebook {
         <span class="c1">#sql_entertime = text(&#39;select devid, entertime from locations where devid =:d_id&#39;).bindparams(d_id = dev.device_id)</span>
             
         <span class="n">result_entertime</span> <span class="o">=</span> <span class="n">ses</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql_entertime</span><span class="p">)</span>
+        
+        <span class="n">devices_result</span> <span class="o">=</span> <span class="n">ses</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Device</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">Device</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="n">devices_platform</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">devices_result</span><span class="p">:</span>
+            <span class="n">devices_platform</span><span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">platform</span>
 
         <span class="n">info_end</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">result_end_day</span><span class="p">:</span>
@@ -11892,7 +11898,8 @@ div#notebook {
                 <span class="n">info_week</span><span class="p">[</span><span class="n">weekday</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">day</span><span class="p">)</span>
                 <span class="n">info_week</span><span class="p">[</span><span class="n">weekday</span> <span class="o">+</span> <span class="s1">&#39; location&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">info_beg</span><span class="p">[</span><span class="s1">&#39;location&#39;</span><span class="p">][</span><span class="n">cont</span><span class="p">])</span>
                 <span class="n">cont</span> <span class="o">=</span> <span class="n">cont</span> <span class="o">+</span> <span class="mi">1</span>
-             
+         
+        <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Device platform: &#39;</span> <span class="o">+</span> <span class="n">devices_platform</span><span class="p">[</span><span class="n">dev</span><span class="o">.</span><span class="n">device_id</span><span class="p">])</span>
         <span class="n">days_str</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Monday&#39;</span><span class="p">,</span> <span class="s1">&#39;Tuesday&#39;</span><span class="p">,</span> <span class="s1">&#39;Wednesday&#39;</span><span class="p">,</span> <span class="s1">&#39;Thursday&#39;</span><span class="p">,</span> <span class="s1">&#39;Friday&#39;</span><span class="p">,</span><span class="s1">&#39;Saturday&#39;</span><span class="p">,</span> <span class="s1">&#39;Sunday&#39;</span><span class="p">}</span>
         <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">days_str</span><span class="p">:</span>
             <span class="n">df_col</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
@@ -11914,6 +11921,7 @@ div#notebook {
                 <span class="n">info_week</span><span class="p">[</span><span class="n">weekday</span> <span class="o">+</span> <span class="s1">&#39; location&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">info_end</span><span class="p">[</span><span class="s1">&#39;location&#39;</span><span class="p">][</span><span class="n">cont</span><span class="p">])</span>
                 <span class="n">cont</span> <span class="o">=</span> <span class="n">cont</span> <span class="o">+</span> <span class="mi">1</span>
              
+        <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Device platform: &#39;</span> <span class="o">+</span> <span class="n">devices_platform</span><span class="p">[</span><span class="n">dev</span><span class="o">.</span><span class="n">device_id</span><span class="p">])</span>
         <span class="n">days_str</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Monday&#39;</span><span class="p">,</span> <span class="s1">&#39;Tuesday&#39;</span><span class="p">,</span> <span class="s1">&#39;Wednesday&#39;</span><span class="p">,</span> <span class="s1">&#39;Thursday&#39;</span><span class="p">,</span> <span class="s1">&#39;Friday&#39;</span><span class="p">,</span><span class="s1">&#39;Saturday&#39;</span><span class="p">,</span> <span class="s1">&#39;Sunday&#39;</span><span class="p">}</span>
         <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">days_str</span><span class="p">:</span>
             <span class="n">df_col</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
@@ -12724,6 +12732,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: windows-laptop
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -13282,6 +13299,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: windows-laptop
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -14633,6 +14659,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: iphone
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -15329,6 +15364,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: iphone
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -16135,6 +16179,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: windows-laptop
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -16315,6 +16368,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: windows-laptop
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -17294,6 +17356,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: windows-laptop
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -17978,6 +18049,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: windows-laptop
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -19441,6 +19521,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: windows-laptop
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -19951,6 +20040,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: windows-laptop
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -21030,6 +21128,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: macbook
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -21432,6 +21539,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: macbook
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -22118,6 +22234,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: android-phone
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -22382,6 +22507,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: android-phone
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -22729,6 +22863,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: windows-laptop
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -22891,6 +23034,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: windows-laptop
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -23742,6 +23894,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: ipad
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -24210,6 +24371,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: ipad
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -25304,6 +25474,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: iphone
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -25748,6 +25927,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: iphone
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -26985,6 +27173,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: iphone
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -27963,6 +28160,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: iphone
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -29615,6 +29821,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: macbook
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -30083,6 +30298,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: macbook
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -30610,6 +30834,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: ipad
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -30766,6 +30999,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: ipad
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -31002,6 +31244,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: android-phone
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -31170,6 +31421,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: android-phone
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -31415,6 +31675,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: android-tablet
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -31577,6 +31846,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: android-tablet
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -32011,6 +32289,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: iphone
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -32275,6 +32562,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: iphone
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -32736,6 +33032,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: android-phone
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -32958,6 +33263,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: android-phone
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -33401,6 +33715,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: windows-pc
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -33635,6 +33958,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: windows-pc
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -33919,6 +34251,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: macbook
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -34075,6 +34416,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: macbook
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -34671,6 +35021,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: iphone
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -35019,6 +35378,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: iphone
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -35552,6 +35920,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: windows-pc
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -35768,6 +36145,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: windows-pc
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -36034,6 +36420,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: windows-pc
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -36190,6 +36585,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: windows-pc
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -36603,6 +37007,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: windows-laptop
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -36855,6 +37268,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: windows-laptop
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -37897,6 +38319,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: iphone
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -38545,6 +38976,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: iphone
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -39219,6 +39659,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: ipad
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -39375,6 +39824,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: ipad
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -39590,6 +40048,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: macbook
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -39746,6 +40213,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: macbook
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -40516,6 +40992,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: iphone
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -40948,6 +41433,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: iphone
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -41511,6 +42005,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: windows-laptop
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -41697,6 +42200,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: windows-laptop
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -42299,6 +42811,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: android-phone
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -42641,6 +43162,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: android-phone
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -43021,6 +43551,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: android-tablet
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -43177,6 +43716,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: android-tablet
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -43392,6 +43940,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: android-tablet
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -43548,6 +44105,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: android-tablet
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -44306,6 +44872,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: android-phone
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -44732,6 +45307,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: android-phone
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -45781,6 +46365,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: android-phone
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -46213,6 +46806,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: android-phone
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -47247,6 +47849,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: android-phone
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -47673,6 +48284,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: android-phone
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -48164,6 +48784,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: windows-laptop
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -48320,6 +48949,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: windows-laptop
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -48868,6 +49506,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: iphone
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -49192,6 +49839,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: iphone
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -49575,6 +50231,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: windows-pc
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -49731,6 +50396,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: windows-pc
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -49937,6 +50611,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: android-tablet
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -50093,6 +50776,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: android-tablet
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -51039,6 +51731,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: android-phone
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -51735,6 +52436,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: android-phone
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -52490,6 +53200,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: windows-laptop
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -52646,6 +53365,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: windows-laptop
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -52852,6 +53580,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: android-phone
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -53008,6 +53745,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: android-phone
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -53223,6 +53969,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: ipad
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -53379,6 +54134,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: ipad
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -53663,6 +54427,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: windows-laptop
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -53855,6 +54628,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: windows-laptop
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -54205,6 +54987,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: iphone
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -54415,6 +55206,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: iphone
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -54678,6 +55478,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: ipad
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -54834,6 +55643,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: ipad
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -55118,6 +55936,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: windows-laptop
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -55310,6 +56137,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: windows-laptop
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -55996,6 +56832,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: iphone
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -56380,6 +57225,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: iphone
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -56835,6 +57689,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: windows-laptop
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -57003,6 +57866,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: windows-laptop
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -57713,6 +58585,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: iphone
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -58109,6 +58990,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: iphone
+</pre>
+</div>
 </div>
 
 <div class="output_area">
@@ -58600,6 +59490,15 @@ div#notebook {
 <div class="output_area">
 <div class="prompt"></div>
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: windows-laptop
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
 
 <div class="output_html rendered_html output_subarea ">
 <div>
@@ -58768,6 +59667,15 @@ div#notebook {
 </div>
 </div>
 
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Device platform: windows-laptop
+</pre>
+</div>
 </div>
 
 <div class="output_area">
