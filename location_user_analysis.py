@@ -72,15 +72,17 @@ vices.user_id =:user').bindparams(user = user.id)
 
             devices_result = ses.query(Device).order_by(Device.id)
             devices_platform = {}
+            
             for item in devices_result:
                 devices_platform[item.id] = item.platform
+                
             #print (devices_platform)
             #    print (item.id)
             #    print(item.platform)
 
             info_end = defaultdict(list)
             for row in result_end_day:
-                info_end['devid'].append(str(row[0]))
+                info_end['devid'].append(row[0])
                 info_end['end'].append(row[1])
                 info_end['location'].append(row[2])
 
@@ -103,18 +105,16 @@ vices.user_id =:user').bindparams(user = user.id)
                     info_beg['beg'].append(timst)
                     info_beg['devid'].append(row[0])
                     info_beg['location'].append(row[2])
-
-            #print('beg apos')
-            #print(len(info_beg['beg']))
+            
             df_beg = pd.DataFrame(info_beg)
             display(df_beg)
             df_end = pd.DataFrame(info_end)
             display(df_end)
 
-            analyze_per_day(info_beg, 'beg', 'devid', 'location', devices_platform[dev.device_id])
-            analyze_per_day(info_end, 'end', 'devid', 'location', devices_platform[dev.device_id])
+            analyze_per_day(info_beg, 'beg', 'devid', 'location', devices_platform)
+            analyze_per_day(info_end, 'end', 'devid', 'location', devices_platform)
 
-def analyze_per_day(info, key_beg_end, key_dev, key_loc, platform):
+def analyze_per_day(info, key_beg_end, key_dev, key_loc, devices_platform):
 
     #create table with times for each week day
     info_week = defaultdict(list)
@@ -125,15 +125,15 @@ def analyze_per_day(info, key_beg_end, key_dev, key_loc, platform):
             weekday = day.strftime('%A')
             info_week[weekday].append(day)
             info_week[weekday + ' location'].append(info[key_loc][cont])
-            info_week[weekday + ' devid'].append(info[key_dev][cont])
+            info_week[weekday + ' platform'].append(devices_platform[info[key_dev][cont]])
             cont = cont + 1
 
 
-    print('Device platform: ' + platform)
+    #print('Device platform: ' + platform)
     days_str = {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday', 'Sunday'}
     for name in days_str:
         df_col = defaultdict(list)
-        df_col['device'] = info_week[name + ' devid']
+        df_col['device'] = info_week[name + ' platform']
         df_col[name+' '+key_beg_end] = info_week[name]
         df_col['location'] = info_week[name + ' location']
 
