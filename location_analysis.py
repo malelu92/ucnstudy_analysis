@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from collections import defaultdict
 
 from model.Base import Base
+from model.Device import Device
 from model.Location import Location
 from model.User import User
 from model.user_devices import user_devices
@@ -68,6 +69,14 @@ vices.user_id =:user').bindparams(user = user.id)
             #sql_entertime = text('select devid, entertime from locations where devid =:d_id').bindparams(d_id = dev.device_id)
             result_entertime = ses.execute(sql_entertime)
 
+            devices_result = ses.query(Device).order_by(Device.id)
+            devices_platform = {}
+            for item in devices_result:
+                devices_platform[item.id] = item.platform
+            #print (devices_platform)
+            #    print (item.id)
+            #    print(item.platform)
+
             info_end = defaultdict(list)
             for row in result_end_day:
                 info_end['devid'].append(str(row[0]))
@@ -101,10 +110,10 @@ vices.user_id =:user').bindparams(user = user.id)
             df_end = pd.DataFrame(info_end)
             display(df_end)
 
-            analyze_per_day(info_beg, 'beg', dev.device_id, 'location')
- #           analyze_per_day(info_end, 'end', 'devid', 'location')
+            analyze_per_day(info_beg, 'beg', dev.device_id, 'location', devices_platform[dev.device_id])
+            analyze_per_day(info_end, 'end', dev.device_id, 'location', devices_platform[dev.device_id])
 
-def analyze_per_day(info, key_beg_end, dev_id, key_loc):
+def analyze_per_day(info, key_beg_end, dev_id, key_loc, platform):
 
     #create table with times for each week day
     info_week = defaultdict(list)
@@ -117,20 +126,14 @@ def analyze_per_day(info, key_beg_end, dev_id, key_loc):
             info_week[weekday + ' location'].append(info[key_loc][cont])
             cont = cont + 1
 
-    print (len(info[key_beg_end]))
-    print (len(info['device']))
-    print (len(info[key_loc]))
 
+    print('Device platform: ' + platform)
     days_str = {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday', 'Sunday'}
     for name in days_str:
         df_col = defaultdict(list)
         df_col['device'] = str(dev_id)
         df_col[name+' '+key_beg_end] = info_week[name]
         df_col['location'] = info_week[name + ' location']
-
-        print(len(df_col['device']))
-        print(len(df_col[name+' '+key_beg_end]))
-        print(len(df_col['location']))
 
         df_week = pd.DataFrame(df_col)
         display(df_week)
