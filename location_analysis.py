@@ -101,6 +101,39 @@ vices.user_id =:user').bindparams(user = user.id)
             df_end = pd.DataFrame(info_end)
             display(df_end)
 
+            analyze_per_day(info_beg, 'beg', dev.device_id, 'location')
+ #           analyze_per_day(info_end, 'end', 'devid', 'location')
+
+def analyze_per_day(info, key_beg_end, dev_id, key_loc):
+
+    #create table with times for each week day
+    info_week = defaultdict(list)
+    if (info[key_beg_end]):
+        cont = 0
+        for timst in info[key_beg_end]:
+            day = timst
+            weekday = day.strftime('%A')
+            info_week[weekday].append(day)
+            info_week[weekday + ' location'].append(info[key_loc][cont])
+            cont = cont + 1
+
+    print (len(info[key_beg_end]))
+    print (len(info['device']))
+    print (len(info[key_loc]))
+
+    days_str = {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday', 'Sunday'}
+    for name in days_str:
+        df_col = defaultdict(list)
+        df_col['device'] = str(dev_id)
+        df_col[name+' '+key_beg_end] = info_week[name]
+        df_col['location'] = info_week[name + ' location']
+
+        print(len(df_col['device']))
+        print(len(df_col[name+' '+key_beg_end]))
+        print(len(df_col['location']))
+
+        df_week = pd.DataFrame(df_col)
+        display(df_week)
 
 if __name__ == "__main__":
     main()
