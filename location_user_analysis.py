@@ -152,9 +152,9 @@ def plot_info (info_week, weekday, key_beg_end, user):
     cont = 0
     for timst in info_week[weekday]:
         df_col['date'].append(timst.date())
-        df_col['time'].append(timst.time())
-        #print (timst.date())
-        #print (timst.time())
+        #df_col['time'].append(timst.time())
+        df_col['time'].append(timst.hour+timst.minute/60.0) 
+       
 
     x = np.arange(len(info_week))
 
@@ -164,8 +164,11 @@ def plot_info (info_week, weekday, key_beg_end, user):
     #plt.xticks(df_col['date'], rotation=45)
     #plt.plot(df_col['date'], df_col['time'])
     
+    #y[].append(ts.hour+ts.minute/60.0)
+
     fig, ax = plt.subplots(1, 1, figsize=(12, 8))
-    ax.set_title('First device use on ' +  weekday)#, user.username)
+    ax.set_title('Initial device usage on ' +  weekday + ' user: ' +  user.username)
+    ax.set_ylim([0,24])
     ax.set_ylabel('Hour of Day') 
     ax.grid(True)
     ax.plot(df_col['date'], df_col['time'])
