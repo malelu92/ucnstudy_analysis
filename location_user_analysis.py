@@ -100,22 +100,32 @@ vices.user_id =:user').bindparams(user = user.id)
                     if dt.day == timst.day and dt.month == timst.month and dt.year == timst.year:
                         in_list = True
                 if in_list == False:
-                    info_beg['beg'].append(timst)
-                    info_beg['devid'].append(row[0])
-                    info_beg['location'].append(row[2])
+                    #insert in the correct position
+                    cont = 0
+                    for dat in info_beg['beg']:
+                        if timst.date() > dat.date():
+                            cont = cont + 1
+                    info_beg['beg'].insert(cont, timst)
+                    info_beg['devid'].insert(cont, row[0])
+                    info_beg['location'].insert(cont, row[2])
+                    #info_beg['beg'].append(timst)
+                    #info_beg['devid'].append(row[0])
+                    #info_beg['location'].append(row[2])
             
-            #df_beg = pd.DataFrame(info_beg)
-            #display(df_beg)
-            #df_end = pd.DataFrame(info_end)
-            #display(df_end)
+            if user.username == 'bencardino':
 
-            days_str = {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday', 'Sunday'}
-            info_week_beg = analyze_per_day(info_beg, 'beg', 'devid', 'location', devices_platform, user, days_str)
-            info_week_end = analyze_per_day(info_end, 'end', 'devid', 'location', devices_platform, user, days_str)
+                #df_beg = pd.DataFrame(info_beg)
+                #display(df_beg)
+                #df_end = pd.DataFrame(info_end)
+                #display(df_end)
 
-            #if info_beg['devid']:
-            #    if info_beg['devid'][0] == 4:
-            plot_info(info_week_beg, info_week_end, days_str, user)
+                days_str = {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday', 'Sunday'}
+                info_week_beg = analyze_per_day(info_beg, 'beg', 'devid', 'location', devices_platform, user, days_str)
+                info_week_end = analyze_per_day(info_end, 'end', 'devid', 'location', devices_platform, user, days_str)
+
+                #if info_beg['devid']:
+                #    if info_beg['devid'][0] == 4:
+                plot_info(info_week_beg, info_week_end, days_str, user)
 
 def analyze_per_day(info, key_beg_end, key_dev, key_loc, devices_platform, user,days_str):
 
@@ -142,8 +152,8 @@ def analyze_per_day(info, key_beg_end, key_dev, key_loc, devices_platform, user,
         df_col['location'] = info_week[name + ' location']
 
         #df_allweek[name] = info_week
-        #df_week = pd.DataFrame(df_col)
-        #display(df_week)
+        df_week = pd.DataFrame(df_col)
+        display(df_week)
 
     return info_week
                                                                                                     
