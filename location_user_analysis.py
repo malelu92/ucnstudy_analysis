@@ -141,7 +141,7 @@ def analyze_per_day(info, key_beg_end, key_dev, key_loc, devices_platform, user)
         #comecar so com o primeiro usuario
         if info[key_dev]:
             if info[key_dev][0] == 6:
-                plot_info(info_week, name, key_beg_end, user.id)
+                plot_info(info_week, name, key_beg_end, user)
 
 
 
@@ -158,17 +158,20 @@ def plot_info (info_week, weekday, key_beg_end, user):
 
     x = np.arange(len(info_week))
 
-    plt.title('user' + str(user) + ' ' + weekday)
-    plt.grid(True)
+    #plt.title('First device use on %s [user=%s]', user.username, weekday)
+    #plt.grid(True)
     #plt.xticks(x + 0.5, df_col['date'], rotation=45)
-    plt.plot(df_col['date'], df_col['time'])
-
-    fig, ax = plt.subplots(1, 1)
+    #plt.xticks(df_col['date'], rotation=45)
+    #plt.plot(df_col['date'], df_col['time'])
+    
+    fig, ax = plt.subplots(1, 1, figsize=(12, 8))
+    ax.set_title('First device use on ' +  weekday)#, user.username)
+    ax.set_ylabel('Hour of Day') 
+    ax.grid(True)
     ax.plot(df_col['date'], df_col['time'])
-    fig.savefig('figs/' + str(weekday) + 'teste.png')
+    fig.savefig('figs/' + str(weekday) + '.png')
     plt.close(fig)
     #plt.show()
-    #plt.savefig(str(weekday) + 'teste.png')
 
 if __name__ == "__main__":
     main()
