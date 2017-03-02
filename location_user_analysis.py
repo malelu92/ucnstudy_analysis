@@ -115,7 +115,7 @@ vices.user_id =:user').bindparams(user = user.id)
 
             if info_beg['devid']:
                 if info_beg['devid'][0] == 4:
-                    plot_info(info_week_beg, days_str, 'beg', user)
+                    plot_info(info_week_beg, info_week_end, days_str, 'beg', user)
 
 def analyze_per_day(info, key_beg_end, key_dev, key_loc, devices_platform, user,days_str):
 
@@ -151,26 +151,44 @@ def analyze_per_day(info, key_beg_end, key_dev, key_loc, devices_platform, user,
     #    if info[key_dev][0] == 6:
     #        plot_info(info_week, days_str, key_beg_end, user)
 
-def plot_info (info_week, days_str, key_beg_end, user):
+def plot_info (info_week_beg, info_week_end, days_str, key_beg_end, user):
     
-    df_col = defaultdict(list)
+    #beginning of day
+    df_col_beg = defaultdict(list)
     for weekday in days_str:
         cont = 0
-        for timst in info_week[weekday]:
-            df_col[weekday + 'date'].append(timst.date())
+        for timst in info_week_beg[weekday]:
+            df_col_beg[weekday + 'date'].append(timst.date())
             #df_col['time'].append(timst.time())
-            df_col[weekday + 'time'].append(timst.hour+timst.minute/60.0) 
+            df_col_beg[weekday + 'time'].append(timst.hour+timst.minute/60.0) 
     
-    fig, (ax1, ax2, ax3, ax4, ax5, ax6, ax7) = plt.subplots(7, 1, figsize=(10, 25))
+    #end of day
+    df_col_end = defaultdict(list)
+    for weekday in days_str:
+        cont = 0
+        for timst in info_week_end[weekday]:
+            df_col_end[weekday + 'date'].append(timst.date())
+            df_col_end[weekday + 'time'].append(timst.hour+timst.minute/60.0)
 
-    create_subplot(ax1, df_col, key_beg_end, 'Monday', user)
-    create_subplot(ax2, df_col, key_beg_end, 'Tuesday', user)
-    create_subplot(ax3, df_col, key_beg_end, 'Wednesday', user)
-    create_subplot(ax4, df_col, key_beg_end, 'Thursday', user)
-    create_subplot(ax5, df_col, key_beg_end, 'Friday', user)
-    create_subplot(ax6, df_col, key_beg_end, 'Saturday', user)
-    create_subplot(ax7, df_col, key_beg_end, 'Sunday', user)
+    fig, ((ax1, ax8), (ax2, ax9), (ax3, ax10), (ax4, ax11), (ax5, ax12), (ax6, ax13),(ax7, ax14)) = plt.subplots(nrows = 7, ncols = 2, figsize=(20, 25))
 
+    #fig, ((ax1, ax2, ax3), (ax8, ax9, ax10)) = plt.subplots(nrows = 2, ncols = 3,figsize=(20, 25))
+
+    create_subplot(ax1, df_col_beg, 'Beginning', 'Monday', user)
+    create_subplot(ax2, df_col_beg, 'Beginning', 'Tuesday', user)
+    create_subplot(ax3, df_col_beg, 'Beginning', 'Wednesday', user)
+    create_subplot(ax4, df_col_beg, 'Beginning', 'Thursday', user)
+    create_subplot(ax5, df_col_beg, 'Beginning', 'Friday', user)
+    create_subplot(ax6, df_col_beg, 'Beginning', 'Saturday', user)
+    create_subplot(ax7, df_col_beg, 'Beginning', 'Sunday', user)
+
+    create_subplot(ax8, df_col_end, 'End', 'Monday', user)
+    create_subplot(ax9, df_col_end, 'End', 'Tuesday', user)
+    create_subplot(ax10, df_col_end, 'End', 'Wednesday', user)
+    create_subplot(ax11, df_col_end, 'End', 'Thursday', user)
+    create_subplot(ax12, df_col_end, 'End', 'Friday', user)
+    create_subplot(ax13, df_col_end, 'End', 'Saturday', user)
+    create_subplot(ax14, df_col_end, 'End', 'Sunday', user)
 
     fig.subplots_adjust(hspace = .8)
     fig.savefig('figs/' + user.username + '-' + key_beg_end + 'Allweek.png')
