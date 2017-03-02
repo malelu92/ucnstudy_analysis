@@ -140,11 +140,7 @@ def analyze_per_day(info, key_beg_end, key_dev, key_loc, devices_platform, user)
         #df_week = pd.DataFrame(df_col)
         #display(df_week)
 
-        #comecar so com o primeiro usuario
-        #if info[key_dev]:
-         #   if info[key_dev][0] == 6:
-          #      plot_info(info_week, name, key_beg_end, user)
-
+    #comecar so com o primeiro usuario
     if info[key_dev]:
         if info[key_dev][0] == 6:
             plot_info(info_week, days_str, key_beg_end, user)
@@ -159,27 +155,43 @@ def plot_info (info_week, days_str, key_beg_end, user):
             #df_col['time'].append(timst.time())
             df_col[weekday + 'time'].append(timst.hour+timst.minute/60.0) 
     
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 8))
+    fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(12, 12))
+
+    create_subplot(ax1, df_col, key_beg_end, 'Monday', user)
+    create_subplot(ax2, df_col, key_beg_end, 'Tuesday', user)
+    create_subplot(ax3, df_col, key_beg_end, 'Wednesday', user)
+
+    fig.savefig('figs/' + user.username + '-' + key_beg_end + 'Allweek.pdf')
+    plt.close(fig)
+
+def create_subplot(ax, df_col, key_beg_end, weekday, user):
+    ax.set_title(key_beg_end + ' device usage on' + weekday + ' - User: ' +  user.username)
+    ax.set_ylim([0,24])
+    ax.set_ylabel('Hour of Day')
+    ax.grid(True)
+    ax.plot(df_col[weekday+'date'], df_col[weekday+'time'])
+
+
 
     #first day
-    ax1.set_title(key_beg_end + ' device usage on Monday - User: ' +  user.username)
-    ax1.set_ylim([0,24])
-    ax1.set_ylabel('Hour of Day')
+    #ax1.set_title(key_beg_end + ' device usage on Monday - User: ' +  user.username)
+    #ax1.set_ylim([0,24])
+    #ax1.set_ylabel('Hour of Day')
     #last_index = len(df_col['Mondaytime']) -1
     #ax1.set_xlim([df_col['Mondaytime'][0],df_col['Mondaytime'][1]])
-    ax1.grid(True)
-    ax1.plot(df_col['Mondaydate'], df_col['Mondaytime'])
+    #ax1.grid(True)
+    #ax1.plot(df_col['Mondaydate'], df_col['Mondaytime'])
 
     #second day
-    ax2.set_title(key_beg_end + ' device usage on Tuesday  - User: ' +  user.username)
-    ax2.set_ylim([0,24])
-    ax2.set_ylabel('Hour of Day')
-    ax2.grid(True)
-    ax2.plot(df_col['Tuesdaydate'], df_col['Tuesdaytime'])
+    #ax2.set_title(key_beg_end + ' device usage on Tuesday  - User: ' +  user.username)
+    #ax2.set_ylim([0,24])
+    #ax2.set_ylabel('Hour of Day')
+    #ax2.grid(True)
+    #ax2.plot(df_col['Tuesdaydate'], df_col['Tuesdaytime'])
 
 
-    fig.savefig('figs/' + user.username + '-' + key_beg_end + 'Allweek.png')
-    plt.close(fig)
+    #fig.savefig('figs/' + user.username + '-' + key_beg_end + 'Allweek.png')
+    #plt.close(fig)
     #plt.show()
 
 if __name__ == "__main__":
