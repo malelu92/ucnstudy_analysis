@@ -129,42 +129,56 @@ def analyze_per_day(info, key_beg_end, key_dev, key_loc, devices_platform, user)
 
     #print('Device platform: ' + platform)
     days_str = {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday', 'Sunday'}
+    df_allweek = defaultdict(list)
     for name in days_str:
         df_col = defaultdict(list)
         df_col['device'] = info_week[name + ' platform']
         df_col[name+' '+key_beg_end] = info_week[name]
         df_col['location'] = info_week[name + ' location']
 
+        #df_allweek[name] = info_week
         #df_week = pd.DataFrame(df_col)
         #display(df_week)
 
         #comecar so com o primeiro usuario
-        if info[key_dev]:
-            if info[key_dev][0] == 6:
-                plot_info(info_week, name, key_beg_end, user)
+        #if info[key_dev]:
+         #   if info[key_dev][0] == 6:
+          #      plot_info(info_week, name, key_beg_end, user)
 
+    if info[key_dev]:
+        if info[key_dev][0] == 6:
+            plot_info(info_week, days_str, key_beg_end, user)
 
-
-def plot_info (info_week, weekday, key_beg_end, user):
-
-    #print(info_week[weekday])
+def plot_info (info_week, days_str, key_beg_end, user):
+    
     df_col = defaultdict(list)
-    cont = 0
-    for timst in info_week[weekday]:
-        df_col['date'].append(timst.date())
-        #df_col['time'].append(timst.time())
-        df_col['time'].append(timst.hour+timst.minute/60.0) 
-       
+    for weekday in days_str:
+        cont = 0
+        for timst in info_week[weekday]:
+            df_col[weekday + 'date'].append(timst.date())
+            #df_col['time'].append(timst.time())
+            df_col[weekday + 'time'].append(timst.hour+timst.minute/60.0) 
+    
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 8))
 
-    #x = np.arange(len(info_week))
+    #first day
+    ax1.set_title(key_beg_end + ' device usage on Monday - User: ' +  user.username)
+    ax1.set_ylim([0,24])
+    ax1.set_ylabel('Hour of Day')
+    #last_index = len(df_col['Mondaytime']) -1
+    #ax1.set_xlim([df_col['Mondaytime'][0],df_col['Mondaytime'][1]])
+    ax1.grid(True)
+    ax1.plot(df_col['Mondaydate'], df_col['Mondaytime'])
 
-    fig, ax = plt.subplots(1, 1, figsize=(12, 8))
-    ax.set_title('Initial device usage on ' +  weekday + ' - User: ' +  user.username)
-    ax.set_ylim([0,24])
-    ax.set_ylabel('Hour of Day') 
-    ax.grid(True)
-    ax.plot(df_col['date'], df_col['time'])
-    fig.savefig('figs/' + user.username + '-' + key_beg_end + str(weekday) + '.png')
+    #second day
+    ax2.set_title(key_beg_end + ' device usage on Tuesday  - User: ' +  user.username)
+    ax2.set_ylim([0,24])
+    ax2.set_ylabel('Hour of Day')
+    ax2.grid(True)
+    ax2.plot(df_col['Tuesdaydate'], df_col['Tuesdaytime'])
+
+
+    fig.savefig('figs/' + user.username + '-' + key_beg_end + 'Allweek.png')
     plt.close(fig)
     #plt.show()
 
