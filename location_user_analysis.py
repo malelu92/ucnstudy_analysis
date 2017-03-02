@@ -92,8 +92,6 @@ vices.user_id =:user').bindparams(user = user.id)
                 info_beg['beg'].append(row[1])
                 info_beg['location'].append(row[2])
             
-            print('beg')
-            print(len(info_beg['beg']))
             #add days that only have value before 3 am
             for row in result_entertime:
                 timst = row[1]
@@ -106,10 +104,10 @@ vices.user_id =:user').bindparams(user = user.id)
                     info_beg['devid'].append(row[0])
                     info_beg['location'].append(row[2])
             
-            df_beg = pd.DataFrame(info_beg)
-            display(df_beg)
-            df_end = pd.DataFrame(info_end)
-            display(df_end)
+            #df_beg = pd.DataFrame(info_beg)
+            #display(df_beg)
+            #df_end = pd.DataFrame(info_end)
+            #display(df_end)
 
             analyze_per_day(info_beg, 'beg', 'devid', 'location', devices_platform)
             analyze_per_day(info_end, 'end', 'devid', 'location', devices_platform)
@@ -137,8 +135,30 @@ def analyze_per_day(info, key_beg_end, key_dev, key_loc, devices_platform):
         df_col[name+' '+key_beg_end] = info_week[name]
         df_col['location'] = info_week[name + ' location']
 
-        df_week = pd.DataFrame(df_col)
-        display(df_week)
+        #df_week = pd.DataFrame(df_col)
+        #display(df_week)
+
+        #comecar so com o primeiro usuario
+        if info[key_dev]:
+            if info[key_dev][0] == 6:
+                plot_info(info_week, name, key_beg_end)
+
+
+
+def plot_info (info_week, weekday, key_beg_end):
+
+    #print(info_week[weekday])
+    df_col = defaultdict(list)
+    cont = 0
+    for timst in info_week[weekday]:
+        df_col['date'].append(timst.date())
+        df_col['time'].append(timst.time())
+        #print (timst.date())
+        #print (timst.time())
+
+    plt.plot(df_col['date'], df_col['time'])
+    plt.show()
+
 
 if __name__ == "__main__":
     main()
