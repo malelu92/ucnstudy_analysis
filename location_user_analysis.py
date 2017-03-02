@@ -109,10 +109,15 @@ vices.user_id =:user').bindparams(user = user.id)
             #df_end = pd.DataFrame(info_end)
             #display(df_end)
 
-            analyze_per_day(info_beg, 'beg', 'devid', 'location', devices_platform, user)
-            analyze_per_day(info_end, 'end', 'devid', 'location', devices_platform, user)
+            days_str = {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday', 'Sunday'}
+            info_week_beg = analyze_per_day(info_beg, 'beg', 'devid', 'location', devices_platform, user, days_str)
+            info_week_end = analyze_per_day(info_end, 'end', 'devid', 'location', devices_platform, user, days_str)
 
-def analyze_per_day(info, key_beg_end, key_dev, key_loc, devices_platform, user):
+            if info_beg['devid']:
+                if info_beg['devid'][0] == 4:
+                    plot_info(info_week_beg, days_str, 'beg', user)
+
+def analyze_per_day(info, key_beg_end, key_dev, key_loc, devices_platform, user,days_str):
 
     #create table with times for each week day
     info_week = defaultdict(list)
@@ -128,7 +133,7 @@ def analyze_per_day(info, key_beg_end, key_dev, key_loc, devices_platform, user)
 
 
     #print('Device platform: ' + platform)
-    days_str = {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday', 'Sunday'}
+    #days_str = {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday', 'Sunday'}
     df_allweek = defaultdict(list)
     for name in days_str:
         df_col = defaultdict(list)
@@ -141,9 +146,10 @@ def analyze_per_day(info, key_beg_end, key_dev, key_loc, devices_platform, user)
         #display(df_week)
 
     #comecar so com o primeiro usuario
-    if info[key_dev]:
-        if info[key_dev][0] == 6:
-            plot_info(info_week, days_str, key_beg_end, user)
+    return info_week
+    #if info[key_dev]:
+    #    if info[key_dev][0] == 6:
+    #        plot_info(info_week, days_str, key_beg_end, user)
 
 def plot_info (info_week, days_str, key_beg_end, user):
     
@@ -155,7 +161,7 @@ def plot_info (info_week, days_str, key_beg_end, user):
             #df_col['time'].append(timst.time())
             df_col[weekday + 'time'].append(timst.hour+timst.minute/60.0) 
     
-    fig, (ax1, ax2, ax3, ax4, ax5, ax6, ax7) = plt.subplots(7, 1, figsize=(12, 25))
+    fig, (ax1, ax2, ax3, ax4, ax5, ax6, ax7) = plt.subplots(7, 1, figsize=(10, 25))
 
     create_subplot(ax1, df_col, key_beg_end, 'Monday', user)
     create_subplot(ax2, df_col, key_beg_end, 'Tuesday', user)
@@ -165,11 +171,13 @@ def plot_info (info_week, days_str, key_beg_end, user):
     create_subplot(ax6, df_col, key_beg_end, 'Saturday', user)
     create_subplot(ax7, df_col, key_beg_end, 'Sunday', user)
 
+
+    fig.subplots_adjust(hspace = .8)
     fig.savefig('figs/' + user.username + '-' + key_beg_end + 'Allweek.png')
     plt.close(fig)
 
 def create_subplot(ax, df_col, key_beg_end, weekday, user):
-    ax.set_title(key_beg_end + ' device usage on' + weekday + ' - User: ' +  user.username)
+    ax.set_title(key_beg_end + ' of day device usage on ' + weekday + ' - User: ' +  user.username)
     ax.set_ylim([0,24])
     ax.set_ylabel('Hour of Day')
     ax.grid(True)
