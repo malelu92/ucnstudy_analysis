@@ -113,9 +113,9 @@ vices.user_id =:user').bindparams(user = user.id)
             info_week_beg = analyze_per_day(info_beg, 'beg', 'devid', 'location', devices_platform, user, days_str)
             info_week_end = analyze_per_day(info_end, 'end', 'devid', 'location', devices_platform, user, days_str)
 
-            if info_beg['devid']:
-                if info_beg['devid'][0] == 4:
-                    plot_info(info_week_beg, info_week_end, days_str, 'beg', user)
+            #if info_beg['devid']:
+            #    if info_beg['devid'][0] == 4:
+            plot_info(info_week_beg, info_week_end, days_str, user)
 
 def analyze_per_day(info, key_beg_end, key_dev, key_loc, devices_platform, user,days_str):
 
@@ -145,13 +145,10 @@ def analyze_per_day(info, key_beg_end, key_dev, key_loc, devices_platform, user,
         #df_week = pd.DataFrame(df_col)
         #display(df_week)
 
-    #comecar so com o primeiro usuario
     return info_week
-    #if info[key_dev]:
-    #    if info[key_dev][0] == 6:
-    #        plot_info(info_week, days_str, key_beg_end, user)
+                                                                                                    
 
-def plot_info (info_week_beg, info_week_end, days_str, key_beg_end, user):
+def plot_info (info_week_beg, info_week_end, days_str, user):
     
     #beginning of day
     df_col_beg = defaultdict(list)
@@ -191,7 +188,7 @@ def plot_info (info_week_beg, info_week_end, days_str, key_beg_end, user):
     create_subplot(ax14, df_col_end, 'End', 'Sunday', user)
 
     fig.subplots_adjust(hspace = .8)
-    fig.savefig('figs/' + user.username + '-' + key_beg_end + 'Allweek.png')
+    fig.savefig('figs/' + user.username + '-allweek.png')
     plt.close(fig)
 
 def create_subplot(ax, df_col, key_beg_end, weekday, user):
