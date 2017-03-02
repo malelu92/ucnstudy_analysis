@@ -163,12 +163,10 @@ def plot_info (info_week, weekday, key_beg_end, user):
     #plt.xticks(x + 0.5, df_col['date'], rotation=45)
     plt.plot(df_col['date'], df_col['time'])
 
-    fig, ax = plt.subplots(1, 1)
-    ax.plot(df_col['date'], df_col['time'])
-    fig.savefig('figs/' + str(weekday) + 'teste.png')
-    plt.close(fig)
-    #plt.show()
-    #plt.savefig(str(weekday) + 'teste.png')
+    fig = plt.figure()
+    fig.savefig(str(weekday) + 'teste.png')
+    plt.show()
+
 
 if __name__ == "__main__":
     main()
