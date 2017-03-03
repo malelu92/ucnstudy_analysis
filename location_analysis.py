@@ -207,6 +207,7 @@ def plot_info (info_week_beg, info_week_end, days_str, user, quantity_dev):
     create_subplot(ax13, df_all_dev_end, 'End', 'Saturday', user)
     create_subplot(ax14, df_all_dev_end, 'End', 'Sunday', user)
 
+    #plt.legend(loc='best')
     fig.subplots_adjust(hspace = .8)
     fig.savefig('figs2/' + user.username + '-allweek.png')
     plt.close(fig)
@@ -221,9 +222,19 @@ def create_subplot(ax, df_all_dev, key_beg_end, weekday, user):
     ax.set_ylabel('Hour of Day')
     ax.grid(True)
 
-    #for dev in range (0, len(df_all_dev) - 1):
-    ax.plot(df_all_dev[0][weekday+'date'], df_all_dev[0][weekday+'time'], 'r')
-    ax.plot(df_all_dev[1][weekday+'date'], df_all_dev[1][weekday+'time'], 'b')
+    for dev in range (0, len(df_all_dev)):
+        if dev == 0:
+            color = 'ro'
+            ax.legend(['lalalal'])
+        elif dev == 1:
+            color = 'bo'
+            ax.legend(['ehiesdk', 'hsdksd'])
+        else:
+            color = 'g'
+        ax.plot(df_all_dev[dev][weekday+'date'], df_all_dev[dev][weekday+'time'], color)
+
+        
+    
 
 
 
