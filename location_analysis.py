@@ -39,6 +39,10 @@ vices.user_id =:user').bindparams(user = user.id)
 
         #will get the starting time and ending times considering all devices
         print ("user: " + str(user.id) + "=======================")
+        quantity_dev = 0
+        info_week_beg = {}
+        info_week_end ={}
+
         for dev in user_devices:
 
             sql_beg_day = text('SELECT distinct devid, locations.entertime, name \
@@ -73,9 +77,6 @@ vices.user_id =:user').bindparams(user = user.id)
             devices_platform = {}
             for item in devices_result:
                 devices_platform[item.id] = item.platform
-            #print (devices_platform)
-            #    print (item.id)
-            #    print(item.platform)
 
             info_end = defaultdict(list)
             for row in result_end_day:
@@ -88,9 +89,7 @@ vices.user_id =:user').bindparams(user = user.id)
                 info_beg['devid'].append(row[0])
                 info_beg['beg'].append(row[1])
                 info_beg['location'].append(row[2])
-            
-            print('beg')
-            print(len(info_beg['beg']))
+
             #add days that only have value before 3 am
             for row in result_entertime:
                 timst = row[1]
@@ -99,21 +98,42 @@ vices.user_id =:user').bindparams(user = user.id)
                     if dt.day == timst.day and dt.month == timst.month and dt.year == timst.year:
                         in_list = True
                 if in_list == False:
-                    info_beg['beg'].append(timst)
-                    info_beg['devid'].append(row[0])
-                    info_beg['location'].append(row[2])
+                    #insert in the correct position
+                    cont = 0
+                    for dat in info_beg['beg']:
+                        if timst.date() > dat.date():
+                            cont = cont + 1
+                    info_beg['beg'].insert(cont, timst)
+                    info_beg['devid'].insert(cont, row[0])
+                    info_beg['location'].insert(cont, row[2])
+                    #info_beg['beg'].append(timst)
+                    #info_beg['devid'].append(row[0])
+                    #info_beg['location'].append(row[2])
 
-            print('beg apos')
-            print(len(info_beg['beg']))
-            df_beg = pd.DataFrame(info_beg)
-            display(df_beg)
-            df_end = pd.DataFrame(info_end)
-            display(df_end)
+            #df_beg = pd.DataFrame(info_beg)
+            #display(df_beg)
+            #df_end = pd.DataFrame(info_end)
+            #display(df_end)
 
-            analyze_per_day(info_beg, 'beg', dev.device_id, 'location', devices_platform[dev.device_id])
-            analyze_per_day(info_end, 'end', dev.device_id, 'location', devices_platform[dev.device_id])
 
-def analyze_per_day(info, key_beg_end, dev_id, key_loc, platform):
+            if user.username == 'sormain':
+                days_str = {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday', 'Sunday'}
+        
+                info_week_beg[quantity_dev] = analyze_per_day(info_beg, 'beg', 'location', devices_platform[dev.device_id], user, days_str)
+                info_week_end[quantity_dev] = analyze_per_day(info_end, 'end',  'location', devices_platform[dev.device_id], user, days_str)
+                quantity_dev = quantity_dev+1
+
+                #print(user.username)
+                #print(devices_platform[dev.device_id])
+
+
+        if user.username == 'sormain':
+            #print(quantity_dev)
+            #print (info_week_beg)
+            plot_info(info_week_beg, info_week_end, days_str, user, quantity_dev)
+
+
+def analyze_per_day(info, key_beg_end, key_loc, platform, user, days_str):
 
     #create table with times for each week day
     info_week = defaultdict(list)
@@ -124,19 +144,88 @@ def analyze_per_day(info, key_beg_end, dev_id, key_loc, platform):
             weekday = day.strftime('%A')
             info_week[weekday].append(day)
             info_week[weekday + ' location'].append(info[key_loc][cont])
+            info_week['platform'].append(platform)
             cont = cont + 1
 
 
-    print('Device platform: ' + platform)
-    days_str = {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday', 'Sunday'}
+    #print('Device platform: ' + platform)
+    #days_str = {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday', 'Sunday'}
+    df_allweek = defaultdict(list)
     for name in days_str:
         df_col = defaultdict(list)
-        df_col['device'] = str(dev_id)
+        df_col['device'] = platform[0]
         df_col[name+' '+key_beg_end] = info_week[name]
         df_col['location'] = info_week[name + ' location']
 
-        df_week = pd.DataFrame(df_col)
-        display(df_week)
+        #df_week = pd.DataFrame(df_col)
+        #display(df_week)
+        
+    return info_week
+
+def plot_info (info_week_beg, info_week_end, days_str, user, quantity_dev):
+
+    df_all_dev_beg = {}
+    df_all_dev_end = {}
+
+    #for each user device
+    for i in range (0, quantity_dev):
+        #beginning of day
+        df_col_beg = defaultdict(list)
+        for weekday in days_str:
+            cont = 0
+            for timst in info_week_beg[i][weekday]:
+                df_col_beg[weekday + 'date'].append(timst.date())
+                #df_col['time'].append(timst.time())
+                df_col_beg[weekday + 'time'].append(timst.hour+timst.minute/60.0)
+    
+        #end of day
+        df_col_end = defaultdict(list)
+        for weekday in days_str:
+            cont = 0
+            for timst in info_week_end[i][weekday]:
+                df_col_end[weekday + 'date'].append(timst.date())
+                df_col_end[weekday + 'time'].append(timst.hour+timst.minute/60.0)
+
+        df_all_dev_beg[i] = df_col_beg
+        df_all_dev_end[i] = df_col_end
+
+    fig, ((ax1, ax8), (ax2, ax9), (ax3, ax10), (ax4, ax11), (ax5, ax12), (ax6, ax13),(ax7, ax14)) = plt.subplots(nrows = 7, ncols = 2, figsize=(20, 25))
+
+    create_subplot(ax1, df_all_dev_beg, 'Beginning', 'Monday', user)
+    create_subplot(ax2, df_all_dev_beg, 'Beginning', 'Tuesday', user)
+    create_subplot(ax3, df_all_dev_beg, 'Beginning', 'Wednesday', user)
+    create_subplot(ax4, df_all_dev_beg, 'Beginning', 'Thursday', user)
+    create_subplot(ax5, df_all_dev_beg, 'Beginning', 'Friday', user)
+    create_subplot(ax6, df_all_dev_beg, 'Beginning', 'Saturday', user)
+    create_subplot(ax7, df_all_dev_beg, 'Beginning', 'Sunday', user)
+
+    create_subplot(ax8, df_all_dev_end, 'End', 'Monday', user)
+    create_subplot(ax9, df_all_dev_end, 'End', 'Tuesday', user)
+    create_subplot(ax10, df_all_dev_end, 'End', 'Wednesday', user)
+    create_subplot(ax11, df_all_dev_end, 'End', 'Thursday', user)
+    create_subplot(ax12, df_all_dev_end, 'End', 'Friday', user)
+    create_subplot(ax13, df_all_dev_end, 'End', 'Saturday', user)
+    create_subplot(ax14, df_all_dev_end, 'End', 'Sunday', user)
+
+    fig.subplots_adjust(hspace = .8)
+    fig.savefig('figs2/' + user.username + '-allweek.png')
+    plt.close(fig)
+
+
+def create_subplot(ax, df_all_dev, key_beg_end, weekday, user):
+    #xlabels = df_col[weekday+'date']
+    #ax.set_xticklabels(xlabels, rotation=45, fontsize = 8)
+    #ax.set_xticklabels(xlabels, fontsize = 7)
+    ax.set_title(key_beg_end + ' of day usage on ' + weekday + ' - User: ' +  user.username)
+    ax.set_ylim([0,24])
+    ax.set_ylabel('Hour of Day')
+    ax.grid(True)
+
+    #for dev in range (0, len(df_all_dev) - 1):
+    ax.plot(df_all_dev[0][weekday+'date'], df_all_dev[0][weekday+'time'], 'r')
+    ax.plot(df_all_dev[1][weekday+'date'], df_all_dev[1][weekday+'time'], 'b')
+
+
 
 if __name__ == "__main__":
     main()

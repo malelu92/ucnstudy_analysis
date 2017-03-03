@@ -112,19 +112,18 @@ vices.user_id =:user').bindparams(user = user.id)
                     #info_beg['devid'].append(row[0])
                     #info_beg['location'].append(row[2])
 
-            if user.username == 'clifford.husband':
             #df_beg = pd.DataFrame(info_beg)
             #display(df_beg)
             #df_end = pd.DataFrame(info_end)
             #display(df_end)
 
-                days_str = {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday', 'Sunday'}
-                info_week_beg = analyze_per_day(info_beg, 'beg', 'devid', 'location', devices_platform, user, days_str)
-                info_week_end = analyze_per_day(info_end, 'end', 'devid', 'location', devices_platform, user, days_str)
+            days_str = {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday', 'Sunday'}
+            info_week_beg = analyze_per_day(info_beg, 'beg', 'devid', 'location', devices_platform, user, days_str)
+            info_week_end = analyze_per_day(info_end, 'end', 'devid', 'location', devices_platform, user, days_str)
 
                 #if info_beg['devid']:
                 #    if info_beg['devid'][0] == 4:
-                plot_info(info_week_beg, info_week_end, days_str, user)
+            plot_info(info_week_beg, info_week_end, days_str, user)
 
 def analyze_per_day(info, key_beg_end, key_dev, key_loc, devices_platform, user,days_str):
 
@@ -178,8 +177,6 @@ def plot_info (info_week_beg, info_week_end, days_str, user):
 
     fig, ((ax1, ax8), (ax2, ax9), (ax3, ax10), (ax4, ax11), (ax5, ax12), (ax6, ax13),(ax7, ax14)) = plt.subplots(nrows = 7, ncols = 2, figsize=(20, 25))
 
-    #plt.xticks(rotation=45)    
-
     create_subplot(ax1, df_col_beg, 'Beginning', 'Monday', user)
     create_subplot(ax2, df_col_beg, 'Beginning', 'Tuesday', user)
     create_subplot(ax3, df_col_beg, 'Beginning', 'Wednesday', user)
@@ -201,9 +198,9 @@ def plot_info (info_week_beg, info_week_end, days_str, user):
     plt.close(fig)
 
 def create_subplot(ax, df_col, key_beg_end, weekday, user):
-    #plt.xticks(rotation=45)
     xlabels = df_col[weekday+'date']
-    ax.set_xticklabels(xlabels, rotation=45)
+    #ax.set_xticklabels(xlabels, rotation=45, fontsize = 8)
+    ax.set_xticklabels(xlabels, fontsize = 7)
     ax.set_title(key_beg_end + ' of day device usage on ' + weekday + ' - User: ' +  user.username)
     ax.set_ylim([0,24])
     ax.set_ylabel('Hour of Day')
