@@ -1,7 +1,9 @@
 import numpy as np
 import pandas as pd
+import seaborn as sns
 
 import matplotlib.pyplot as plt
+from matplotlib import dates
 
 from collections import defaultdict
 
@@ -214,24 +216,33 @@ def plot_info (info_week_beg, info_week_end, days_str, user, quantity_dev):
 
 
 def create_subplot(ax, df_all_dev, key_beg_end, weekday, user):
-    #xlabels = df_col[weekday+'date']
-    #ax.set_xticklabels(xlabels, rotation=45, fontsize = 8)
-    #ax.set_xticklabels(xlabels, fontsize = 7)
+    sns.set_style('darkgrid')
+
     ax.set_title(key_beg_end + ' of day usage on ' + weekday + ' - User: ' +  user.username)
     ax.set_ylim([0,24])
     ax.set_ylabel('Hour of Day')
     ax.grid(True)
 
     for dev in range (0, len(df_all_dev)):
+        x = df_all_dev[dev][weekday+'date']
+        y = df_all_dev[dev][weekday+'time']
+        if len(x) > 1:
+            hfmt = dates.DateFormatter('%m-%d')
+            ax.xaxis.set_major_formatter(hfmt)
         if dev == 0:
             color = 'ro'
-            ax.legend(['lalalal'])
+            #ax.legend(['lalalal'])
+            ax.plot(x, y, color, label='blublu')
+            ax.legend(loc='best')
         elif dev == 1:
             color = 'bo'
-            ax.legend(['ehiesdk', 'hsdksd'])
+            #ax.legend(['ehiesdk', 'hsdksd'])
+            ax.plot(x, y, color, label='bla')
+            ax.legend(loc='best')
         else:
-            color = 'g'
-        ax.plot(df_all_dev[dev][weekday+'date'], df_all_dev[dev][weekday+'time'], color)
+            color = 'go'
+     
+        #ax.plot(x, y, color, label='blublu')
 
         
     
