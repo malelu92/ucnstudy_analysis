@@ -172,16 +172,23 @@ def plot_info (info_week_beg, info_week_end, days_str, user, quantity_dev):
     #for each user device
     for i in range (0, quantity_dev):
         #beginning of day
+
         df_col_beg = defaultdict(list)
+        if info_week_beg[i]['platform']:
+            df_col_beg['platform'] = info_week_beg[i]['platform'][0]
+
         for weekday in days_str:
             cont = 0
             for timst in info_week_beg[i][weekday]:
                 df_col_beg[weekday + 'date'].append(timst.date())
-                #df_col['time'].append(timst.time())
                 df_col_beg[weekday + 'time'].append(timst.hour+timst.minute/60.0)
+
     
         #end of day
         df_col_end = defaultdict(list)
+        if info_week_end[i]['platform']:
+            df_col_end['platform'] = info_week_end[i]['platform'][0]
+
         for weekday in days_str:
             cont = 0
             for timst in info_week_end[i][weekday]:
@@ -226,21 +233,23 @@ def create_subplot(ax, df_all_dev, key_beg_end, weekday, user):
     for dev in range (0, len(df_all_dev)):
         x = df_all_dev[dev][weekday+'date']
         y = df_all_dev[dev][weekday+'time']
+        platform = df_all_dev[dev]['platform']
+
         if len(x) > 1:
             hfmt = dates.DateFormatter('%m-%d')
             ax.xaxis.set_major_formatter(hfmt)
         if dev == 0:
-            color = 'ro'
-            #ax.legend(['lalalal'])
-            ax.plot(x, y, color, label='blublu')
+            ax.plot(x, y, 'ro', label=platform)
             ax.legend(loc='best')
         elif dev == 1:
-            color = 'bo'
+            #color = 'bo'
             #ax.legend(['ehiesdk', 'hsdksd'])
-            ax.plot(x, y, color, label='bla')
+            ax.plot(x, y, 'bo', label=platform)
             ax.legend(loc='best')
         else:
-            color = 'go'
+            #color = 'go'
+            ax.plot(x, y, 'go', label=platform)
+            ax.legend(loc='best')
      
         #ax.plot(x, y, color, label='blublu')
 
