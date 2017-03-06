@@ -118,21 +118,21 @@ vices.user_id =:user').bindparams(user = user.id)
             #display(df_end)
 
 
-            if user.username == 'sormain':
-                days_str = {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday', 'Sunday'}
+            #if user.username == 'sormain':
+            days_str = {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday', 'Sunday'}
         
-                info_week_beg[quantity_dev] = analyze_per_day(info_beg, 'beg', 'location', devices_platform[dev.device_id], user, days_str)
-                info_week_end[quantity_dev] = analyze_per_day(info_end, 'end',  'location', devices_platform[dev.device_id], user, days_str)
-                quantity_dev = quantity_dev+1
+            info_week_beg[quantity_dev] = analyze_per_day(info_beg, 'beg', 'location', devices_platform[dev.device_id], user, days_str)
+            info_week_end[quantity_dev] = analyze_per_day(info_end, 'end',  'location', devices_platform[dev.device_id], user, days_str)
+            quantity_dev = quantity_dev+1
 
                 #print(user.username)
                 #print(devices_platform[dev.device_id])
 
 
-        if user.username == 'sormain':
+        #if user.username == 'sormain':
             #print(quantity_dev)
             #print (info_week_beg)
-            plot_info(info_week_beg, info_week_end, days_str, user, quantity_dev)
+        plot_info(info_week_beg, info_week_end, days_str, user, quantity_dev)
 
 
 def analyze_per_day(info, key_beg_end, key_loc, platform, user, days_str):
@@ -216,7 +216,6 @@ def plot_info (info_week_beg, info_week_end, days_str, user, quantity_dev):
     create_subplot(ax13, df_all_dev_end, 'End', 'Saturday', user)
     create_subplot(ax14, df_all_dev_end, 'End', 'Sunday', user)
 
-    #plt.legend(loc='best')
     fig.subplots_adjust(hspace = .8)
     fig.savefig('figs2/' + user.username + '-allweek.png')
     plt.close(fig)
@@ -238,24 +237,18 @@ def create_subplot(ax, df_all_dev, key_beg_end, weekday, user):
         if len(x) > 1:
             hfmt = dates.DateFormatter('%m-%d')
             ax.xaxis.set_major_formatter(hfmt)
-        if dev == 0:
-            ax.plot(x, y, 'ro', label=platform)
-            ax.legend(loc='best')
-        elif dev == 1:
-            #color = 'bo'
-            #ax.legend(['ehiesdk', 'hsdksd'])
-            ax.plot(x, y, 'bo', label=platform)
-            ax.legend(loc='best')
-        else:
-            #color = 'go'
-            ax.plot(x, y, 'go', label=platform)
-            ax.legend(loc='best')
-     
-        #ax.plot(x, y, color, label='blublu')
-
         
-    
+        if dev == 0:
+            color = 'ro'
+        elif dev == 1:
+            color = 'bo'
+        else:
+            color = 'go'
 
+        if platform:
+            ax.plot(x, y, color, label=platform)
+            ax.legend(loc='best', frameon=True)
+     
 
 
 if __name__ == "__main__":
