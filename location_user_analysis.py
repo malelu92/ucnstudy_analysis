@@ -1,7 +1,9 @@
 import numpy as np
 import pandas as pd
+import seaborn as sns
 
 import matplotlib.pyplot as plt
+from matplotlib import dates
 
 from collections import defaultdict
 
@@ -123,7 +125,9 @@ vices.user_id =:user').bindparams(user = user.id)
 
                 #if info_beg['devid']:
                 #    if info_beg['devid'][0] == 4:
-            plot_info(info_week_beg, info_week_end, days_str, user)
+     
+            if user.username == 'sormain':
+                plot_info(info_week_beg, info_week_end, days_str, user)
 
 def analyze_per_day(info, key_beg_end, key_dev, key_loc, devices_platform, user,days_str):
 
@@ -172,6 +176,8 @@ def plot_info (info_week_beg, info_week_end, days_str, user):
     for weekday in days_str:
         cont = 0
         for timst in info_week_end[weekday]:
+            #norm = timst.day() + timst.month()*12
+            #df_col_end[weekday + 'date'].append((int(timst.strftime('%s'))/(3600*24))*3600*24)
             df_col_end[weekday + 'date'].append(timst.date())
             df_col_end[weekday + 'time'].append(timst.hour+timst.minute/60.0)
 
@@ -198,14 +204,18 @@ def plot_info (info_week_beg, info_week_end, days_str, user):
     plt.close(fig)
 
 def create_subplot(ax, df_col, key_beg_end, weekday, user):
-    xlabels = df_col[weekday+'date']
-    #ax.set_xticklabels(xlabels, rotation=45, fontsize = 8)
-    ax.set_xticklabels(xlabels, fontsize = 7)
+    x = df_col[weekday+'date']
+    y = df_col[weekday+'time']
+    sns.set_style('darkgrid')
+    #ax.set_xticklabels(x, rotation=45, fontsize = 8, minor=False)
+    #ax.set_xticklabels(xlabels, fontsize = 7)
+    hfmt = dates.DateFormatter('%m-%d')
+    ax.xaxis.set_major_formatter(hfmt)
     ax.set_title(key_beg_end + ' of day device usage on ' + weekday + ' - User: ' +  user.username)
     ax.set_ylim([0,24])
     ax.set_ylabel('Hour of Day')
     ax.grid(True)
-    ax.plot(df_col[weekday+'date'], df_col[weekday+'time'])
+    ax.plot(x, y, 'o')
 
 
 if __name__ == "__main__":
