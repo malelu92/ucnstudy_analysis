@@ -126,8 +126,8 @@ vices.user_id =:user').bindparams(user = user.id)
                 #if info_beg['devid']:
                 #    if info_beg['devid'][0] == 4:
      
-            if user.username == 'sormain':
-                plot_info(info_week_beg, info_week_end, days_str, user)
+            #if user.username == 'sormain':
+            plot_info(info_week_beg, info_week_end, days_str, user)
 
 def analyze_per_day(info, key_beg_end, key_dev, key_loc, devices_platform, user,days_str):
 
@@ -203,14 +203,16 @@ def plot_info (info_week_beg, info_week_end, days_str, user):
     fig.savefig('figs/' + user.username + '-allweek.png')
     plt.close(fig)
 
+
 def create_subplot(ax, df_col, key_beg_end, weekday, user):
     x = df_col[weekday+'date']
     y = df_col[weekday+'time']
     sns.set_style('darkgrid')
     #ax.set_xticklabels(x, rotation=45, fontsize = 8, minor=False)
     #ax.set_xticklabels(xlabels, fontsize = 7)
-    hfmt = dates.DateFormatter('%m-%d')
-    ax.xaxis.set_major_formatter(hfmt)
+    if len(x) > 1:
+        hfmt = dates.DateFormatter('%m-%d')
+        ax.xaxis.set_major_formatter(hfmt)
     ax.set_title(key_beg_end + ' of day device usage on ' + weekday + ' - User: ' +  user.username)
     ax.set_ylim([0,24])
     ax.set_ylabel('Hour of Day')
