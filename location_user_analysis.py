@@ -126,8 +126,8 @@ vices.user_id =:user').bindparams(user = user.id)
                 #if info_beg['devid']:
                 #    if info_beg['devid'][0] == 4:
      
-            #if user.username == 'sormain':
-            plot_info(info_week_beg, info_week_end, days_str, user)
+            if user.username == 'barnesldavid.husband':
+                plot_info(info_week_beg, info_week_end, days_str, user)
 
 def analyze_per_day(info, key_beg_end, key_dev, key_loc, devices_platform, user,days_str):
 
@@ -165,7 +165,11 @@ def plot_info (info_week_beg, info_week_end, days_str, user):
     #beginning of day
     df_col_beg = defaultdict(list)
     for weekday in days_str:
-        cont = 0
+        #cont = 0
+        if weekday == 'Thursday':
+            print('beg')
+            for info in info_week_beg[weekday]:
+                print (str(info.date()) + ' ' + str(info.time()))
         for timst in info_week_beg[weekday]:
             df_col_beg[weekday + 'date'].append(timst.date())
             #df_col['time'].append(timst.time())
@@ -174,7 +178,11 @@ def plot_info (info_week_beg, info_week_end, days_str, user):
     #end of day
     df_col_end = defaultdict(list)
     for weekday in days_str:
-        cont = 0
+        #cont = 0
+        if weekday == 'Thursday':
+            print('end')
+            for info in info_week_end[weekday]:
+                print (str(info.date()) + ' ' + str(info.time()))
         for timst in info_week_end[weekday]:
             #norm = timst.day() + timst.month()*12
             #df_col_end[weekday + 'date'].append((int(timst.strftime('%s'))/(3600*24))*3600*24)

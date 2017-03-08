@@ -272,6 +272,7 @@ def scatter_plot(info_week_beg, info_week_end, days_str, user, quantity_dev):
         plt.ylim((0,24))
         plt.xticks = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
         plt.legend(loc='best')
+        set(gca, 'XTick', [0 1], 'XTickLabel', {'this one', 'that one'});
         plt.scatter(x['Monday'], y['Monday'], s=20, c='b', alpha=0.5)
         plt.show()
         print (info_week_beg[dev]['platform'][0])
