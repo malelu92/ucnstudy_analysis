@@ -135,7 +135,10 @@ vices.user_id =:user').bindparams(user = user.id)
         
         #plot per week
         #plot_info(info_week_beg, info_week_end, days_str, user, quantity_dev)
-        scatter_plot(info_week_beg, info_week_end, days_str, user, quantity_dev)
+
+        #scatter plor
+        scatter_plot(info_week_beg, 'beginning', days_str, user, quantity_dev)
+        scatter_plot(info_week_end, 'end', days_str, user, quantity_dev)
 
 def analyze_per_day(info, key_beg_end, key_loc, platform, user, days_str):
 
@@ -252,37 +255,48 @@ def create_subplot(ax, df_all_dev, key_beg_end, weekday, user):
             ax.legend(loc='best', frameon=True)
      
 
-def scatter_plot(info_week_beg, info_week_end, days_str, user, quantity_dev):
+def scatter_plot(info_week, key_beg_end, days_str, user, quantity_dev):
 
     #for each user device make a scatter plot
     for dev in range (0, quantity_dev):
-        #for beginning:
         x = []
         y = []
         for weekday in days_str:
-            timst_list  = info_week_beg[dev][weekday]
+            timst_list  = info_week[dev][weekday]
             for timst in timst_list:
-                #x[weekday].append(timst.date())
-                x.append(weekday)
+                if (weekday == 'Monday'): 
+                    wkday = '0Mon'
+                elif (weekday == 'Tuesday'): 
+                    wkday = '1Tue'
+                elif (weekday == 'Wednesday'):
+                    wkday = '2Wed'
+                elif (weekday == 'Thursday'):
+                    wkday = '3Thu'
+                elif (weekday == 'Friday'): 
+                    wkday = '4Fri'
+                elif (weekday == 'Saturday'):
+                    wkday = '5Sat'
+                elif (weekday == 'Sunday'):
+                    wkday = '6Sun'
+
+                x.append(wkday)
                 y.append(timst.hour+timst.minute/60.0)
          
-
-        plt.title('Location table beginning of day usage -  user - ' + user.username + ' device - ' + info_week_beg[dev]['platform'][0])    
-        plt.ylabel('Hour of Day')
-        plt.ylim((0,24))
-        #unique_days, wkday = np.unique(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], return_inverse=True)
-        #for weekday in days_str:
-        uniques, lala = np.unique(x, return_inverse=True)
+        uniques, num_x = np.unique(x, return_inverse=True)
         print (x)
         print (uniques)
-        print (lala)
-        plt.xticks(lala, x)
-        #['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'])
-        #plt.set_xtics
-        plt.legend(loc='best')
-        plt.scatter(lala, y, s=20, c='b', alpha=0.5)
+        print (num_x)
+        #print(x[np.sort(num_x)])
+        plt.title('Location table ' + key_beg_end + ' of day usage -  user: ' + user.username + ' device: ' + info_week[dev]['platform'][0])    
+        plt.ylabel('Hour of Day')
+        plt.ylim((0,24))
+        #plt.xticks(num_x, x)
+        #plt.legend(loc='best')
+        #n_x = [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6]
+        plt.xticks(num_x, x)
+        plt.scatter(num_x, y, s=20, c='b', alpha=0.5)
         plt.show()
-        print (info_week_beg[dev]['platform'][0])
+        #print (info_week_beg[dev]['platform'][0])
 
 
 
