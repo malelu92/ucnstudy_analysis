@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import seaborn as sns
 
 import matplotlib.pyplot as plt
 
@@ -35,6 +36,9 @@ def main():
 
         #will get the starting time and ending times considering all devices
         print ("user: " + str(user.id) + "=======================")
+        quantity_dev = 0
+        info_week_beg = {}
+        info_week_end ={}
         for dev in user_devices:
             sql_beg_day = text('SELECT distinct devid, httpreqs2.ts FROM httpreqs2 join (SELECT DATE(ts) as date_entered, MIN(ts) as min_time \
             FROM httpreqs2 WHERE devid = :d_id and extract (hour from ts) > 3 \
@@ -91,45 +95,86 @@ def main():
             #display(df_beg)
             #df_end = pd.DataFrame(info_end)
             #display(df_end)
-                
-            #creates table per day for beginning
-            info_week = defaultdict(list)
-            if (info_beg['beg']):
-                cont = 0
-                for timst in info_beg['beg']:
-                    day = timst
-                    weekday = day.strftime('%A')
-                    info_week[weekday].append(day)
-                    cont = cont + 1
-         
-            print('Device platform: ' + devices_platform[dev.device_id])
-            days_str = {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday', 'Sunday'}
-            for name in days_str:
-                df_col = defaultdict(list)
-                df_col['device'] = str(dev.device_id)
-                df_col[name+' beg'] = info_week[name]
-                df_week = pd.DataFrame(df_col)
-                display(df_week)
-            
-            
-            #creates table per day for ending
-            info_week = defaultdict(list)
-            if (info_end['end']):
-                cont = 0
-                for timst in info_end['end']:
-                    day = timst
-                    weekday = day.strftime('%A')
-                    info_week[weekday].append(day)
-                    cont = cont + 1
              
-            print('Device platform: ' + devices_platform[dev.device_id])
             days_str = {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday', 'Sunday'}
-            for name in days_str:
-                df_col = defaultdict(list)
-                df_col['device'] = str(dev.device_id)
-                df_col[name+' end'] = info_week[name]
-                df_week = pd.DataFrame(df_col)
-                display(df_week)
+
+            info_week_beg[quantity_dev] = analyze_per_day(info_beg, 'beg', devices_platform[dev.device_id], user, days_str)
+            info_week_end[quantity_dev] = analyze_per_day(info_end, 'end', devices_platform[dev.device_id], user, days_str)
+            quantity_dev = quantity_dev+1
+
+            #scatter plot
+            scatter_plot(info_week_beg, 'beginning', days_str, user, quantity_dev)
+            scatter_plot(info_week_end, 'end', days_str, user, quantity_dev)
+
+
+def analyze_per_day(info, key_beg_end, platform, user, days_str):
+
+    #create table with times for each week day
+    info_week = defaultdict(list)
+    if (info[key_beg_end]):
+        cont = 0
+        for timst in info[key_beg_end]:
+            day = timst
+            weekday = day.strftime('%A')
+            info_week[weekday].append(day)
+            info_week['platform'].append(platform)
+            cont = cont + 1
+         
+    #for name in days_str:
+    #    df_col = defaultdict(list)
+    #    df_col['device'] = str(dev.device_id)
+    #    df_col[name+' beg'] = info_week[name]
+    #    df_week = pd.DataFrame(df_col)
+    #    display(df_week)
+            
+    return info_week       
+
+
+def scatter_plot(info_week, key_beg_end, days_str, user, quantity_dev):
+    sns.set_style('darkgrid')
+    #for each user device make a scatter plot
+    for dev in range (0, quantity_dev):
+        x = []
+        y = []
+        platform = 'none'
+        if info_week[dev]['platform']:
+            platform = info_week[dev]['platform'][0]
+            for weekday in days_str:
+                timst_list  = info_week[dev][weekday]
+                for timst in timst_list:
+                    wkday = convert_weekday(weekday)
+                    x.append(wkday)
+                    y.append(timst.hour+timst.minute/60.0)
+
+            _, num_x = np.unique(x, return_inverse=True)
+            plt.title('http table ' + key_beg_end + ' of day usage -  user: ' + user.username + ' device: ' + platform)
+            plt.ylabel('Hour of Day')
+            plt.ylim((0,24))
+            plt.xticks(num_x, x)
+            plt.scatter(num_x, y, s=20, c='b', alpha=0.5)
+            plt.savefig('figs_scatter_http/' + user.username + '-' + platform + '-' + key_beg_end +  '-allweek.png')
+            plt.close()
+            #plt.show()
+
+
+
+def convert_weekday(weekday):
+
+    if (weekday == 'Monday'):
+        return '0Mon'
+    elif (weekday == 'Tuesday'):
+        return '1Tue'
+    elif (weekday == 'Wednesday'):
+        return '2Wed'
+    elif (weekday == 'Thursday'):
+        return '3Thu'
+    elif (weekday == 'Friday'):
+        return '4Fri'
+    elif (weekday == 'Saturday'):
+        return '5Sat'
+    else:
+        return '6Sun'
+
 
 if __name__ == '__main__':
     main()
