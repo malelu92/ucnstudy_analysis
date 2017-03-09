@@ -257,22 +257,35 @@ def scatter_plot(info_week_beg, info_week_end, days_str, user, quantity_dev):
     #for each user device make a scatter plot
     for dev in range (0, quantity_dev):
         #for beginning:
-        x = defaultdict(list)
-        y = defaultdict(list)
+        x = []
+        y = []
         for weekday in days_str:
             timst_list  = info_week_beg[dev][weekday]
             for timst in timst_list:
                 #x[weekday].append(timst.date())
-                x[weekday].append(weekday)
-                y[weekday].append(timst.time())
+                x.append(weekday)
+                y.append(timst.hour+timst.minute/60.0)
          
 
         plt.title('Usage based on location for user ' + user.username)    
         plt.ylabel('Hour of Day')
         plt.ylim((0,24))
-        plt.xticks = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+        #unique_days, wkday = np.unique(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], return_inverse=True)
+        #for weekday in days_str:
+        uniques, lala = np.unique(x, return_inverse=True)
+            
+       
+       
+       
+       
+       
+
+
+        #plt.xticks = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+        plt.xlim((0,8))
+        plt.xticks = (['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'])
         plt.legend(loc='best')
-        plt.scatter(x['Monday'], y['Monday'], s=20, c='b', alpha=0.5)
+        plt.scatter(lala, y, s=20, c='b', alpha=0.5)
         plt.show()
         print (info_week_beg[dev]['platform'][0])
 
