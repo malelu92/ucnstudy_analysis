@@ -87,12 +87,49 @@ def main():
                     info_beg['beg'].insert(cont, timst)
                     info_beg['devid'].insert(cont, row[0])
 
-            df_beg = pd.DataFrame(info_beg)
-            display(df_beg)
-            df_end = pd.DataFrame(info_end)
-            display(df_end)
+            #df_beg = pd.DataFrame(info_beg)
+            #display(df_beg)
+            #df_end = pd.DataFrame(info_end)
+            #display(df_end)
                 
-
+            #creates table per day for beginning
+            info_week = defaultdict(list)
+            if (info_beg['beg']):
+                cont = 0
+                for timst in info_beg['beg']:
+                    day = timst
+                    weekday = day.strftime('%A')
+                    info_week[weekday].append(day)
+                    cont = cont + 1
+         
+            print('Device platform: ' + devices_platform[dev.device_id])
+            days_str = {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday', 'Sunday'}
+            for name in days_str:
+                df_col = defaultdict(list)
+                df_col['device'] = str(dev.device_id)
+                df_col[name+' beg'] = info_week[name]
+                df_week = pd.DataFrame(df_col)
+                display(df_week)
+            
+            
+            #creates table per day for ending
+            info_week = defaultdict(list)
+            if (info_end['end']):
+                cont = 0
+                for timst in info_end['end']:
+                    day = timst
+                    weekday = day.strftime('%A')
+                    info_week[weekday].append(day)
+                    cont = cont + 1
+             
+            print('Device platform: ' + devices_platform[dev.device_id])
+            days_str = {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday', 'Sunday'}
+            for name in days_str:
+                df_col = defaultdict(list)
+                df_col['device'] = str(dev.device_id)
+                df_col[name+' end'] = info_week[name]
+                df_week = pd.DataFrame(df_col)
+                display(df_week)
 
 if __name__ == '__main__':
     main()
