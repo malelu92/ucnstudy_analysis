@@ -42,22 +42,27 @@ def main():
 
 
     for user in users:
-        #print('scatter user ' + user.username) 
-        scatter_plot(dns_week_beg[user.username][0], 'beg', days_str, user,len(dns_week_beg[user.username]))
+
+        #fig, ((ax1, ax2, ax3), (ax4, ax5, ax6)) = plt.subplots(nrows = 2, ncols = 3, figsize=(20, 25))
+        fig, (ax1, ax2) = plt.subplots(nrows = 2, ncols = 1, figsize=(20, 25))
+        print('scatter user ' + user.username) 
+        scatter_plot(ax1, dns_week_beg[user.username][0], 'beg', days_str, user,len(dns_week_beg[user.username]))
+        scatter_plot(ax2, dns_week_beg[user.username][0], 'end', days_str, user,len(dns_week_beg[user.username]))
         #print(dns_week_beg[user.username][0][0]['platform'])
 
 
+        fig.subplots_adjust(hspace = .8)
+        fig.savefig('figs_scatter_activity/' + user.username + '-activity.png')
+        plt.close(fig)
     #print (loc_week_beg[0])
     #print (loc_week_end[1])
  
-def scatter_plot(info_week, key_beg_end, days_str, user, quantity_dev):
+def scatter_plot(ax, info_week, key_beg_end, days_str, user, quantity_dev):
     sns.set_style('darkgrid')
     #for each user device make a scatter plot
-    print('lala')
     for dev in range (0, quantity_dev):
         x = []
         y = []
-        print('lele')
         #platform = 'none'
         if info_week[dev]['platform']:
             platform = info_week[dev]['platform'][0]
@@ -67,16 +72,14 @@ def scatter_plot(info_week, key_beg_end, days_str, user, quantity_dev):
                     wkday = convert_weekday(weekday)
                     x.append(wkday)
                     y.append(timst.hour+timst.minute/60.0)
-            print('lili')
             _, num_x = np.unique(x, return_inverse=True)
-            print('lolo')
-            plt.title('dns table ' + key_beg_end + ' of day usage -  user: ' + user.username + ' device: ' + platform)
-            plt.ylabel('Hour of Day')
-            plt.ylim((0,24))
-            plt.xticks(num_x, x)
-            plt.scatter(num_x, y, s=20, c='b', alpha=0.5)
-            plt.savefig('figs_scatter_activity/' + user.username + '-' + platform + '-' + key_beg_end +  '-allweek.png')
-            plt.close()
+            ax.set_title('dns table ' + key_beg_end + ' of day usage -  user: ' + user.username + ' device: ' + platform)
+            ax.set_ylabel('Hour of Day')
+            ax.set_ylim((0,24))
+            ax.set_xticks(num_x, x)
+            ax.scatter(num_x, y, s=20, c='b', alpha=0.5)
+            #plt.savefig('figs_scatter_activity/' + user.username + '-' + platform + '-' + key_beg_end +  '-allweek.png')
+            #plt.close()
             #plt.show()
 
 def convert_weekday(weekday):
