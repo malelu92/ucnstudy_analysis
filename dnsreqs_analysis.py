@@ -104,6 +104,40 @@ def main():
             df_end = pd.DataFrame(info_end)
             display(df_end)
 
+            days_str = {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday', 'Sunday'}
+
+            info_week_beg[quantity_dev] = analyze_per_day(info_beg, 'beg', devices_platform[dev.device_id], user, days_str)
+            info_week_end[quantity_dev] = analyze_per_day(info_end, 'end', devices_platform[dev.device_id], user, days_str)
+            quantity_dev = quantity_dev+1
+
+            #scatter plot
+            #scatter_plot(info_week_beg, 'beginning', days_str, user, quantity_dev)
+            #scatter_plot(info_week_end, 'end', days_str, user, quantity_dev)
+
+def analyze_per_day(info, key_beg_end, platform, user, days_str):
+
+    #create table with times for each week day
+    info_week = defaultdict(list)
+    if (info[key_beg_end]):
+        cont = 0
+        for timst in info[key_beg_end]:
+            day = timst
+            weekday = day.strftime('%A')
+            info_week[weekday].append(day)
+            info_week[weekday+'platform'].append(platform)
+            info_week[weekday+'domain'].append(info['domain'][cont])
+            cont = cont + 1
+
+    for name in days_str:
+        df_col = defaultdict(list)
+        df_col['device'] = info_week[name+'platform']
+        df_col[name + ' ' + key_beg_end] = info_week[name]
+        df_col['domain'] = info_week[name+'domain']
+        df_week = pd.DataFrame(df_col)
+        display(df_week)
+
+    return info_week
+
 
 if __name__ == '__main__':
     main()
