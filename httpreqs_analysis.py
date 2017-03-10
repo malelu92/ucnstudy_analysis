@@ -33,8 +33,8 @@ def get_http_data():
     ses = Session()
     users = ses.query(User)
 
-    http_beg_userdata = []
-    http_end_userdata = []
+    http_beg_userdata = defaultdict(list)
+    http_end_userdata = defaultdict(list)
     for user in users:
         sql_user_devices = text('select * from user, user_devices where user_devices.user_id =:user').bindparams(user = user.id)
         user_devices = ses.execute(sql_user_devices)
@@ -111,8 +111,8 @@ def get_http_data():
             #scatter_plot(info_week_beg, 'beginning', days_str, user, quantity_dev)
             #scatter_plot(info_week_end, 'end', days_str, user, quantity_dev)
 
-            http_beg_userdata.append(info_week_beg)
-            http_end_userdata.append(info_week_end)
+        http_beg_userdata[user.username].append(info_week_beg)
+        http_end_userdata[user.username].append(info_week_end)
 
     return http_beg_userdata, http_end_userdata
 

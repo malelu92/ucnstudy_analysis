@@ -34,8 +34,8 @@ def get_locations_data ():
     ses = Session()
     users = ses.query(User)
 
-    loc_beg_userdata = []
-    loc_end_userdata = []
+    loc_beg_userdata = defaultdict(list)
+    loc_end_userdata = defaultdict(list)
     for user in users:
         sql_user_devices = text('select * from user, user_devices where user_de\
 vices.user_id =:user').bindparams(user = user.id)
@@ -126,8 +126,8 @@ vices.user_id =:user').bindparams(user = user.id)
             quantity_dev = quantity_dev+1
         
 
-            loc_beg_userdata.append(info_week_beg)
-            loc_end_userdata.append(info_week_end)
+        loc_beg_userdata[user.username].append(info_week_beg)
+        loc_end_userdata[user.username].append(info_week_end)
 
     return loc_beg_userdata, loc_end_userdata
         #plot per week

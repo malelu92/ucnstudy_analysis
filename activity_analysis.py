@@ -35,19 +35,22 @@ def main():
     users = ses.query(User)
 
     dns_week_beg, dns_week_end = get_dns_data()
-    #http_week_beg, http_week_end = get_http_data()
-    #loc_week_beg, loc_week_end = get_locations_data()
+    http_week_beg, http_week_end = get_http_data()
+    loc_week_beg, loc_week_end = get_locations_data()
 
     days_str = {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday', 'Sunday'}
 
-
     for user in users:
 
-        #fig, ((ax1, ax2, ax3), (ax4, ax5, ax6)) = plt.subplots(nrows = 2, ncols = 3, figsize=(20, 25))
-        fig, (ax1, ax2) = plt.subplots(nrows = 2, ncols = 1, figsize=(20, 25))
+        fig, ((ax1, ax3, ax5), (ax2, ax4, ax6)) = plt.subplots(nrows = 2, ncols = 3, figsize=(20, 10))
+        #fig, (ax3, ax4) = plt.subplots(nrows = 2, ncols = 1, figsize=(20, 25))
         print('scatter user ' + user.username) 
-        scatter_plot(ax1, dns_week_beg[user.username][0], 'beg', days_str, user,len(dns_week_beg[user.username]))
-        scatter_plot(ax2, dns_week_beg[user.username][0], 'end', days_str, user,len(dns_week_beg[user.username]))
+        scatter_plot(ax1, dns_week_beg[user.username][0], 'beg', 'Dns', days_str, user,len(dns_week_beg[user.username]))
+        scatter_plot(ax2, dns_week_beg[user.username][0], 'end', 'Dns', days_str, user,len(dns_week_beg[user.username]))
+        scatter_plot(ax3, http_week_beg[user.username][0], 'beg', 'Http', days_str, user,len(http_week_beg[user.username]))
+        scatter_plot(ax4, http_week_beg[user.username][0], 'end', 'Http', days_str, user,len(http_week_beg[user.username]))
+        scatter_plot(ax5, loc_week_beg[user.username][0], 'beg', 'Location', days_str, user,len(loc_week_beg[user.username]))
+        scatter_plot(ax6, loc_week_beg[user.username][0], 'end', 'Location', days_str, user,len(loc_week_beg[user.username]))
         #print(dns_week_beg[user.username][0][0]['platform'])
 
 
@@ -57,7 +60,7 @@ def main():
     #print (loc_week_beg[0])
     #print (loc_week_end[1])
  
-def scatter_plot(ax, info_week, key_beg_end, days_str, user, quantity_dev):
+def scatter_plot(ax, info_week, key_beg_end, title, days_str, user, quantity_dev):
     sns.set_style('darkgrid')
     #for each user device make a scatter plot
     for dev in range (0, quantity_dev):
@@ -73,7 +76,7 @@ def scatter_plot(ax, info_week, key_beg_end, days_str, user, quantity_dev):
                     x.append(wkday)
                     y.append(timst.hour+timst.minute/60.0)
             _, num_x = np.unique(x, return_inverse=True)
-            ax.set_title('dns table ' + key_beg_end + ' of day usage -  user: ' + user.username + ' device: ' + platform)
+            ax.set_title(title + ' table ' + key_beg_end + ' of day usage -  user: ' + user.username + ' device: ' + platform)
             ax.set_ylabel('Hour of Day')
             ax.set_ylim((0,24))
             ax.set_xticks(num_x, x)
