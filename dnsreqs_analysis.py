@@ -33,8 +33,8 @@ def get_dns_data():
     ses = Session()
     users = ses.query(User)
 
-    dns_beg_userdata = []
-    dns_end_userdata = []
+    dns_beg_userdata = defaultdict(list)
+    dns_end_userdata = defaultdict(list)
     for user in users:
         sql_user_devices = text('select * from user, user_devices where user_devices.user_id =:user').bindparams(user = user.id)
         user_devices = ses.execute(sql_user_devices)
@@ -121,8 +121,8 @@ def get_dns_data():
             #scatter_plot(info_week_end, 'end', days_str, user, quantity_dev)
 
 
-            dns_beg_userdata.append(info_week_beg)
-            dns_end_userdata.append(info_week_end)
+        dns_beg_userdata[user.username].append(info_week_beg)
+        dns_end_userdata[user.username].append(info_week_end)
             
     return dns_beg_userdata, dns_end_userdata
 

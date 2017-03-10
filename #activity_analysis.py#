@@ -42,7 +42,7 @@ def main():
 
 
     for user in users:
-        #print('scatter user ' + user.username) 
+        print('scatter user ' + user.username) 
         scatter_plot(dns_week_beg[user.username][0], 'beg', days_str, user,len(dns_week_beg[user.username]))
         #print(dns_week_beg[user.username][0][0]['platform'])
 
