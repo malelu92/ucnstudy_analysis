@@ -24,12 +24,17 @@ engine = create_engine(DB, echo=False, poolclass=NullPool)
 Base.metadata.bind = engine
 Session = sessionmaker(bind=engine)
 
-
 def main():
-    
+
+    get_http_data()
+
+def get_http_data():
+
     ses = Session()
     users = ses.query(User)
 
+    http_beg_userdata = []
+    http_end_userdata = []
     for user in users:
         sql_user_devices = text('select * from user, user_devices where user_devices.user_id =:user').bindparams(user = user.id)
         user_devices = ses.execute(sql_user_devices)
@@ -103,8 +108,13 @@ def main():
             quantity_dev = quantity_dev+1
 
             #scatter plot
-            scatter_plot(info_week_beg, 'beginning', days_str, user, quantity_dev)
-            scatter_plot(info_week_end, 'end', days_str, user, quantity_dev)
+            #scatter_plot(info_week_beg, 'beginning', days_str, user, quantity_dev)
+            #scatter_plot(info_week_end, 'end', days_str, user, quantity_dev)
+
+            http_beg_userdata.append(info_week_beg)
+            http_end_userdata.append(info_week_end)
+
+    return http_beg_userdata, http_end_userdata
 
 
 def analyze_per_day(info, key_beg_end, platform, user, days_str):
@@ -120,6 +130,7 @@ def analyze_per_day(info, key_beg_end, platform, user, days_str):
             info_week['platform'].append(platform)
             cont = cont + 1
          
+    info_week['user'] = user.username
     #for name in days_str:
     #    df_col = defaultdict(list)
     #    df_col['device'] = str(dev.device_id)

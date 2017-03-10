@@ -26,7 +26,7 @@ Session = sessionmaker(bind=engine)
 
 def main():
 
-    get_data()
+    get_dns_data()
 
 def get_dns_data():
     
@@ -140,6 +140,7 @@ def analyze_per_day(info, key_beg_end, platform, user, days_str):
             info_week[weekday+'domain'].append(info['domain'][cont])
             cont = cont + 1
 
+    info_week['user'] = user.username
     #for name in days_str:
         #df_col = defaultdict(list)
         #df_col['device'] = str(dev.device_id)

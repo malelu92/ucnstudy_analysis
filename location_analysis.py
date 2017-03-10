@@ -19,21 +19,23 @@ from sqlalchemy.pool import NullPool
 
 from IPython.display import display
 
+DB='postgresql+psycopg2:///ucnstudy'
+
+engine = create_engine(DB, echo=False, poolclass=NullPool)
+Base.metadata.bind = engine
+Session = sessionmaker(bind=engine)
+
 def main():
-    DB='postgresql+psycopg2:///ucnstudy'
-
-    engine = create_engine(DB, echo=False, poolclass=NullPool)
-    Base.metadata.bind = engine
-    Session = sessionmaker(bind=engine)
-
-    analyze_locations_user(Session)
+    get_locations_data()
 
 
-def analyze_locations_user(Session):
+def get_locations_data ():
 
     ses = Session()
     users = ses.query(User)
 
+    loc_beg_userdata = []
+    loc_end_userdata = []
     for user in users:
         sql_user_devices = text('select * from user, user_devices where user_de\
 vices.user_id =:user').bindparams(user = user.id)
@@ -117,28 +119,25 @@ vices.user_id =:user').bindparams(user = user.id)
             #df_end = pd.DataFrame(info_end)
             #display(df_end)
 
-
-            #if user.username == 'sormain':
             days_str = {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday', 'Sunday'}
         
             info_week_beg[quantity_dev] = analyze_per_day(info_beg, 'beg', 'location', devices_platform[dev.device_id], user, days_str)
             info_week_end[quantity_dev] = analyze_per_day(info_end, 'end',  'location', devices_platform[dev.device_id], user, days_str)
             quantity_dev = quantity_dev+1
-
-                #print(user.username)
-                #print(devices_platform[dev.device_id])
-
-
-        #if user.username == 'sormain':
-            #print(quantity_dev)
-            #print (info_week_beg)
         
+
+            loc_beg_userdata.append(info_week_beg)
+            loc_end_userdata.append(info_week_end)
+
+    return loc_beg_userdata, loc_end_userdata
         #plot per week
         #plot_info(info_week_beg, info_week_end, days_str, user, quantity_dev)
 
         #scatter plor
-        scatter_plot(info_week_beg, 'beginning', days_str, user, quantity_dev)
-        scatter_plot(info_week_end, 'end', days_str, user, quantity_dev)
+        #scatter_plot(info_week_beg, 'beginning', days_str, user, quantity_dev)
+        #scatter_plot(info_week_end, 'end', days_str, user, quantity_dev)
+
+
 
 def analyze_per_day(info, key_beg_end, key_loc, platform, user, days_str):
 
@@ -154,15 +153,13 @@ def analyze_per_day(info, key_beg_end, key_loc, platform, user, days_str):
             info_week['platform'].append(platform)
             cont = cont + 1
 
-
-    #print('Device platform: ' + platform)
-    #days_str = {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday', 'Sunday'}
-    df_allweek = defaultdict(list)
-    for name in days_str:
-        df_col = defaultdict(list)
-        df_col['device'] = platform[0]
-        df_col[name+' '+key_beg_end] = info_week[name]
-        df_col['location'] = info_week[name + ' location']
+    info_week['user'] = user.username
+    #df_allweek = defaultdict(list)
+    #for name in days_str:
+     #   df_col = defaultdict(list)
+      #  df_col['device'] = platform[0]
+       # df_col[name+' '+key_beg_end] = info_week[name]
+        #df_col['location'] = info_week[name + ' location']
 
         #df_week = pd.DataFrame(df_col)
         #display(df_week)
