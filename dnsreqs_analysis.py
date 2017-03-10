@@ -26,9 +26,15 @@ Session = sessionmaker(bind=engine)
 
 def main():
 
+    get_data()
+
+def get_dns_data():
+    
     ses = Session()
     users = ses.query(User)
 
+    dns_beg_userdata = []
+    dns_end_userdata = []
     for user in users:
         sql_user_devices = text('select * from user, user_devices where user_devices.user_id =:user').bindparams(user = user.id)
         user_devices = ses.execute(sql_user_devices)
@@ -111,8 +117,14 @@ def main():
             quantity_dev = quantity_dev+1
 
             #scatter plot
-            scatter_plot(info_week_beg, 'beginning', days_str, user, quantity_dev)
-            scatter_plot(info_week_end, 'end', days_str, user, quantity_dev)
+            #scatter_plot(info_week_beg, 'beginning', days_str, user, quantity_dev)
+            #scatter_plot(info_week_end, 'end', days_str, user, quantity_dev)
+
+
+            dns_beg_userdata.append(info_week_beg)
+            dns_end_userdata.append(info_week_end)
+            
+    return dns_beg_userdata, dns_end_userdata
 
 def analyze_per_day(info, key_beg_end, platform, user, days_str):
 
