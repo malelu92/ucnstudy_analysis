@@ -33,9 +33,15 @@ def get_http_data():
     ses = Session()
     users = ses.query(User)
 
+    #tests only first user
+    users2 = []
+    users2.append(users[0])
+    users2.append(users[1])
+
+
     http_beg_userdata = defaultdict(list)
     http_end_userdata = defaultdict(list)
-    for user in users:
+    for user in users2:
         sql_user_devices = text('select * from user, user_devices where user_devices.user_id =:user').bindparams(user = user.id)
         user_devices = ses.execute(sql_user_devices)
 

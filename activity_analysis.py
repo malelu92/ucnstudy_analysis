@@ -40,17 +40,22 @@ def main():
 
     days_str = {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday', 'Sunday'}
 
-    for user in users:
+    #tests only first user
+    users2 = []
+    users2.append(users[0])
+    users2.append(users[1])
+
+    for user in users2:
 
         fig, ((ax1, ax3, ax5), (ax2, ax4, ax6)) = plt.subplots(nrows = 2, ncols = 3, figsize=(20, 10))
         #fig, (ax3, ax4) = plt.subplots(nrows = 2, ncols = 1, figsize=(20, 25))
         print('scatter user ' + user.username) 
         scatter_plot(ax1, dns_week_beg[user.username][0], 'beg', 'Dns', days_str, user,len(dns_week_beg[user.username]))
-        scatter_plot(ax2, dns_week_beg[user.username][0], 'end', 'Dns', days_str, user,len(dns_week_beg[user.username]))
+        scatter_plot(ax2, dns_week_end[user.username][0], 'end', 'Dns', days_str, user,len(dns_week_end[user.username]))
         scatter_plot(ax3, http_week_beg[user.username][0], 'beg', 'Http', days_str, user,len(http_week_beg[user.username]))
-        scatter_plot(ax4, http_week_beg[user.username][0], 'end', 'Http', days_str, user,len(http_week_beg[user.username]))
+        scatter_plot(ax4, http_week_end[user.username][0], 'end', 'Http', days_str, user,len(http_week_end[user.username]))
         scatter_plot(ax5, loc_week_beg[user.username][0], 'beg', 'Location', days_str, user,len(loc_week_beg[user.username]))
-        scatter_plot(ax6, loc_week_beg[user.username][0], 'end', 'Location', days_str, user,len(loc_week_beg[user.username]))
+        scatter_plot(ax6, loc_week_end[user.username][0], 'end', 'Location', days_str, user,len(loc_week_end[user.username]))
         #print(dns_week_beg[user.username][0][0]['platform'])
 
 
@@ -79,7 +84,10 @@ def scatter_plot(ax, info_week, key_beg_end, title, days_str, user, quantity_dev
             ax.set_title(title + ' table ' + key_beg_end + ' of day usage -  user: ' + user.username + ' device: ' + platform)
             ax.set_ylabel('Hour of Day')
             ax.set_ylim((0,24))
-            ax.set_xticks(num_x, x)
+            #ax.set_xlim((-1,7))
+            #ax.set_xticks(num_x, x)
+            ax.set_xticks(num_x)
+            ax.set_xticklabels(x)
             ax.scatter(num_x, y, s=20, c='b', alpha=0.5)
             #plt.savefig('figs_scatter_activity/' + user.username + '-' + platform + '-' + key_beg_end +  '-allweek.png')
             #plt.close()

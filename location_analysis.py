@@ -26,17 +26,22 @@ Base.metadata.bind = engine
 Session = sessionmaker(bind=engine)
 
 def main():
-    get_locations_data()
 
+    get_locations_data()
 
 def get_locations_data ():
 
     ses = Session()
     users = ses.query(User)
 
+    #tests only first user
+    users2 = []
+    users2.append(users[0])
+    users2.append(users[1])
+
     loc_beg_userdata = defaultdict(list)
     loc_end_userdata = defaultdict(list)
-    for user in users:
+    for user in users2:
         sql_user_devices = text('select * from user, user_devices where user_de\
 vices.user_id =:user').bindparams(user = user.id)
         user_devices = ses.execute(sql_user_devices)
