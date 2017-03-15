@@ -42,7 +42,7 @@ def get_devtraffic_data():
         user_devices = ses.execute(sql_user_devices)
 
         #will get the starting time and ending times considering all devices
-        print ("user: " + str(user.id) + "=======================")
+        print ("user: " + str(user.id) + ' ' + user.username + "=======================")
         quantity_dev = 0
         info_week_beg = {}
         info_week_end ={}
@@ -102,10 +102,40 @@ def get_devtraffic_data():
                     info_beg['start'].insert(cont, timst)
                     info_beg['devid'].insert(cont, row[0])
 
-            df_beg = pd.DataFrame(info_beg)
-            display(df_beg)
-            df_end = pd.DataFrame(info_end)
-            display(df_end)
+            #df_beg = pd.DataFrame(info_beg)
+            #display(df_beg)
+            #df_end = pd.DataFrame(info_end)
+            #display(df_end)
+
+            days_str = {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday', 'Sunday'}
+
+            info_week_beg[quantity_dev] = analyze_per_day(info_beg, 'start', devices_platform[dev.device_id], user, days_str)
+            info_week_end[quantity_dev] = analyze_per_day(info_end, 'end', devices_platform[dev.device_id], user, days_str)
+            quantity_dev = quantity_dev+1
+
+
+def analyze_per_day(info, key_beg_end, platform, user, days_str):
+
+    #create table with times for each week day
+    info_week = defaultdict(list)
+    if (info[key_beg_end]):
+        for timst in info[key_beg_end]:
+            day = timst
+            weekday = day.strftime('%A')
+            info_week[weekday].append(day)
+            info_week['platform'].append(platform)
+
+    info_week['user'] = user.username
+    for name in days_str:
+        df_col = defaultdict(list)
+        df_col['device'] = platform
+        df_col[name + ' ' + key_beg_end] = info_week[name]
+        df_week = pd.DataFrame(df_col)
+        display(df_week)
+
+    return info_week
+
+
 
 if __name__ == '__main__':
     get_devtraffic_data()
