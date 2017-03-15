@@ -41,36 +41,16 @@ def main():
     days_str = {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday', 'Sunday'}
 
     #tests only first user
-    users2 = []
-    users2.append(users[0])
-    users2.append(users[1])
+    #users2 = []
+    #users2.append(users[0])
+    #users2.append(users[1])
 
-    #all_week_beg = []#defaultdict(list)
-    #all_week_end = []#defaultdict(list)
-    for user in users2:
-        all_week_beg = []#defaultdict(list)
-        all_week_end = []#defaultdict(list)
+    for user in users:
+        all_week_beg = []
+        all_week_end = []
         all_week_beg.append(dns_week_beg[user.username])
         all_week_beg.append(http_week_beg[user.username])
         all_week_beg.append(loc_week_beg[user.username])
-
-        #all_week_beg[user.username].extend(dns_week_beg[user.username]+http_week_beg[user.username]+loc_week_beg[user.username])
-        print('dns')
-        #print(dns_week_beg[user.username][0])
-        print('http')
-        #print(http_week_beg[user.username][0])
-        print('loc')
-        #print(loc_week_beg[user.username][0])
-        print('all')
-        #print(all_week_beg[2])
-
-#        all_week_beg[user.username][0] = dns_week_beg[user.username][0]
-#        all_week_beg[user.username][1] = http_week_beg[user.username][0]
-#        all_week_beg[user.username][2] = loc_week_beg[user.username][0]
-
- #       all_week_end.append(dns_week_end[user.username][0]
-  #      all_week_end[user.username][1] = http_week_end[user.username][0]
-  #      all_week_end[user.username][2] = loc_week_end[user.username][0]
 
         all_week_end.append(dns_week_end[user.username])
         all_week_end.append(http_week_end[user.username])
@@ -102,7 +82,6 @@ def scatter_plot(ax, info_week, key_beg_end, title, days_str, user, quantity_dev
     for dev in range (0, quantity_dev):
         x = []
         y = []
-        #platform = 'none'
         if info_week[dev]['platform']:
             platform = info_week[dev]['platform'][0]
             for weekday in days_str:
@@ -112,14 +91,19 @@ def scatter_plot(ax, info_week, key_beg_end, title, days_str, user, quantity_dev
                     x.append(wkday)
                     y.append(timst.hour+timst.minute/60.0)
             _, num_x = np.unique(x, return_inverse=True)
-            ax.set_title(title + ' table ' + key_beg_end + ' of day usage -  user: ' + user.username + ' device: ' + platform)
-            ax.set_ylabel('Hour of Day')
-            ax.set_ylim((0,24))
+            #ax.set_title(title + ' table ' + key_beg_end + ' of day usage -  user: ' + user.username + ' device: ' + platform)
+            #ax.set_ylabel('Hour of Day')
+            #ax.set_ylim((0,24))
             #ax.set_xlim((-1,7))
             #ax.set_xticks(num_x, x)
             ax.set_xticks(num_x)
             ax.set_xticklabels(x)
+            ax.set_title(title + ' ' + key_beg_end + ' user: ' + user.username + ' device: ' + platform)
             ax.scatter(num_x, y, s=20, c='b', alpha=0.5)
+        else:
+            ax.set_xticklabels(['0Mon', '1Tue', '2Wed', '3Thu', '4Fri', '5Sat', '6Sun'])
+        ax.set_ylabel('Hour of Day')
+        ax.set_ylim((0,24))
             #plt.savefig('figs_scatter_activity/' + user.username + '-' + platform + '-' + key_beg_end +  '-allweek.png')
             #plt.close()
             #plt.show()
@@ -142,14 +126,18 @@ def scatter_plot_all(ax, info_week, key_beg_end, title, days_str, user, quantity
                         x.append(wkday)
                         y.append(timst.hour+timst.minute/60.0)
                 _, num_x = np.unique(x, return_inverse=True)
-                ax.set_title(title + ' table ' + key_beg_end + ' of day usage -  user: ' + user.username + ' device: ' + platform)
+                ax.set_title(title + ' ' + key_beg_end + ' user: ' + user.username + ' device: ' + platform)
                 ax.set_ylabel('Hour of Day')
                 ax.set_ylim((0,24))
                 #ax.set_xlim((-1,7))
                 #ax.set_xticks(num_x, x)
                 ax.set_xticks(num_x)
                 ax.set_xticklabels(x)
-        ax.scatter(num_x, y, s=20, c='b', alpha=0.5)
+                ax.scatter(num_x, y, s=20, c='b', alpha=0.5)
+            else:
+                ax.set_title(title + ' ' +  key_beg_end + ' user: ' + user.username + ' device ')
+            ax.set_ylabel('Hour of Day')
+            ax.set_ylim((0,24))
 
 
 def convert_weekday(weekday):

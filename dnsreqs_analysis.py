@@ -34,13 +34,13 @@ def get_dns_data():
     users = ses.query(User)
 
     #tests only first user
-    users2 = []
-    users2.append(users[0])
-    users2.append(users[1])
+    #users2 = []
+    #users2.append(users[0])
+    #users2.append(users[1])
 
     dns_beg_userdata = defaultdict(list)
     dns_end_userdata = defaultdict(list)
-    for user in users2:
+    for user in users:
         sql_user_devices = text('select * from user, user_devices where user_devices.user_id =:user').bindparams(user = user.id)
         user_devices = ses.execute(sql_user_devices)
 

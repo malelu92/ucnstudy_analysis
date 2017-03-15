@@ -35,13 +35,13 @@ def get_locations_data ():
     users = ses.query(User)
 
     #tests only first user
-    users2 = []
-    users2.append(users[0])
-    users2.append(users[1])
+    #users2 = []
+    #users2.append(users[0])
+    #users2.append(users[1])
 
     loc_beg_userdata = defaultdict(list)
     loc_end_userdata = defaultdict(list)
-    for user in users2:
+    for user in users:
         sql_user_devices = text('select * from user, user_devices where user_de\
 vices.user_id =:user').bindparams(user = user.id)
         user_devices = ses.execute(sql_user_devices)
@@ -134,13 +134,13 @@ vices.user_id =:user').bindparams(user = user.id)
         loc_beg_userdata[user.username].append(info_week_beg)
         loc_end_userdata[user.username].append(info_week_end)
 
-    return loc_beg_userdata, loc_end_userdata
+    #return loc_beg_userdata, loc_end_userdata
         #plot per week
         #plot_info(info_week_beg, info_week_end, days_str, user, quantity_dev)
 
         #scatter plor
-        #scatter_plot(info_week_beg, 'beginning', days_str, user, quantity_dev)
-        #scatter_plot(info_week_end, 'end', days_str, user, quantity_dev)
+        scatter_plot_location(info_week_beg, 'beginning', days_str, user, quantity_dev)
+        scatter_plot_location(info_week_end, 'end', days_str, user, quantity_dev)
 
 
 
@@ -297,6 +297,33 @@ def scatter_plot(info_week, key_beg_end, days_str, user, quantity_dev):
             plt.close()
             #plt.show()
         
+def scatter_plot_location(info_week, key_beg_end, days_str, user, quantity_dev):
+
+    #for each user device make a scatter plot
+    for dev in range (0, quantity_dev):
+        x = []
+        y = []
+        if info_week[dev]['platform']:
+            platform = info_week[dev]['platform'][0]
+            for weekday in days_str:
+                timst_list  = info_week[dev][weekday]
+                cont = 0
+                for timst in timst_list:
+                    x.append(info_week[dev][weekday+ ' location'][cont])
+                    y.append(timst.hour+timst.minute/60.0)
+
+            _, num_x = np.unique(x, return_inverse=True)
+            plt.title('Location table ' + key_beg_end + ' of day usage -  user: ' + user.username + ' device: ' + platform)
+            plt.ylabel('Hour of Day')
+            plt.ylim((0,24))
+            plt.xticks(num_x, x, rotation=35)
+            plt.subplots_adjust(bottom = 0.25)
+            plt.scatter(num_x, y, s=20, c='b', alpha=0.5)
+            plt.savefig('figs_scatter_named_loc/' + user.username + '-' + platform + '-' + key_beg_end +  '-allweek.png')
+            plt.close()
+            #plt.show()
+
+
 
 if __name__ == "__main__":
     main()
