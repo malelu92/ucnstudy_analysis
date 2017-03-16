@@ -24,19 +24,14 @@ engine = create_engine(DB, echo=False, poolclass=NullPool)
 Base.metadata.bind = engine
 Session = sessionmaker(bind=engine)
 
-#def main():
-
-#def main():
-
-#    get_devtraffic_data()
 
 def get_devtraffic_data():
 
     ses = Session()
     users = ses.query(User)
 
-    dns_beg_userdata = defaultdict(list)
-    dns_end_userdata = defaultdict(list)
+    devtfc_beg_userdata = defaultdict(list)
+    devtfc_end_userdata = defaultdict(list)
     for user in users:
         sql_user_devices = text('select * from user, user_devices where user_devices.user_id =:user').bindparams(user = user.id)
         user_devices = ses.execute(sql_user_devices)
@@ -78,13 +73,15 @@ def get_devtraffic_data():
             #organize data
             info_end = defaultdict(list)
             for row in result_end_day:
-                info_end['devid'].append(row[0])
-                info_end['end'].append(row[1])
+                if row[0] == dev.device_id:
+                    info_end['devid'].append(row[0])
+                    info_end['end'].append(row[1])
 
             info_beg = defaultdict(list)
             for row in result_beg_day:
-                info_beg['devid'].append(row[0])
-                info_beg['start'].append(row[1])
+                if row[0] == dev.device_id:
+                    info_beg['devid'].append(row[0])
+                    info_beg['start'].append(row[1])
 
             #add days that only have value before 3 am
             for row in result_beg_day_nolimit:
@@ -113,6 +110,14 @@ def get_devtraffic_data():
             info_week_end[quantity_dev] = analyze_per_day(info_end, 'end', devices_platform[dev.device_id], user, days_str)
             quantity_dev = quantity_dev+1
 
+            #scatter plot
+            #scatter_plot(info_week_beg, 'beginning', days_str, user, quantity_dev)
+            #scatter_plot(info_week_end, 'end', days_str, user, quantity_dev)
+
+        devtfc_beg_userdata[user.username].append(info_week_beg)
+        devtfc_end_userdata[user.username].append(info_week_end)
+
+    return devtfc_beg_userdata, devtfc_end_userdata
 
 def analyze_per_day(info, key_beg_end, platform, user, days_str):
 
@@ -126,15 +131,56 @@ def analyze_per_day(info, key_beg_end, platform, user, days_str):
             info_week['platform'].append(platform)
 
     info_week['user'] = user.username
-    for name in days_str:
-        df_col = defaultdict(list)
-        df_col['device'] = platform
-        df_col[name + ' ' + key_beg_end] = info_week[name]
-        df_week = pd.DataFrame(df_col)
-        display(df_week)
+    #for name in days_str:
+        #df_col = defaultdict(list)
+        #df_col['device'] = platform
+        #df_col[name + ' ' + key_beg_end] = info_week[name]
+        #df_week = pd.DataFrame(df_col)
+        #display(df_week)
 
     return info_week
 
+
+def scatter_plot(info_week, key_beg_end, days_str, user, quantity_dev):
+    sns.set_style('darkgrid')
+    #for each user device make a scatter plot
+    for dev in range (0, quantity_dev):
+        x = []
+        y = []
+        #platform = 'none'
+        if info_week[dev]['platform']:
+            platform = info_week[dev]['platform'][0]
+            for weekday in days_str:
+                timst_list  = info_week[dev][weekday]
+                for timst in timst_list:
+                    wkday = convert_weekday(weekday)
+                    x.append(wkday)
+                    y.append(timst.hour+timst.minute/60.0)
+            _, num_x = np.unique(x, return_inverse=True)
+            plt.title('Dev traffic ' + key_beg_end + ' - user: ' + user.username + ' device: ' + platform)
+            plt.ylabel('Hour of Day')
+            plt.ylim((0,24))
+            plt.xticks(num_x, x)
+            plt.scatter(num_x, y, s=20, c='b', alpha=0.5)
+            plt.savefig('figs_scatter_deviceTraffic/' + user.username + '-' + platform + '-' + key_beg_end +  '-allweek.png')
+            plt.close()
+
+def convert_weekday(weekday):
+
+    if (weekday == 'Monday'):
+        return '0Mon'
+    elif (weekday == 'Tuesday'):
+        return '1Tue'
+    elif (weekday == 'Wednesday'):
+        return '2Wed'
+    elif (weekday == 'Thursday'):
+        return '3Thu'
+    elif (weekday == 'Friday'):
+        return '4Fri'
+    elif (weekday == 'Saturday'):
+        return '5Sat'
+    else:
+        return '6Sun'
 
 
 if __name__ == '__main__':

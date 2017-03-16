@@ -16,6 +16,7 @@ from sqlalchemy import create_engine, text, func
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
 
+from devicetraffic_analysis import get_devtraffic_data
 from dnsreqs_analysis import get_dns_data
 from httpreqs_analysis import get_http_data
 from location_analysis import get_locations_data
@@ -34,6 +35,7 @@ def main():
     ses = Session()
     users = ses.query(User)
 
+    devtfc_week_beg, devtfc_week_end = get_devtraffic_data()
     dns_week_beg, dns_week_end = get_dns_data()
     http_week_beg, http_week_end = get_http_data()
     loc_week_beg, loc_week_end = get_locations_data()
@@ -51,10 +53,12 @@ def main():
         all_week_beg.append(dns_week_beg[user.username])
         all_week_beg.append(http_week_beg[user.username])
         all_week_beg.append(loc_week_beg[user.username])
+        all_week_beg.append(devtfc_week_beg[user.username])
 
         all_week_end.append(dns_week_end[user.username])
         all_week_end.append(http_week_end[user.username])
         all_week_end.append(loc_week_end[user.username])
+        all_week_end_append(devtfc_week_end[user.username])
 
         fig, ((ax1, ax3, ax5, ax7), (ax2, ax4, ax6, ax8)) = plt.subplots(nrows = 2, ncols = 4, figsize=(25, 10))
         #fig, (ax3, ax4) = plt.subplots(nrows = 2, ncols = 1, figsize=(20, 25))
@@ -65,10 +69,12 @@ def main():
         scatter_plot(ax4, http_week_end[user.username][0], 'end', 'Http', days_str, user,len(http_week_end[user.username]))
         scatter_plot(ax5, loc_week_beg[user.username][0], 'beg', 'Location', days_str, user,len(loc_week_beg[user.username]))
         scatter_plot(ax6, loc_week_end[user.username][0], 'end', 'Location', days_str, user,len(loc_week_end[user.username]))
-        scatter_plot_all(ax7, all_week_beg, 'beg', 'All param', days_str, user,len(loc_week_beg[user.username]))
-        scatter_plot_all(ax8, all_week_end, 'end', 'All param', days_str, user,len(loc_week_beg[user.username]))
-        #print(dns_week_beg[user.username][0][0]['platform'])
+        scatter_plot(ax7, devtfc_week_beg[user.username][0], 'beg', 'dev traffic', days_str, user,len(devtfc_week_beg[user.username]))
+        scatter_plot(ax8, devtfc_week_end[user.username][0], 'end', 'dev traffic', days_str, user,len(devtfc_week_end[user.username]))
 
+        #scatter_plot_all(ax7, all_week_beg, 'beg', 'All param', days_str, user,len(loc_week_beg[user.username]))
+        #scatter_plot_all(ax8, all_week_end, 'end', 'All param', days_str, user,len(loc_week_beg[user.username]))
+        #print(dns_week_beg[user.username][0][0]['platform'])
 
         fig.subplots_adjust(hspace = .8)
         fig.savefig('figs_scatter_activity/' + user.username + '-activity.png')
