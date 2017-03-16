@@ -102,5 +102,34 @@ ser').bindparams(user = user.id)
             df_end = pd.DataFrame(info_end)
             display(df_end)
 
+            days_str = {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday', 'Sunday'}
+
+            info_week_beg[quantity_dev] = analyze_per_day(info_beg, 'start', devices_platform[dev.device_id], user, days_str)
+            info_week_end[quantity_dev] = analyze_per_day(info_end, 'end', devices_platform[dev.device_id], user, days_str)
+            quantity_dev = quantity_dev+1
+
+
+def analyze_per_day(info, key_beg_end, platform, user, days_str):
+
+    #create table with times for each week day
+    info_week = defaultdict(list)
+    if (info[key_beg_end]):
+        for timst in info[key_beg_end]:
+            day = timst
+            weekday = day.strftime('%A')
+            info_week[weekday].append(day)
+            info_week['platform'].append(platform)
+            
+
+    info_week['user'] = user.username
+    for name in days_str:
+        df_col = defaultdict(list)
+        df_col['device'] = platform
+        df_col[name + ' ' + key_beg_end] = info_week[name]
+        df_week = pd.DataFrame(df_col)
+        display(df_week)
+
+    return info_week
+
 if __name__ == '__main__':
     get_flow_data()
