@@ -29,8 +29,8 @@ def get_flow_data():
     ses = Session()
     users = ses.query(User)
 
-    devtfc_beg_userdata = defaultdict(list)
-    devtfc_end_userdata = defaultdict(list)
+    flow_beg_userdata = defaultdict(list)
+    flow_end_userdata = defaultdict(list)
     for user in users:
         sql_user_devices = text('select * from user, user_devices where user_devices.user_id =:u\
 ser').bindparams(user = user.id)
@@ -97,10 +97,10 @@ ser').bindparams(user = user.id)
                     info_beg['start'].insert(cont, timst)
                     info_beg['devid'].insert(cont, row[0])
 
-            df_beg = pd.DataFrame(info_beg)
-            display(df_beg)
-            df_end = pd.DataFrame(info_end)
-            display(df_end)
+            #df_beg = pd.DataFrame(info_beg)
+            #display(df_beg)
+            #df_end = pd.DataFrame(info_end)
+            #display(df_end)
 
             days_str = {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday', 'Sunday'}
 
@@ -108,6 +108,15 @@ ser').bindparams(user = user.id)
             info_week_end[quantity_dev] = analyze_per_day(info_end, 'end', devices_platform[dev.device_id], user, days_str)
             quantity_dev = quantity_dev+1
 
+
+            #scatter plot
+            #scatter_plot(info_week_beg, 'beginning', days_str, user, quantity_dev)
+            #scatter_plot(info_week_end, 'end', days_str, user, quantity_dev)
+
+        flow_beg_userdata[user.username].append(info_week_beg)
+        flow_end_userdata[user.username].append(info_week_end)
+
+    return flow_beg_userdata, flow_end_userdata
 
 def analyze_per_day(info, key_beg_end, platform, user, days_str):
 
@@ -119,17 +128,61 @@ def analyze_per_day(info, key_beg_end, platform, user, days_str):
             weekday = day.strftime('%A')
             info_week[weekday].append(day)
             info_week['platform'].append(platform)
-            
 
     info_week['user'] = user.username
-    for name in days_str:
-        df_col = defaultdict(list)
-        df_col['device'] = platform
-        df_col[name + ' ' + key_beg_end] = info_week[name]
-        df_week = pd.DataFrame(df_col)
-        display(df_week)
+    #for name in days_str:
+        #df_col = defaultdict(list)
+        #df_col['device'] = platform
+        #df_col[name + ' ' + key_beg_end] = info_week[name]
+        #df_week = pd.DataFrame(df_col)
+        #display(df_week)
 
     return info_week
+
+
+def scatter_plot(info_week, key_beg_end, days_str, user, quantity_dev):
+    sns.set_style('darkgrid')
+    #for each user device make a scatter plot
+    for dev in range (0, quantity_dev):
+        x = []
+        y = []
+        #platform = 'none'
+        if info_week[dev]['platform']:
+            platform = info_week[dev]['platform'][0]
+            for weekday in days_str:
+                timst_list  = info_week[dev][weekday]
+                for timst in timst_list:
+                    wkday = convert_weekday(weekday)
+                    x.append(wkday)
+                    y.append(timst.hour+timst.minute/60.0)
+            _, num_x = np.unique(x, return_inverse=True)
+            plt.title('flow ' + key_beg_end + ' - user: ' + user.username + ' device: ' + platform)
+            plt.ylabel('Hour of Day')
+            plt.ylim((0,24))
+            plt.xticks(num_x, x)
+            plt.scatter(num_x, y, s=20, c='b', alpha=0.5)
+            plt.savefig('figs_scatter_flow/' + user.username + '-' + platform + '-' + key_beg_end +  '-allweek.png')
+            plt.close()
+            #plt.show()
+
+
+def convert_weekday(weekday):
+
+    if (weekday == 'Monday'):
+        return '0Mon'
+    elif (weekday == 'Tuesday'):
+        return '1Tue'
+    elif (weekday == 'Wednesday'):
+        return '2Wed'
+    elif (weekday == 'Thursday'):
+        return '3Thu'
+    elif (weekday == 'Friday'):
+        return '4Fri'
+    elif (weekday == 'Saturday'):
+        return '5Sat'
+    else:
+        return '6Sun'
+
 
 if __name__ == '__main__':
     get_flow_data()
