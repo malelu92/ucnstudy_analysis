@@ -3,6 +3,7 @@ import pandas as pd
 import seaborn as sns
 
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 
 from collections import defaultdict
 
@@ -125,14 +126,12 @@ def analyze_per_day(info, key_beg_end, user, days_str):
 
 def scatter_plot(info_week, key_beg_end, days_str):
     sns.set_style('darkgrid')
-    #for each user device make a scatter plot
-#    for dev in range (0, quantity_dev):
     x = []
     y = []
     color = []
-    #print(info_week)
-    #if info_week['platform']:
-        #platform = info_week[dev]['platform'][0]
+    patch = {'c':'Camera', 'r':'Keyboard', 'g':'Mouse', 'y':'Microphone', 'm':'Speaker'}
+    interac_legend = {'r':0, 'c':0, 'g':0, 'y':0, 'm':0}
+
     for weekday in days_str:
         cont = 0
         timst_list  = info_week[weekday]
@@ -140,7 +139,7 @@ def scatter_plot(info_week, key_beg_end, days_str):
             wkday = convert_weekday(weekday)
             x.append(wkday)
             y.append(timst.hour+timst.minute/60.0)
-            get_interaction_color(color, info_week[weekday+'interaction'][cont], cont)
+            get_interaction_color(color, info_week[weekday+'interaction'][cont], cont, patch)
             cont = cont + 1
     _, num_x = np.unique(x, return_inverse=True)
     plt.title('Io ' + key_beg_end + ' - user: ' + info_week['user'])
@@ -148,13 +147,18 @@ def scatter_plot(info_week, key_beg_end, days_str):
     plt.ylim((0,24))
     plt.xticks(num_x, x)
     for i in range(0, len(num_x)):
-        plt.scatter(num_x[i], y[i], s=20, c=color[i], alpha=0.5)
+        if interac_legend[color[i]] == 0:
+            plt.scatter(num_x[i], y[i], s=20, c=color[i], alpha=0.5, label=patch[color[i]])
+            interac_legend[color[i]] = 1
+        else:
+            plt.scatter(num_x[i], y[i], s=20, c=color[i], alpha=0.5)
+    plt.legend(loc = 'best')
     plt.savefig('figs_scatter_io/' + info_week['user'] + '-' + key_beg_end +  '-allweek.png')
     plt.close()
 
-def get_interaction_color(color, interaction, pos):
+def get_interaction_color(color, interaction, pos, patch):
     if interaction == 0:
-        color.append('b')
+        color.append('c')
     elif interaction == 1:
         color.append('r')
     elif interaction == 2:
@@ -163,6 +167,7 @@ def get_interaction_color(color, interaction, pos):
         color.append('y')
     else:
         color.append('m')
+
 
 def convert_weekday(weekday):
 
