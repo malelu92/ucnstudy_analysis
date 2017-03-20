@@ -129,24 +129,40 @@ def scatter_plot(info_week, key_beg_end, days_str):
 #    for dev in range (0, quantity_dev):
     x = []
     y = []
+    color = []
     #print(info_week)
     #if info_week['platform']:
         #platform = info_week[dev]['platform'][0]
     for weekday in days_str:
+        cont = 0
         timst_list  = info_week[weekday]
         for timst in timst_list:
             wkday = convert_weekday(weekday)
             x.append(wkday)
             y.append(timst.hour+timst.minute/60.0)
+            get_interaction_color(color, info_week[weekday+'interaction'][cont], cont)
+            cont = cont + 1
     _, num_x = np.unique(x, return_inverse=True)
     plt.title('Io ' + key_beg_end + ' - user: ' + info_week['user'])
     plt.ylabel('Hour of Day')
     plt.ylim((0,24))
     plt.xticks(num_x, x)
-    plt.scatter(num_x, y, s=20, c='b', alpha=0.5)
+    for i in range(0, len(num_x)):
+        plt.scatter(num_x[i], y[i], s=20, c=color[i], alpha=0.5)
     plt.savefig('figs_scatter_io/' + info_week['user'] + '-' + key_beg_end +  '-allweek.png')
     plt.close()
 
+def get_interaction_color(color, interaction, pos):
+    if interaction == 0:
+        color.append('b')
+    elif interaction == 1:
+        color.append('r')
+    elif interaction == 2:
+        color.append('g')
+    elif interaction == 3:
+        color.append('y')
+    else:
+        color.append('m')
 
 def convert_weekday(weekday):
 
