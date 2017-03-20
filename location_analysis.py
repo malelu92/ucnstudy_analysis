@@ -133,14 +133,14 @@ vices.user_id =:user').bindparams(user = user.id)
 
         loc_beg_userdata[user.username].append(info_week_beg)
         loc_end_userdata[user.username].append(info_week_end)
-
+    return loc_beg_userdata, loc_end_userdata
     #return loc_beg_userdata, loc_end_userdata
         #plot per week
         #plot_info(info_week_beg, info_week_end, days_str, user, quantity_dev)
 
-        #scatter plor
-        scatter_plot_location(info_week_beg, 'beginning', days_str, user, quantity_dev)
-        scatter_plot_location(info_week_end, 'end', days_str, user, quantity_dev)
+        #scatter plot
+        #scatter_plot_location(info_week_beg, 'beginning', days_str, user, quantity_dev)
+        #scatter_plot_location(info_week_end, 'end', days_str, user, quantity_dev)
 
 
 

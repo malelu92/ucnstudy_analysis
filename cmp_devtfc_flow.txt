@@ -1,0 +1,65 @@
+Beg dev compared to flow 	 user: norelie		 device: windows-laptop	 equivalence 100.0%
+End dev compared to flow 	 user: norelie		 device: windows-laptop	 equivalence 100.0%
+
+Beg dev compared to flow 	 user: salmita		 device: iphone	 equivalence 95.652173913%
+End dev compared to flow 	 user: salmita		 device: iphone	 equivalence 100.0%
+
+Beg dev compared to flow 	 user: jasivan		 device: windows-laptop	 equivalence 100.0%
+End dev compared to flow 	 user: jasivan		 device: windows-laptop	 equivalence 100.0%
+
+Beg dev compared to flow 	 user: carmelia		 device: windows-laptop	 equivalence 92.8571428571%
+End dev compared to flow 	 user: carmelia		 device: windows-laptop	 equivalence 92.8571428571%
+
+Beg dev compared to flow 	 user: sormain		 device: macbook	 equivalence 95.0%
+End dev compared to flow 	 user: sormain		 device: macbook	 equivalence 90.0%
+
+
+Beg dev compared to flow 	 user: bencardino		 device: ipad	 equivalence 94.1176470588%
+End dev compared to flow 	 user: bencardino		 device: ipad	 equivalence 88.2352941176%
+
+Beg dev compared to flow 	 user: shelter		 device: iphone	 equivalence 100.0%
+End dev compared to flow 	 user: shelter		 device: iphone	 equivalence 100.0%
+
+
+
+Beg dev compared to flow 	 user: majid		 device: android-phone	 equivalence 100.0%
+End dev compared to flow 	 user: majid		 device: android-phone	 equivalence 100.0%
+
+Beg dev compared to flow 	 user: neenagupta		 device: windows-pc	 equivalence 100.0%
+End dev compared to flow 	 user: neenagupta		 device: windows-pc	 equivalence 100.0%
+
+Beg dev compared to flow 	 user: chrismaley		 device: windows-pc	 equivalence 100.0%
+End dev compared to flow 	 user: chrismaley		 device: windows-pc	 equivalence 100.0%
+
+Beg dev compared to flow 	 user: clifford.wife		 device: windows-laptop	 equivalence 100.0%
+End dev compared to flow 	 user: clifford.wife		 device: windows-laptop	 equivalence 100.0%
+
+Beg dev compared to flow 	 user: clifford.husband		 device: macbook	 equivalence 100.0%
+End dev compared to flow 	 user: clifford.husband		 device: macbook	 equivalence 93.3333333333%
+
+Beg dev compared to flow 	 user: kemianny		 device: windows-laptop	 equivalence 100.0%
+End dev compared to flow 	 user: kemianny		 device: windows-laptop	 equivalence 100.0%
+
+Beg dev compared to flow 	 user: barnesldavid.wife		 device: android-tablet	 equivalence 100.0%
+End dev compared to flow 	 user: barnesldavid.wife		 device: android-tablet	 equivalence 100.0%
+
+Beg dev compared to flow 	 user: barnesldavid.husband		 device: android-phone	 equivalence 100.0%
+End dev compared to flow 	 user: barnesldavid.husband		 device: android-phone	 equivalence 100.0%
+
+Beg dev compared to flow 	 user: michaelbrogan		 device: windows-laptop	 equivalence 97.2222222222%
+End dev compared to flow 	 user: michaelbrogan		 device: windows-laptop	 equivalence 97.2222222222%
+
+
+Beg dev compared to flow 	 user: gluch		 device: windows-laptop	 equivalence 100.0%
+End dev compared to flow 	 user: gluch		 device: windows-laptop	 equivalence 100.0%
+
+Beg dev compared to flow 	 user: bowen.wife		 device: ipad	 equivalence 100.0%
+End dev compared to flow 	 user: bowen.wife		 device: ipad	 equivalence 100.0%
+
+Beg dev compared to flow 	 user: bowen.husband		 device: ipad	 equivalence 100.0%
+End dev compared to flow 	 user: bowen.husband		 device: ipad	 equivalence 100.0%
+
+
+Beg dev compared to flow 	 user: bridgeman.husband		 device: windows-laptop	 equivalence 100.0%
+End dev compared to flow 	 user: bridgeman.husband		 device: windows-laptop	 equivalence 100.0%
+
