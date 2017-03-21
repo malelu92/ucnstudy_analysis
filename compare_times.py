@@ -5,6 +5,8 @@ from model.User import User
 from model.user_devices import user_devices
 
 from collections import defaultdict
+from datetime import timedelta
+from datetime import datetime, date
 
 from sqlalchemy import create_engine, text, func
 from sqlalchemy.orm import sessionmaker
@@ -53,8 +55,6 @@ def main():
     for user in users:
         name = user.username
         #only compares users with information on io
-        #print(name.rpartition('.')[0])
-        #print('*')
         if io_beg.has_key(name):
             print user.username
             analize_timst_difference(devtfc_week_beg[user.username], io_beg[name], 'devtfc', 'beg', user, len(devtfc_week_beg[user.username]))
@@ -109,17 +109,37 @@ def analize_timst_difference(info_week, io_info_week, data_comp, key_beg_end, us
 
     days_str = {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday', 'Sunday'}
    
-    print(info_week)
-    print(io_info_week)
     #for each user device analize usage times
-    #for dev in range (0, quantity_dev):
-    #    if info_week[dev][0]['platform']:
-    #        platform = info_week[dev][0]['platform'][0]
-    #        contained = 0
+    for dev in range (0, quantity_dev):
+        if info_week[dev][0]['platform']:
+            platform = info_week[dev][0]['platform'][0]
+            max_dif = timedelta(microseconds=-1)
     #        total_elems = 0
-    #        for weekday in days_str:
+            for weekday in days_str:
                 #compares equivalent days
-    #            timst_list  = info_week[dev][0][weekday]
+                timst_list  = info_week[dev][0][weekday]
+                timst_list_io = io_info_week[0][weekday]
+                print(weekday)
+                if timst_list and timst_list_io:
+                    for timst in timst_list:
+                        for timst_io in timst_list_io:
+                            #get the same day
+                            if timst.date() == timst_io.date():
+                                #print(timst.time()-timst_io.time())
+                                if timst.time() > timst_io.time():
+                                    diff = datetime.combine(date.today(), timst.time()) - datetime.combine(date.today(), timst_io.time())
+                                    print(diff)
+                                else:
+                                    diff = datetime.combine(date.today(), timst_io.time()) - datetime.combine(date.today(), timst.time())
+                                    print(diff)
+                                if max_dif < diff:
+                                    max_dif = diff
+        print ('max difference between days: ' + str(max_dif))
+                            
+               
+               
+               
+               
     #            timst_list_act = activity_week[dev][0][weekday]
     #            total_elems = total_elems + len(timst_list)
     #            for timst in timst_list:
