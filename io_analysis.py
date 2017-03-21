@@ -28,6 +28,8 @@ def get_io_data():
     ses = Session()
     devices = ses.query(Devices)
 
+    io_beg_userdata = defaultdict(list)
+    io_end_userdata = defaultdict(list)
     for device in devices:
         #select only users from ucnstudy
         if device.id == 5 or device.id == 6 or device.id == 8 or device.id == 11 or device.id == 12:
@@ -98,8 +100,13 @@ def get_io_data():
             info_week_end = analyze_per_day(info_end, 'ts_end', device.device_id, days_str)
 
             #scatter plot
-            scatter_plot(info_week_beg, 'beginning', days_str)
-            scatter_plot(info_week_end, 'end', days_str)
+            #scatter_plot(info_week_beg, 'beginning', days_str)
+            #scatter_plot(info_week_end, 'end', days_str)
+
+            io_beg_userdata[device.device_id].append(info_week_beg)
+            io_end_userdata[device.device_id].append(info_week_end)
+
+    return io_beg_userdata, io_end_userdata
 
 def analyze_per_day(info, key_beg_end, user, days_str):
 

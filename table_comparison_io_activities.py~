@@ -1,0 +1,38 @@
+import numpy as np
+import pandas as pd
+import seaborn as sns
+
+import matplotlib.pyplot as plt
+
+from collections import defaultdict
+
+from model_io.Base import Base
+from model_io.Devices import Devices
+
+
+
+
+from sqlalchemy import create_engine, text, func
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import NullPool
+
+from activities_analysis import get_activities_data
+from io_analysis import get_io_data
+
+DB='postgresql+psycopg2:///ucnstudy_hostview_data'
+
+engine = create_engine(DB, echo=False, poolclass=NullPool)
+Base.metadata.bind = engine
+Session = sessionmaker(bind=engine)
+
+def main():
+
+    activities_week_beg, activities_week_end = get_activities_data()
+    io_week_beg, io_week_end = get_io_data()
+    ses = Session()
+    devices = ses.query(Devices)
+
+    for device in devices:
+        #select only users from ucnstudy
+        if device.id == 5 or device.id == 6 or device.id == 8 or device.id == 11 or device.id == 12:
+            print ('scatter plot: device.device_id + '===============')
