@@ -235,7 +235,7 @@ def plot_comparison (cmp_results):
         for key_beg_end, platform_data in cmp_results.iteritems():
             print (platform + ' ' + key_beg_end)
             print cmp_results[key_beg_end][platform]
-        #create_subplot(ax1, df_all_dev_beg, key_beg_end, 'Monday', user)
+            #create_subplot(ax1, key_beg_end, key_beg_end, 'Monday', user)
     #create_subplot(ax2, df_all_dev_beg, 'Beginning', 'Tuesday', user)
 
 
