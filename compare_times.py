@@ -34,14 +34,12 @@ def main():
     users = ses.query(User)
 
     devtfc_week_beg, devtfc_week_end = get_devtraffic_data()
-    #dns_week_beg, dns_week_end = get_dns_data()
-    #flow_week_beg, flow_week_end = get_flow_data()
-    #http_week_beg, http_week_end = get_http_data()
-    #loc_week_beg, loc_week_end = get_locations_data()
+    dns_week_beg, dns_week_end = get_dns_data()
+    flow_week_beg, flow_week_end = get_flow_data()
+    http_week_beg, http_week_end = get_http_data()
+    loc_week_beg, loc_week_end = get_locations_data()
     io_week_beg, io_week_end = get_io_data()
     #act_week_beg, act_week_end = get_activities_data()
-
-    #cmp_file = open('cmp_devtfc_flow.txtio_users = []
 
     io_beg = defaultdict(list)
     for key, value in io_week_beg.iteritems():
@@ -52,17 +50,39 @@ def main():
         io_end[key.rpartition('.')[0]] = io_week_end[key]
 
     devtfc_cmp_file = open('devtfc_comp.txt','w')
-    
+    dns_cmp_file = open('dns_comp.txt','w')    
+    flow_cmp_file = open('flow_comp.txt','w')
+    http_cmp_file = open('http_comp.txt','w')
+    loc_cmp_file = open('loc_comp.txt','w')
+
     for user in users:
         name = user.username
         #only compares users with information on io
         if io_beg.has_key(name):
             print user.username
             analize_timst_difference(devtfc_cmp_file, devtfc_week_beg[user.username], io_beg[name], 'devtfc', 'beg', user, len(devtfc_week_beg[user.username]))
+            analize_timst_difference(dns_cmp_file, dns_week_beg[user.username], io_beg[name], 'dns', 'beg', user, len(dns_week_beg[user.username]))
+            analize_timst_difference(flow_cmp_file, flow_week_beg[user.username], io_beg[name], 'flow', 'beg', user, len(flow_week_beg[user.username]))
+            analize_timst_difference(http_cmp_file, http_week_beg[user.username], io_beg[name], 'http', 'beg', user, len(http_week_beg[user.username]))
+            analize_timst_difference(loc_cmp_file, loc_week_beg[user.username], io_beg[name], 'loc', 'beg', user, len(loc_week_beg[user.username]))
+            analize_timst_difference(devtfc_cmp_file, devtfc_week_end[user.username], io_beg[name], 'devtfc', 'end', user, len(devtfc_week_end[user.username]))
+            analize_timst_difference(dns_cmp_file, dns_week_end[user.username], io_beg[name], 'dns', 'end', user, len(dns_week_end[user.username]))
+            analize_timst_difference(flow_cmp_file, flow_week_end[user.username], io_beg[name], 'flow', 'end', user, len(flow_week_end[user.username]))
+            analize_timst_difference(http_cmp_file, http_week_end[user.username], io_beg[name], 'http', 'end', user, len(http_week_end[user.username]))
+            analize_timst_difference(loc_cmp_file, loc_week_end[user.username], io_beg[name], 'loc', 'end', user, len(loc_week_end[user.username]))
 
         elif io_beg.has_key(name.rpartition('.')[0]):
             print(user.username)
             analize_timst_difference(devtfc_cmp_file, devtfc_week_beg[user.username], io_beg[name.rpartition('.')[0]], 'devtfc', 'beg', user, len(devtfc_week_beg[user.username]))
+            analize_timst_difference(dns_cmp_file, dns_week_beg[user.username], io_beg[name.rpartition('.')[0]], 'dns', 'beg', user, len(dns_week_beg[user.username]))
+            analize_timst_difference(flow_cmp_file, flow_week_beg[user.username], io_beg[name.rpartition('.')[0]], 'flow', 'beg', user, len(flow_week_beg[user.username]))
+            analize_timst_difference(http_cmp_file, http_week_beg[user.username], io_beg[name.rpartition('.')[0]], 'http', 'beg', user, len(http_week_beg[user.username]))
+            analize_timst_difference(loc_cmp_file, loc_week_beg[user.username], io_beg[name.rpartition('.')[0]], 'loc', 'beg', user, len(loc_week_beg[user.username]))
+            analize_timst_difference(devtfc_cmp_file, devtfc_week_end[user.username], io_beg[name.rpartition('.')[0]], 'devtfc', 'end', user, len(devtfc_week_end[user.username]))
+            analize_timst_difference(dns_cmp_file, dns_week_end[user.username], io_beg[name.rpartition('.')[0]], 'dns', 'end', user, len(dns_week_end[user.username]))
+            analize_timst_difference(flow_cmp_file, flow_week_end[user.username], io_beg[name.rpartition('.')[0]], 'flow', 'end', user, len(flow_week_end[user.username]))
+            analize_timst_difference(http_cmp_file, http_week_end[user.username], io_beg[name.rpartition('.')[0]], 'http', 'end', user, len(http_week_end[user.username]))
+            analize_timst_difference(loc_cmp_file, loc_week_end[user.username], io_beg[name.rpartition('.')[0]], 'loc', 'end', user, len(loc_week_end[user.username]))
 
 
         #analize_timst(dns_week_beg[user.username], http_week_beg[user.username], 'dns', 'Beg', user, len(dns_week_beg[user.username]), 1000)
@@ -109,40 +129,43 @@ def analize_timst_percentage(cmp_file,info_week, activity_week, data_comp, key_b
 def analize_timst_difference(cmp_file, info_week, io_info_week, data_comp, key_beg_end, user, quantity_dev):
 
     days_str = {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday', 'Sunday'}
-    cmp_file.write(user.username + '======\n')
+    cmp_file.write('\n' + key_beg_end + ' ' + user.username + '======\n')
 
     #for each user device analize usage times
     for dev in range (0, quantity_dev):
         if info_week[dev][0]['platform']:
             platform = info_week[dev][0]['platform'][0]
             max_dif = timedelta(microseconds=-1)
-    #        total_elems = 0
+            non_similar_days = 0
+            checked_days = []
             for weekday in days_str:
                 #compares equivalent days
                 timst_list  = info_week[dev][0][weekday]
                 timst_list_io = io_info_week[0][weekday]
                 cmp_file.write('\n' + weekday+'\n')
                 if timst_list and timst_list_io:
-                    non_similar_days = 0
+                    #non_similar_days = 0
                     for timst_io in timst_list_io:
-                        same_day = False
-                        for timst in timst_list:
-                            #get the same day
-                            if timst.date() == timst_io.date():
-                                #print(timst.time()-timst_io.time())
-                                same_day = True
-                                if timst.time() > timst_io.time():
-                                    diff = datetime.combine(date.today(), timst.time()) - datetime.combine(date.today(), timst_io.time())
-                                    cmp_file.write(str(timst.date()) + ' time diff: ' + str(diff) + '\n')
-                                else:
-                                    diff = datetime.combine(date.today(), timst_io.time()) - datetime.combine(date.today(), timst.time())
-                                    cmp_file.write(str(timst.date()) + ' time diff: ' + str(diff) + '\n')
-                                if max_dif < diff:
-                                    max_dif = diff
-                        if same_day == False:
-                            non_similar_days = non_similar_days + 1
-                    cmp_file.write('max difference between days: ' + str(max_dif) + '\n')
-                    cmp_file.write('number of io days not covered: ' + str(non_similar_days) + '\n')
+                        if timst_io.date() not in checked_days:
+                            checked_days.append(timst_io.date())
+                            same_day = False
+                            for timst in timst_list:
+                                #get the same day
+                                if timst.date() == timst_io.date() and same_day == False:
+                                    same_day = True
+                                    if timst.time() > timst_io.time():
+                                        diff = datetime.combine(date.today(), timst.time()) - datetime.combine(date.today(), timst_io.time())
+                                        cmp_file.write(str(timst.date()) + ' time diff: ' + str(diff) + '\n')
+                                    else:
+                                        diff = datetime.combine(date.today(), timst_io.time()) - datetime.combine(date.today(), timst.time())
+                                        cmp_file.write(str(timst.date()) + ' time diff: ' + str(diff) + '\n')
+                                    if max_dif < diff:
+                                        max_dif = diff
+                            if same_day == False:
+                                non_similar_days = non_similar_days + 1
+            if max_dif != timedelta(microseconds=-1):
+                cmp_file.write('\nmax difference between days: ' + str(max_dif) + '\n')
+                cmp_file.write('number of io days not covered: ' + str(non_similar_days) + '\n')
                             
 
 if __name__ == '__main__':
