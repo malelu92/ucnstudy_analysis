@@ -65,6 +65,7 @@ def main():
             # devtfc, dns, flow, http, loc === 0 -> no file === 1 -> file
             #generate_comparison_file(1, 1, 1, 1, 1, name)
             cmp_results['devtfc_beg'] = analize_timst_difference(devtfc_cmp_file, devtfc_week_beg[user.username], io_beg[name], 'devtfc', 'beg', user)
+            #print cmp_results['devtfc_beg']
             #cmp_results['dns_beg'] = analize_timst_difference(dns_cmp_file, dns_week_beg[user.username], io_beg[name], 'dns', 'beg', user)
             #cmp_results['flow_beg'] = analize_timst_difference(flow_cmp_file, flow_week_beg[user.username], io_beg[name], 'flow', 'beg', user)
             #cmp_results['http_beg'] = analize_timst_difference(http_cmp_file, http_week_beg[user.username], io_beg[name], 'http', 'beg', user)
@@ -78,6 +79,7 @@ def main():
         elif io_beg.has_key(name.rpartition('.')[0]):
             print(user.username)
             cmp_results['devtfc_beg'] = analize_timst_difference(devtfc_cmp_file, devtfc_week_beg[user.username], io_beg[name.rpartition('.')[0]], 'devtfc', 'beg', user)
+            #print cmp_results['devtfc_beg']
             #cmp_results['dns_beg'] = analize_timst_difference(dns_cmp_file, dns_week_beg[user.username], io_beg[name.rpartition('.')[0]], 'dns', 'beg', user)
             #cmp_results['flow_beg'] = analize_timst_difference(flow_cmp_file, flow_week_beg[user.username], io_beg[name.rpartition('.')[0]], 'flow', 'beg', user)
             #cmp_results['http_beg'] = analize_timst_difference(http_cmp_file, http_week_beg[user.username], io_beg[name.rpartition('.')[0]], 'http', 'beg', user)
@@ -135,20 +137,18 @@ def analize_timst_difference(cmp_file, info_week, io_info_week, data_comp, key_b
     days_str = {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday', 'Sunday'}
     cmp_file.write('\n' + key_beg_end + ' ' + user.username + '======\n')
 
-    #print user.username
-    #print info_week[0]
-
-
     #for each user device analize usage times
     quantity_dev = len(info_week[0])
+    cmp_timst_list = defaultdict(list)
     for dev in range (0, quantity_dev):
+        print dev
         if info_week[0][dev]['platform']:
             platform = info_week[0][dev]['platform'][0]
             cmp_file.write('\nplatform: ' + platform + '****\n')
+            print platform
             max_dif = timedelta(microseconds=-1)
             non_similar_days = 0
             checked_days = []
-            cmp_timst_list = []
             for weekday in days_str:
                 #compares equivalent days
                 timst_list  = info_week[0][dev][weekday]
@@ -178,8 +178,8 @@ def analize_timst_difference(cmp_file, info_week, io_info_week, data_comp, key_b
                                     minutes = (seconds % 3600) // 60
                                     seconds = seconds % 60
                                     timst_cmp = datetime(timst.year, timst.month, timst.day, hours, minutes, seconds)
-                                    cmp_timst_list.append(timst_cmp)
-                                    cmp_file.write('\n cmp: ' + str(timst_cmp) + '\n')
+                                    cmp_timst_list[platform].append(timst_cmp)
+                                    #cmp_file.write('\n cmp: ' + str(timst_cmp) + '\n')
 
                             if same_day == False:
                                 non_similar_days = non_similar_days + 1
@@ -188,6 +188,7 @@ def analize_timst_difference(cmp_file, info_week, io_info_week, data_comp, key_b
                 cmp_file.write('number of io days not covered: ' + str(non_similar_days) + '\n')
               
     #tratar para diferentes devices
+    print cmp_timst_list
     return cmp_timst_list
 
 

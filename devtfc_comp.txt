@@ -1,394 +1,243 @@
 
 beg neenagupta======
-platform: windows-pc
+
+platform: windows-pc****
 
 Monday
 
 Tuesday
 2015-11-10 time diff: 0:00:07.555000
 
- cmp: 2015-11-10 00:00:07
-
 Friday
 
 Wednesday
 2015-11-18 time diff: 0:03:49.895000
-
- cmp: 2015-11-18 00:03:49
 2015-11-25 time diff: 0:02:10.909000
-
- cmp: 2015-11-25 00:02:10
 
 Thursday
 
 Sunday
 2015-11-22 time diff: 0:00:02.374000
 
- cmp: 2015-11-22 00:00:02
-
 Saturday
 
 max difference between days: 0:03:49.895000
 number of io days not covered: 1
-platform: macbook
+
+platform: macbook****
 
 Monday
 2015-11-16 time diff: 0:44:49.184000
-
- cmp: 2015-11-16 00:44:49
 2015-11-23 time diff: 8:03:19.224000
-
- cmp: 2015-11-23 08:03:19
 
 Tuesday
 2015-11-10 time diff: 8:18:46.445000
 
- cmp: 2015-11-10 08:18:46
-
 Friday
 2015-11-13 time diff: 4:58:30.112000
-
- cmp: 2015-11-13 04:58:30
 2015-11-20 time diff: 8:25:04.105000
-
- cmp: 2015-11-20 08:25:04
 
 Wednesday
 2015-11-11 time diff: 3:59:30.407000
-
- cmp: 2015-11-11 03:59:30
 2015-11-18 time diff: 4:22:18.895000
-
- cmp: 2015-11-18 04:22:18
 2015-11-25 time diff: 1:13:44.909000
-
- cmp: 2015-11-25 01:13:44
 
 Thursday
 2015-11-12 time diff: 0:59:28.343000
-
- cmp: 2015-11-12 00:59:28
 2015-11-19 time diff: 1:09:19.403000
-
- cmp: 2015-11-19 01:09:19
 
 Sunday
 2015-11-22 time diff: 5:53:52.374000
 
- cmp: 2015-11-22 05:53:52
-
 Saturday
 2015-11-14 time diff: 5:16:43.425000
-
- cmp: 2015-11-14 05:16:43
 2015-11-21 time diff: 1:05:47.365000
-
- cmp: 2015-11-21 01:05:47
 
 max difference between days: 8:25:04.105000
 number of io days not covered: 0
-platform: iphone
+
+platform: iphone****
 
 Monday
 2015-11-23 time diff: 8:19:08.224000
 
- cmp: 2015-11-23 08:19:08
-
 Tuesday
 2015-11-10 time diff: 10:20:55.445000
-
- cmp: 2015-11-10 10:20:55
 
 Friday
 2015-11-20 time diff: 10:06:39.105000
 
- cmp: 2015-11-20 10:06:39
-
 Wednesday
 2015-11-25 time diff: 1:12:10.909000
-
- cmp: 2015-11-25 01:12:10
 
 Thursday
 2015-11-19 time diff: 8:55:32.597000
 
- cmp: 2015-11-19 08:55:32
-
 Sunday
 2015-11-22 time diff: 2:02:06.626000
 
- cmp: 2015-11-22 02:02:06
-
 Saturday
 2015-11-14 time diff: 4:41:37.425000
-
- cmp: 2015-11-14 04:41:37
 2015-11-21 time diff: 11:14:00.635000
-
- cmp: 2015-11-21 11:14:00
 
 max difference between days: 11:14:00.635000
 number of io days not covered: 5
 
 end neenagupta======
-platform: windows-pc
+
+platform: windows-pc****
 
 Monday
 
 Tuesday
 2015-11-10 time diff: 0:00:03.930000
 
- cmp: 2015-11-10 00:00:03
-
 Friday
 
 Wednesday
 2015-11-18 time diff: 0:49:31.083000
-
- cmp: 2015-11-18 00:49:31
 2015-11-25 time diff: 0:23:31.487000
-
- cmp: 2015-11-25 00:23:31
 
 Thursday
 
 Sunday
 2015-11-22 time diff: 0:00:05.027000
 
- cmp: 2015-11-22 00:00:05
-
 Saturday
 
 max difference between days: 0:49:31.083000
 number of io days not covered: 1
-platform: macbook
+
+platform: macbook****
 
 Monday
 2015-11-16 time diff: 9:40:57.795000
-
- cmp: 2015-11-16 09:40:57
 2015-11-23 time diff: 10:14:28.318000
-
- cmp: 2015-11-23 10:14:28
 
 Tuesday
 2015-11-10 time diff: 6:18:45.930000
 
- cmp: 2015-11-10 06:18:45
-
 Friday
 2015-11-13 time diff: 11:43:37.936000
-
- cmp: 2015-11-13 11:43:37
 2015-11-20 time diff: 13:17:31.486000
-
- cmp: 2015-11-20 13:17:31
 
 Wednesday
 2015-11-11 time diff: 8:55:56.757000
-
- cmp: 2015-11-11 08:55:56
 2015-11-18 time diff: 10:19:05.917000
-
- cmp: 2015-11-18 10:19:05
 2015-11-25 time diff: 7:02:06.513000
-
- cmp: 2015-11-25 07:02:06
 
 Thursday
 2015-11-12 time diff: 11:47:44.669000
-
- cmp: 2015-11-12 11:47:44
 2015-11-19 time diff: 10:52:12.107000
-
- cmp: 2015-11-19 10:52:12
 
 Sunday
 2015-11-22 time diff: 3:42:47.027000
 
- cmp: 2015-11-22 03:42:47
-
 Saturday
 2015-11-14 time diff: 8:28:23.921000
-
- cmp: 2015-11-14 08:28:23
 2015-11-21 time diff: 9:35:05.794000
-
- cmp: 2015-11-21 09:35:05
 
 max difference between days: 13:17:31.486000
 number of io days not covered: 0
-platform: iphone
+
+platform: iphone****
 
 Monday
 2015-11-23 time diff: 9:32:38.318000
 
- cmp: 2015-11-23 09:32:38
-
 Tuesday
 2015-11-10 time diff: 6:50:31.930000
-
- cmp: 2015-11-10 06:50:31
 
 Friday
 2015-11-20 time diff: 12:21:13.486000
 
- cmp: 2015-11-20 12:21:13
-
 Wednesday
 2015-11-25 time diff: 7:11:52.513000
-
- cmp: 2015-11-25 07:11:52
 
 Thursday
 2015-11-19 time diff: 11:01:28.107000
 
- cmp: 2015-11-19 11:01:28
-
 Sunday
 2015-11-22 time diff: 2:01:22.027000
 
- cmp: 2015-11-22 02:01:22
-
 Saturday
 2015-11-14 time diff: 9:50:58.921000
-
- cmp: 2015-11-14 09:50:58
 2015-11-21 time diff: 10:05:37.794000
-
- cmp: 2015-11-21 10:05:37
 
 max difference between days: 12:21:13.486000
 number of io days not covered: 5
 
 beg clifford.wife======
-platform: windows-laptop
+
+platform: windows-laptop****
 
 Monday
 2015-11-16 time diff: 0:01:18.952000
-
- cmp: 2015-11-16 00:01:18
 2015-11-23 time diff: 3:07:39.941000
-
- cmp: 2015-11-23 03:07:39
 
 Tuesday
 2015-11-17 time diff: 0:00:02.508000
-
- cmp: 2015-11-17 00:00:02
 2015-11-24 time diff: 3:36:26.234000
-
- cmp: 2015-11-24 03:36:26
 
 Friday
 2015-11-13 time diff: 0:00:05.484000
-
- cmp: 2015-11-13 00:00:05
 2015-11-20 time diff: 4:34:39.792000
-
- cmp: 2015-11-20 04:34:39
 
 Wednesday
 2015-11-11 time diff: 0:00:00.124000
-
- cmp: 2015-11-11 00:00:00
 2015-11-18 time diff: 0:00:05.808000
-
- cmp: 2015-11-18 00:00:05
 2015-11-25 time diff: 0:57:51.141000
-
- cmp: 2015-11-25 00:57:51
 
 Thursday
 2015-11-12 time diff: 12:13:42.962000
-
- cmp: 2015-11-12 12:13:42
 2015-11-19 time diff: 0:00:40.689000
-
- cmp: 2015-11-19 00:00:40
 2015-11-26 time diff: 2:26:47.699000
-
- cmp: 2015-11-26 02:26:47
 
 Sunday
 2015-11-15 time diff: 1:01:30.441000
-
- cmp: 2015-11-15 01:01:30
 2015-11-22 time diff: 3:23:53.163000
-
- cmp: 2015-11-22 03:23:53
 
 Saturday
 2015-11-14 time diff: 6:28:39.018000
-
- cmp: 2015-11-14 06:28:39
 2015-11-21 time diff: 8:27:59.077000
-
- cmp: 2015-11-21 08:27:59
 
 max difference between days: 12:13:42.962000
 number of io days not covered: 0
-platform: iphone
+
+platform: iphone****
 
 Monday
 2015-11-16 time diff: 1:24:18.952000
-
- cmp: 2015-11-16 01:24:18
 2015-11-23 time diff: 2:12:54.941000
-
- cmp: 2015-11-23 02:12:54
 
 Tuesday
 2015-11-17 time diff: 1:47:06.492000
-
- cmp: 2015-11-17 01:47:06
 2015-11-24 time diff: 2:12:25.234000
-
- cmp: 2015-11-24 02:12:25
 
 Friday
 2015-11-13 time diff: 4:27:57.516000
-
- cmp: 2015-11-13 04:27:57
 2015-11-20 time diff: 10:12:00.208000
-
- cmp: 2015-11-20 10:12:00
 
 Wednesday
 2015-11-11 time diff: 0:10:47.876000
-
- cmp: 2015-11-11 00:10:47
 2015-11-18 time diff: 3:24:51.192000
-
- cmp: 2015-11-18 03:24:51
 2015-11-25 time diff: 12:56:51.141000
-
- cmp: 2015-11-25 12:56:51
 
 Thursday
 2015-11-12 time diff: 15:47:00.962000
-
- cmp: 2015-11-12 15:47:00
 2015-11-19 time diff: 8:49:32.689000
-
- cmp: 2015-11-19 08:49:32
 2015-11-26 time diff: 8:44:17.301000
-
- cmp: 2015-11-26 08:44:17
 
 Sunday
 2015-11-22 time diff: 9:46:20.163000
 
- cmp: 2015-11-22 09:46:20
-
 Saturday
 2015-11-14 time diff: 6:14:02.018000
 
- cmp: 2015-11-14 06:14:02
-
 max difference between days: 15:47:00.962000
 number of io days not covered: 2
-platform: ipad
+
+platform: ipad****
 
 Monday
 
@@ -397,156 +246,91 @@ Tuesday
 Friday
 2015-11-20 time diff: 9:47:09.208000
 
- cmp: 2015-11-20 09:47:09
-
 Wednesday
 2015-11-11 time diff: 0:28:24.876000
 
- cmp: 2015-11-11 00:28:24
-
 Thursday
 2015-11-12 time diff: 10:40:49.962000
-
- cmp: 2015-11-12 10:40:49
 
 Sunday
 
 Saturday
 2015-11-21 time diff: 2:02:53.077000
 
- cmp: 2015-11-21 02:02:53
-
 max difference between days: 10:40:49.962000
 number of io days not covered: 6
 
 end clifford.wife======
-platform: windows-laptop
+
+platform: windows-laptop****
 
 Monday
 2015-11-16 time diff: 10:47:11.244000
-
- cmp: 2015-11-16 10:47:11
 2015-11-23 time diff: 0:00:01.263000
-
- cmp: 2015-11-23 00:00:01
 
 Tuesday
 2015-11-17 time diff: 0:00:01.474000
-
- cmp: 2015-11-17 00:00:01
 2015-11-24 time diff: 0:00:05.998000
-
- cmp: 2015-11-24 00:00:05
 
 Friday
 2015-11-13 time diff: 0:35:38.015000
-
- cmp: 2015-11-13 00:35:38
 2015-11-20 time diff: 2:01:36.146000
-
- cmp: 2015-11-20 02:01:36
 
 Wednesday
 2015-11-11 time diff: 0:00:00.323000
-
- cmp: 2015-11-11 00:00:00
 2015-11-18 time diff: 0:00:02.193000
-
- cmp: 2015-11-18 00:00:02
 2015-11-25 time diff: 0:00:00.959000
-
- cmp: 2015-11-25 00:00:00
 
 Thursday
 2015-11-12 time diff: 0:00:02.758000
-
- cmp: 2015-11-12 00:00:02
 2015-11-19 time diff: 0:22:01.213000
-
- cmp: 2015-11-19 00:22:01
 2015-11-26 time diff: 0:00:00.406000
-
- cmp: 2015-11-26 00:00:00
 
 Sunday
 2015-11-15 time diff: 0:00:06.229000
-
- cmp: 2015-11-15 00:00:06
 2015-11-22 time diff: 0:00:04.364000
-
- cmp: 2015-11-22 00:00:04
 
 Saturday
 2015-11-14 time diff: 0:01:00.421000
-
- cmp: 2015-11-14 00:01:00
 2015-11-21 time diff: 0:00:05.360000
-
- cmp: 2015-11-21 00:00:05
 
 max difference between days: 10:47:11.244000
 number of io days not covered: 0
-platform: iphone
+
+platform: iphone****
 
 Monday
 2015-11-16 time diff: 0:45:43.244000
-
- cmp: 2015-11-16 00:45:43
 2015-11-23 time diff: 15:36:35.263000
-
- cmp: 2015-11-23 15:36:35
 
 Tuesday
 2015-11-17 time diff: 0:29:15.474000
-
- cmp: 2015-11-17 00:29:15
 2015-11-24 time diff: 2:21:41.002000
-
- cmp: 2015-11-24 02:21:41
 
 Friday
 2015-11-13 time diff: 0:33:59.015000
-
- cmp: 2015-11-13 00:33:59
 2015-11-20 time diff: 0:14:29.146000
-
- cmp: 2015-11-20 00:14:29
 
 Wednesday
 2015-11-11 time diff: 8:10:09.323000
-
- cmp: 2015-11-11 08:10:09
 2015-11-18 time diff: 4:34:53.193000
-
- cmp: 2015-11-18 04:34:53
 2015-11-25 time diff: 0:03:42.959000
-
- cmp: 2015-11-25 00:03:42
 
 Thursday
 2015-11-12 time diff: 1:40:52.242000
-
- cmp: 2015-11-12 01:40:52
 2015-11-19 time diff: 22:18:07.787000
-
- cmp: 2015-11-19 22:18:07
 2015-11-26 time diff: 6:38:25.406000
-
- cmp: 2015-11-26 06:38:25
 
 Sunday
 2015-11-22 time diff: 7:25:16.364000
 
- cmp: 2015-11-22 07:25:16
-
 Saturday
 2015-11-14 time diff: 0:58:42.579000
 
- cmp: 2015-11-14 00:58:42
-
 max difference between days: 22:18:07.787000
 number of io days not covered: 2
-platform: ipad
+
+platform: ipad****
 
 Monday
 
@@ -555,72 +339,50 @@ Tuesday
 Friday
 2015-11-20 time diff: 2:55:37.854000
 
- cmp: 2015-11-20 02:55:37
-
 Wednesday
 2015-11-11 time diff: 0:01:19.677000
 
- cmp: 2015-11-11 00:01:19
-
 Thursday
 2015-11-12 time diff: 12:57:23.758000
-
- cmp: 2015-11-12 12:57:23
 
 Sunday
 
 Saturday
 2015-11-21 time diff: 9:10:53.640000
 
- cmp: 2015-11-21 09:10:53
-
 max difference between days: 12:57:23.758000
 number of io days not covered: 6
 
 beg clifford.husband======
-platform: macbook
+
+platform: macbook****
 
 Monday
 
 Tuesday
 2015-11-17 time diff: 8:34:19.492000
 
- cmp: 2015-11-17 08:34:19
-
 Friday
 2015-11-13 time diff: 6:43:54.516000
-
- cmp: 2015-11-13 06:43:54
 2015-11-20 time diff: 4:25:04.208000
-
- cmp: 2015-11-20 04:25:04
 
 Wednesday
 2015-11-11 time diff: 0:38:28.876000
 
- cmp: 2015-11-11 00:38:28
-
 Thursday
 2015-11-12 time diff: 5:54:05.962000
-
- cmp: 2015-11-12 05:54:05
 
 Sunday
 2015-11-15 time diff: 1:01:19.441000
 
- cmp: 2015-11-15 01:01:19
-
 Saturday
 2015-11-14 time diff: 9:05:43.982000
-
- cmp: 2015-11-14 09:05:43
 2015-11-21 time diff: 1:16:54.077000
-
- cmp: 2015-11-21 01:16:54
 
 max difference between days: 9:05:43.982000
 number of io days not covered: 8
-platform: iphone
+
+platform: iphone****
 
 Monday
 
@@ -631,67 +393,47 @@ Friday
 Wednesday
 2015-11-11 time diff: 0:43:21.876000
 
- cmp: 2015-11-11 00:43:21
-
 Thursday
 2015-11-12 time diff: 8:18:36.962000
-
- cmp: 2015-11-12 08:18:36
 
 Sunday
 
 Saturday
 2015-11-14 time diff: 2:12:59.982000
 
- cmp: 2015-11-14 02:12:59
-
 max difference between days: 8:18:36.962000
 number of io days not covered: 5
 
 end clifford.husband======
-platform: macbook
+
+platform: macbook****
 
 Monday
 
 Tuesday
 2015-11-17 time diff: 2:18:31.474000
 
- cmp: 2015-11-17 02:18:31
-
 Friday
 2015-11-13 time diff: 20:41:08.985000
-
- cmp: 2015-11-13 20:41:08
 2015-11-20 time diff: 1:45:53.854000
-
- cmp: 2015-11-20 01:45:53
 
 Wednesday
 2015-11-11 time diff: 5:09:02.323000
 
- cmp: 2015-11-11 05:09:02
-
 Thursday
 2015-11-12 time diff: 5:29:15.758000
-
- cmp: 2015-11-12 05:29:15
 
 Sunday
 2015-11-15 time diff: 4:41:23.229000
 
- cmp: 2015-11-15 04:41:23
-
 Saturday
 2015-11-14 time diff: 3:52:20.579000
-
- cmp: 2015-11-14 03:52:20
 2015-11-21 time diff: 3:05:00.640000
-
- cmp: 2015-11-21 03:05:00
 
 max difference between days: 20:41:08.985000
 number of io days not covered: 8
-platform: iphone
+
+platform: iphone****
 
 Monday
 
@@ -702,61 +444,40 @@ Friday
 Wednesday
 2015-11-11 time diff: 1:15:26.323000
 
- cmp: 2015-11-11 01:15:26
-
 Thursday
 2015-11-12 time diff: 6:44:22.758000
-
- cmp: 2015-11-12 06:44:22
 
 Sunday
 
 Saturday
 2015-11-14 time diff: 11:03:29.579000
 
- cmp: 2015-11-14 11:03:29
-
 max difference between days: 11:03:29.579000
 number of io days not covered: 5
 
 beg kemianny======
-platform: windows-laptop
+
+platform: windows-laptop****
 
 Monday
 2015-11-16 time diff: 0:00:46.839000
-
- cmp: 2015-11-16 00:00:46
 2015-11-23 time diff: 0:19:48.572000
-
- cmp: 2015-11-23 00:19:48
 
 Tuesday
 2015-11-17 time diff: 0:00:43.154000
-
- cmp: 2015-11-17 00:00:43
 2015-11-24 time diff: 0:00:23.921000
-
- cmp: 2015-11-24 00:00:23
 
 Friday
 2015-11-13 time diff: 0:00:24.273000
-
- cmp: 2015-11-13 00:00:24
 2015-11-20 time diff: 0:01:20.156000
-
- cmp: 2015-11-20 00:01:20
 
 Wednesday
 
 Thursday
 2015-11-26 time diff: 5:16:07.541000
 
- cmp: 2015-11-26 05:16:07
-
 Sunday
 2015-11-22 time diff: 5:44:03.331000
-
- cmp: 2015-11-22 05:44:03
 
 Saturday
 
@@ -764,43 +485,28 @@ max difference between days: 5:44:03.331000
 number of io days not covered: 0
 
 end kemianny======
-platform: windows-laptop
+
+platform: windows-laptop****
 
 Monday
 2015-11-16 time diff: 0:00:03.088000
-
- cmp: 2015-11-16 00:00:03
 2015-11-23 time diff: 1:49:55.383000
-
- cmp: 2015-11-23 01:49:55
 
 Tuesday
 2015-11-17 time diff: 1:56:21.740000
-
- cmp: 2015-11-17 01:56:21
 2015-11-24 time diff: 0:58:07.527000
-
- cmp: 2015-11-24 00:58:07
 
 Friday
 2015-11-13 time diff: 0:30:29.405000
-
- cmp: 2015-11-13 00:30:29
 2015-11-20 time diff: 2:16:58.665000
-
- cmp: 2015-11-20 02:16:58
 
 Wednesday
 
 Thursday
 2015-11-26 time diff: 1:10:29.185000
 
- cmp: 2015-11-26 01:10:29
-
 Sunday
 2015-11-22 time diff: 4:43:49.022000
-
- cmp: 2015-11-22 04:43:49
 
 Saturday
 
@@ -808,7 +514,8 @@ max difference between days: 4:43:49.022000
 number of io days not covered: 0
 
 beg michaelbrogan======
-platform: windows-laptop
+
+platform: windows-laptop****
 
 Monday
 
@@ -825,7 +532,8 @@ Sunday
 Saturday
 
 end michaelbrogan======
-platform: windows-laptop
+
+platform: windows-laptop****
 
 Monday
 
@@ -842,29 +550,22 @@ Sunday
 Saturday
 
 beg gluch======
-platform: windows-laptop
+
+platform: windows-laptop****
 
 Monday
 2015-11-23 time diff: 7:40:00.124000
-
- cmp: 2015-11-23 07:40:00
 
 Tuesday
 
 Friday
 2015-11-20 time diff: 0:00:24.525000
 
- cmp: 2015-11-20 00:00:24
-
 Wednesday
 2015-11-25 time diff: 4:35:04.798000
 
- cmp: 2015-11-25 04:35:04
-
 Thursday
 2015-11-26 time diff: 2:05:02.089000
-
- cmp: 2015-11-26 02:05:02
 
 Sunday
 
@@ -872,7 +573,8 @@ Saturday
 
 max difference between days: 7:40:00.124000
 number of io days not covered: 0
-platform: android-phone
+
+platform: android-phone****
 
 Monday
 
@@ -880,8 +582,6 @@ Tuesday
 
 Friday
 2015-11-20 time diff: 0:08:36.525000
-
- cmp: 2015-11-20 00:08:36
 
 Wednesday
 
@@ -892,35 +592,26 @@ Sunday
 Saturday
 2015-11-21 time diff: 6:45:10.200000
 
- cmp: 2015-11-21 06:45:10
-
 max difference between days: 6:45:10.200000
 number of io days not covered: 1
 
 end gluch======
-platform: windows-laptop
+
+platform: windows-laptop****
 
 Monday
 2015-11-23 time diff: 4:03:49.459000
-
- cmp: 2015-11-23 04:03:49
 
 Tuesday
 
 Friday
 2015-11-20 time diff: 0:00:06.473000
 
- cmp: 2015-11-20 00:00:06
-
 Wednesday
 2015-11-25 time diff: 2:12:41.818000
 
- cmp: 2015-11-25 02:12:41
-
 Thursday
 2015-11-26 time diff: 5:46:35.878000
-
- cmp: 2015-11-26 05:46:35
 
 Sunday
 
@@ -928,7 +619,8 @@ Saturday
 
 max difference between days: 5:46:35.878000
 number of io days not covered: 0
-platform: android-phone
+
+platform: android-phone****
 
 Monday
 
@@ -936,8 +628,6 @@ Tuesday
 
 Friday
 2015-11-20 time diff: 1:02:27.527000
-
- cmp: 2015-11-20 01:02:27
 
 Wednesday
 
@@ -947,8 +637,6 @@ Sunday
 
 Saturday
 2015-11-21 time diff: 6:42:05.984000
-
- cmp: 2015-11-21 06:42:05
 
 max difference between days: 6:42:05.984000
 number of io days not covered: 1
