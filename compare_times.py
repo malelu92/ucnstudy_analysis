@@ -34,10 +34,10 @@ def main():
     users = ses.query(User)
 
     devtfc_week_beg, devtfc_week_end = get_devtraffic_data()
-    dns_week_beg, dns_week_end = get_dns_data()
-    flow_week_beg, flow_week_end = get_flow_data()
-    http_week_beg, http_week_end = get_http_data()
-    loc_week_beg, loc_week_end = get_locations_data()
+    #dns_week_beg, dns_week_end = get_dns_data()
+    #flow_week_beg, flow_week_end = get_flow_data()
+    #http_week_beg, http_week_end = get_http_data()
+    #loc_week_beg, loc_week_end = get_locations_data()
     io_week_beg, io_week_end = get_io_data()
     #act_week_beg, act_week_end = get_activities_data()
 
@@ -58,31 +58,35 @@ def main():
     for user in users:
         name = user.username
         #only compares users with information on io
+        cmp_results = defaultdict(list)
         if io_beg.has_key(name):
             print user.username
-            analize_timst_difference(devtfc_cmp_file, devtfc_week_beg[user.username], io_beg[name], 'devtfc', 'beg', user, len(devtfc_week_beg[user.username]))
-            analize_timst_difference(dns_cmp_file, dns_week_beg[user.username], io_beg[name], 'dns', 'beg', user, len(dns_week_beg[user.username]))
-            analize_timst_difference(flow_cmp_file, flow_week_beg[user.username], io_beg[name], 'flow', 'beg', user, len(flow_week_beg[user.username]))
-            analize_timst_difference(http_cmp_file, http_week_beg[user.username], io_beg[name], 'http', 'beg', user, len(http_week_beg[user.username]))
-            analize_timst_difference(loc_cmp_file, loc_week_beg[user.username], io_beg[name], 'loc', 'beg', user, len(loc_week_beg[user.username]))
-            analize_timst_difference(devtfc_cmp_file, devtfc_week_end[user.username], io_beg[name], 'devtfc', 'end', user, len(devtfc_week_end[user.username]))
-            analize_timst_difference(dns_cmp_file, dns_week_end[user.username], io_beg[name], 'dns', 'end', user, len(dns_week_end[user.username]))
-            analize_timst_difference(flow_cmp_file, flow_week_end[user.username], io_beg[name], 'flow', 'end', user, len(flow_week_end[user.username]))
-            analize_timst_difference(http_cmp_file, http_week_end[user.username], io_beg[name], 'http', 'end', user, len(http_week_end[user.username]))
-            analize_timst_difference(loc_cmp_file, loc_week_end[user.username], io_beg[name], 'loc', 'end', user, len(loc_week_end[user.username]))
+            #print devtfc_week_beg[user.username]
+            # devtfc, dns, flow, http, loc === 0 -> no file === 1 -> file
+            #generate_comparison_file(1, 1, 1, 1, 1, name)
+            cmp_results['devtfc_beg'] = analize_timst_difference(devtfc_cmp_file, devtfc_week_beg[user.username], io_beg[name], 'devtfc', 'beg', user)
+            #cmp_results['dns_beg'] = analize_timst_difference(dns_cmp_file, dns_week_beg[user.username], io_beg[name], 'dns', 'beg', user)
+            #cmp_results['flow_beg'] = analize_timst_difference(flow_cmp_file, flow_week_beg[user.username], io_beg[name], 'flow', 'beg', user)
+            #cmp_results['http_beg'] = analize_timst_difference(http_cmp_file, http_week_beg[user.username], io_beg[name], 'http', 'beg', user)
+            #cmp_results['loc_beg'] = analize_timst_difference(loc_cmp_file, loc_week_beg[user.username], io_beg[name], 'loc', 'beg', user)
+            cmp_results['devtfc_end'] =analize_timst_difference(devtfc_cmp_file, devtfc_week_end[user.username], io_end[name], 'devtfc', 'end', user)
+            #cmp_results['dns_end'] =analize_timst_difference(dns_cmp_file, dns_week_end[user.username], io_end[name], 'dns', 'end', user)
+            #cmp_results['flow_end'] =analize_timst_difference(flow_cmp_file, flow_week_end[user.username], io_end[name], 'flow', 'end', user)
+            #cmp_results['http_beg'] = analize_timst_difference(http_cmp_file, http_week_end[user.username], io_end[name], 'http', 'end', user)
+            #cmp_results['loc_beg'] = analize_timst_difference(loc_cmp_file, loc_week_end[user.username], io_end[name], 'loc', 'end', user)
 
         elif io_beg.has_key(name.rpartition('.')[0]):
             print(user.username)
-            analize_timst_difference(devtfc_cmp_file, devtfc_week_beg[user.username], io_beg[name.rpartition('.')[0]], 'devtfc', 'beg', user, len(devtfc_week_beg[user.username]))
-            analize_timst_difference(dns_cmp_file, dns_week_beg[user.username], io_beg[name.rpartition('.')[0]], 'dns', 'beg', user, len(dns_week_beg[user.username]))
-            analize_timst_difference(flow_cmp_file, flow_week_beg[user.username], io_beg[name.rpartition('.')[0]], 'flow', 'beg', user, len(flow_week_beg[user.username]))
-            analize_timst_difference(http_cmp_file, http_week_beg[user.username], io_beg[name.rpartition('.')[0]], 'http', 'beg', user, len(http_week_beg[user.username]))
-            analize_timst_difference(loc_cmp_file, loc_week_beg[user.username], io_beg[name.rpartition('.')[0]], 'loc', 'beg', user, len(loc_week_beg[user.username]))
-            analize_timst_difference(devtfc_cmp_file, devtfc_week_end[user.username], io_beg[name.rpartition('.')[0]], 'devtfc', 'end', user, len(devtfc_week_end[user.username]))
-            analize_timst_difference(dns_cmp_file, dns_week_end[user.username], io_beg[name.rpartition('.')[0]], 'dns', 'end', user, len(dns_week_end[user.username]))
-            analize_timst_difference(flow_cmp_file, flow_week_end[user.username], io_beg[name.rpartition('.')[0]], 'flow', 'end', user, len(flow_week_end[user.username]))
-            analize_timst_difference(http_cmp_file, http_week_end[user.username], io_beg[name.rpartition('.')[0]], 'http', 'end', user, len(http_week_end[user.username]))
-            analize_timst_difference(loc_cmp_file, loc_week_end[user.username], io_beg[name.rpartition('.')[0]], 'loc', 'end', user, len(loc_week_end[user.username]))
+            cmp_results['devtfc_beg'] = analize_timst_difference(devtfc_cmp_file, devtfc_week_beg[user.username], io_beg[name.rpartition('.')[0]], 'devtfc', 'beg', user)
+            #cmp_results['dns_beg'] = analize_timst_difference(dns_cmp_file, dns_week_beg[user.username], io_beg[name.rpartition('.')[0]], 'dns', 'beg', user)
+            #cmp_results['flow_beg'] = analize_timst_difference(flow_cmp_file, flow_week_beg[user.username], io_beg[name.rpartition('.')[0]], 'flow', 'beg', user)
+            #cmp_results['http_beg'] = analize_timst_difference(http_cmp_file, http_week_beg[user.username], io_beg[name.rpartition('.')[0]], 'http', 'beg', user)
+            #cmp_results['loc_beg'] = analize_timst_difference(loc_cmp_file, loc_week_beg[user.username], io_beg[name.rpartition('.')[0]], 'loc', 'beg', user)
+            cmp_results['devtfc_end'] = analize_timst_difference(devtfc_cmp_file, devtfc_week_end[user.username], io_end[name.rpartition('.')[0]], 'devtfc', 'end', user)
+            #cmp_results['dns_end'] = analize_timst_difference(dns_cmp_file, dns_week_end[user.username], io_end[name.rpartition('.')[0]], 'dns', 'end', user)
+            #cmp_results['flow_end'] = analize_timst_difference(flow_cmp_file, flow_week_end[user.username], io_end[name.rpartition('.')[0]], 'flow', 'end', user)
+            #cmp_results['http_end'] = analize_timst_difference(http_cmp_file, http_week_end[user.username], io_end[name.rpartition('.')[0]], 'http', 'end', user)
+            #cmp_results['loc_end'] = analize_timst_difference(loc_cmp_file, loc_week_end[user.username], io_end[name.rpartition('.')[0]], 'loc', 'end', user)
 
 
         #analize_timst(dns_week_beg[user.username], http_week_beg[user.username], 'dns', 'Beg', user, len(dns_week_beg[user.username]), 1000)
@@ -126,21 +130,28 @@ def analize_timst_percentage(cmp_file,info_week, activity_week, data_comp, key_b
                 cmp_file.write(key_beg_end + ' ' + data_comp + ' compared to flow \t user: ' + user.username + '\t\t device: ' + platform + '\t equivalence ' + str(equivalence*100) + '%\n')
                         
 
-def analize_timst_difference(cmp_file, info_week, io_info_week, data_comp, key_beg_end, user, quantity_dev):
+def analize_timst_difference(cmp_file, info_week, io_info_week, data_comp, key_beg_end, user):
 
     days_str = {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday', 'Sunday'}
     cmp_file.write('\n' + key_beg_end + ' ' + user.username + '======\n')
 
+    #print user.username
+    #print info_week[0]
+
+
     #for each user device analize usage times
+    quantity_dev = len(info_week[0])
     for dev in range (0, quantity_dev):
-        if info_week[dev][0]['platform']:
-            platform = info_week[dev][0]['platform'][0]
+        if info_week[0][dev]['platform']:
+            platform = info_week[0][dev]['platform'][0]
+            cmp_file.write('\nplatform: ' + platform + '****\n')
             max_dif = timedelta(microseconds=-1)
             non_similar_days = 0
             checked_days = []
+            cmp_timst_list = []
             for weekday in days_str:
                 #compares equivalent days
-                timst_list  = info_week[dev][0][weekday]
+                timst_list  = info_week[0][dev][weekday]
                 timst_list_io = io_info_week[0][weekday]
                 cmp_file.write('\n' + weekday+'\n')
                 if timst_list and timst_list_io:
@@ -161,12 +172,52 @@ def analize_timst_difference(cmp_file, info_week, io_info_week, data_comp, key_b
                                         cmp_file.write(str(timst.date()) + ' time diff: ' + str(diff) + '\n')
                                     if max_dif < diff:
                                         max_dif = diff
+                                    #creates new timestamp
+                                    days, seconds = diff.days, diff.seconds
+                                    hours = days * 24 + seconds // 3600
+                                    minutes = (seconds % 3600) // 60
+                                    seconds = seconds % 60
+                                    timst_cmp = datetime(timst.year, timst.month, timst.day, hours, minutes, seconds)
+                                    cmp_timst_list.append(timst_cmp)
+                                    cmp_file.write('\n cmp: ' + str(timst_cmp) + '\n')
+
                             if same_day == False:
                                 non_similar_days = non_similar_days + 1
             if max_dif != timedelta(microseconds=-1):
                 cmp_file.write('\nmax difference between days: ' + str(max_dif) + '\n')
                 cmp_file.write('number of io days not covered: ' + str(non_similar_days) + '\n')
-                            
+              
+    #tratar para diferentes devices
+    return cmp_timst_list
+
+
+
+def generate_comparison_file(devtfc, dns, flow, http, loc, user_io):
+
+    if devtfc:
+        analize_timst_difference(devtfc_cmp_file, devtfc_week_beg[user.username], io_beg[name], 'devtfc', 'beg', user, len(devtfc_week_beg[user.username]))
+        analize_timst_difference(devtfc_cmp_file, devtfc_week_end[user.username], io_end[name], 'devtfc', 'end', user, len(devtfc_week_end[user.username]))
+    
+    if dns:
+        analize_timst_difference(dns_cmp_file, dns_week_beg[user.username], io_beg[name], 'dns', 'beg', user, len(dns_week_beg[user.username]))
+        analize_timst_difference(dns_cmp_file, dns_week_end[user.username], io_end[name], 'dns', 'end', user, len(dns_week_end[user.username]))
+    
+    if flow:
+        analize_timst_difference(flow_cmp_file, flow_week_beg[user.username], io_beg[name], 'flow', 'beg', user, len(flow_week_beg[user.username]))
+        analize_timst_difference(flow_cmp_file, flow_week_end[user.username], io_end[name], 'flow', 'end', user, len(flow_week_end[user.username]))
+    
+    if http:
+        analize_timst_difference(http_cmp_file, http_week_beg[user.username], io_beg[name], 'http', 'beg', user, len(http_week_beg[user.username]))
+        analize_timst_difference(http_cmp_file, http_week_end[user.username], io_end[name], 'http', 'end', user, len(http_week_end[user.username]))
+    
+    if loc:
+        analize_timst_difference(loc_cmp_file, loc_week_beg[user.username], io_beg[name], 'loc', 'beg', user, len(loc_week_beg[user.username]))
+        analize_timst_difference(loc_cmp_file, loc_week_end[user.username], io_end[name], 'loc', 'end', user, len(loc_week_end[user.username]))
+
+
+
+
+
 
 if __name__ == '__main__':
     main()
