@@ -51,17 +51,18 @@ def main():
     for key, value in io_week_end.iteritems():
         io_end[key.rpartition('.')[0]] = io_week_end[key]
 
+    devtfc_cmp_file = open('devtfc_comp.txt','w')
     
     for user in users:
         name = user.username
         #only compares users with information on io
         if io_beg.has_key(name):
             print user.username
-            analize_timst_difference(devtfc_week_beg[user.username], io_beg[name], 'devtfc', 'beg', user, len(devtfc_week_beg[user.username]))
+            analize_timst_difference(devtfc_cmp_file, devtfc_week_beg[user.username], io_beg[name], 'devtfc', 'beg', user, len(devtfc_week_beg[user.username]))
 
         elif io_beg.has_key(name.rpartition('.')[0]):
             print(user.username)
-            analize_timst_difference(devtfc_week_beg[user.username], io_beg[name.rpartition('.')[0]], 'devtfc', 'beg', user, len(devtfc_week_beg[user.username]))
+            analize_timst_difference(devtfc_cmp_file, devtfc_week_beg[user.username], io_beg[name.rpartition('.')[0]], 'devtfc', 'beg', user, len(devtfc_week_beg[user.username]))
 
 
         #analize_timst(dns_week_beg[user.username], http_week_beg[user.username], 'dns', 'Beg', user, len(dns_week_beg[user.username]), 1000)
@@ -70,7 +71,7 @@ def main():
         #analize_timst_percentage(cmp_file, devtfc_week_end[user.username], flow_week_end[user.username], 'dev', 'End', user, len(devtfc_week_end[user.username]), 1000)
         #cmp_file.write('\n')
 
-    #cmp_file.close()
+    devtfc_cmp_file.close()
 
 def analize_timst_percentage(cmp_file,info_week, activity_week, data_comp, key_beg_end, user, quantity_dev, time_interval):
     days_str = {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday', 'Sunday'}
@@ -105,10 +106,11 @@ def analize_timst_percentage(cmp_file,info_week, activity_week, data_comp, key_b
                 cmp_file.write(key_beg_end + ' ' + data_comp + ' compared to flow \t user: ' + user.username + '\t\t device: ' + platform + '\t equivalence ' + str(equivalence*100) + '%\n')
                         
 
-def analize_timst_difference(info_week, io_info_week, data_comp, key_beg_end, user, quantity_dev):
+def analize_timst_difference(cmp_file, info_week, io_info_week, data_comp, key_beg_end, user, quantity_dev):
 
     days_str = {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday', 'Sunday'}
-   
+    cmp_file.write(user.username + '======\n')
+
     #for each user device analize usage times
     for dev in range (0, quantity_dev):
         if info_week[dev][0]['platform']:
@@ -119,31 +121,29 @@ def analize_timst_difference(info_week, io_info_week, data_comp, key_beg_end, us
                 #compares equivalent days
                 timst_list  = info_week[dev][0][weekday]
                 timst_list_io = io_info_week[0][weekday]
-                print(weekday)
+                cmp_file.write('\n' + weekday+'\n')
                 if timst_list and timst_list_io:
-                    for timst in timst_list:
-                        for timst_io in timst_list_io:
+                    non_similar_days = 0
+                    for timst_io in timst_list_io:
+                        same_day = False
+                        for timst in timst_list:
                             #get the same day
                             if timst.date() == timst_io.date():
                                 #print(timst.time()-timst_io.time())
+                                same_day = True
                                 if timst.time() > timst_io.time():
                                     diff = datetime.combine(date.today(), timst.time()) - datetime.combine(date.today(), timst_io.time())
-                                    print(diff)
+                                    cmp_file.write(str(timst.date()) + ' time diff: ' + str(diff) + '\n')
                                 else:
                                     diff = datetime.combine(date.today(), timst_io.time()) - datetime.combine(date.today(), timst.time())
-                                    print(diff)
+                                    cmp_file.write(str(timst.date()) + ' time diff: ' + str(diff) + '\n')
                                 if max_dif < diff:
                                     max_dif = diff
-        print ('max difference between days: ' + str(max_dif))
+                        if same_day == False:
+                            non_similar_days = non_similar_days + 1
+                    cmp_file.write('max difference between days: ' + str(max_dif) + '\n')
+                    cmp_file.write('number of io days not covered: ' + str(non_similar_days) + '\n')
                             
-               
-               
-               
-               
-    #            timst_list_act = activity_week[dev][0][weekday]
-    #            total_elems = total_elems + len(timst_list)
-    #            for timst in timst_list:
-    #                elem_found = False
 
 if __name__ == '__main__':
     main()
