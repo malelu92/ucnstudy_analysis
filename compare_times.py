@@ -238,6 +238,9 @@ def plot_comparison (cmp_results, user):
 
     print user_platforms_list
     for platform in user_platforms_list:
+        fig, ((ax1, ax2)) = plt.subplots(nrows = 1, ncols = 2, figsize=(15, 5))#(20, 25))
+        subaxes = [ax1,ax2]
+        cont = 0
         print('PLATAFORMMMMMMMMM: ' + platform)
         for key_beg_end, platform_data in cmp_results.iteritems():
             print (platform + ' ' + key_beg_end)
@@ -245,14 +248,14 @@ def plot_comparison (cmp_results, user):
             timsts.sort()
             #print timsts
      
-            fig, ((ax1, ax2)) = plt.subplots(nrows = 1, ncols = 2, figsize=(15, 5))#(20, 25))
-            create_subplot(ax1, key_beg_end, platform, timsts, user)
-            create_subplot(ax2, key_beg_end, platform, timsts, user)
+            #fig, ((ax1, ax2)) = plt.subplots(nrows = 1, ncols = 2, figsize=(15, 5))#(20, 25))
+            create_subplot(subaxes[cont], key_beg_end, platform, timsts, user)
+            #create_subplot(ax2, key_beg_end, platform, timsts, user)
             print ('plotou ****')
-
-            fig.subplots_adjust(hspace = .8)
-            fig.savefig('figs_comparison/' + key_beg_end + '-' + user.username + '-' + platform + '.png')
-            plt.close(fig)
+            cont = cont + 1
+        fig.subplots_adjust(hspace = .8)
+        fig.savefig('figs_comparison/' + user.username + '-' + platform + '.png')
+        plt.close(fig)
 
     #print cmp_results
 
