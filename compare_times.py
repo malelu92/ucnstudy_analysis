@@ -1,3 +1,5 @@
+import seaborn as sns
+
 from model.Base import Base
 from model.Device import Device
 from model.DnsReq import DnsReq
@@ -9,6 +11,7 @@ from datetime import timedelta
 from datetime import datetime, date
 
 import matplotlib.pyplot as plt
+from matplotlib import dates
 
 from sqlalchemy import create_engine, text, func
 from sqlalchemy.orm import sessionmaker
@@ -78,7 +81,7 @@ def main():
             #cmp_results['http_beg'] = analize_timst_difference(http_cmp_file, http_week_end[user.username], io_end[name], 'http', 'end', user)
             #cmp_results['loc_beg'] = analize_timst_difference(loc_cmp_file, loc_week_end[user.username], io_end[name], 'loc', 'end', user)
 
-            plot_comparison(cmp_results)
+            plot_comparison(cmp_results, user)
 
         elif io_beg.has_key(name.rpartition('.')[0]):
             print(user.username)
@@ -95,7 +98,7 @@ def main():
             #cmp_results['loc_end'] = analize_timst_difference(loc_cmp_file, loc_week_end[user.username], io_end[name.rpartition('.')[0]], 'loc', 'end', user)
 
 
-            plot_comparison(cmp_results)
+            plot_comparison(cmp_results, user)
 
         #analize_timst(dns_week_beg[user.username], http_week_beg[user.username], 'dns', 'Beg', user, len(dns_week_beg[user.username]), 1000)
         #analize_timst(dns_week_end[user.username], http_week_end[user.username], 'dns', 'End', user, len(dns_week_end[user.username]), 1000)
@@ -221,41 +224,53 @@ def generate_comparison_file(devtfc, dns, flow, http, loc, user_io):
         analize_timst_difference(loc_cmp_file, loc_week_end[user.username], io_end[name], 'loc', 'end', user, len(loc_week_end[user.username]))
 
 
-def plot_comparison (cmp_results):
+def plot_comparison (cmp_results, user):
 
 
-    fig, ((ax1, ax2)) = plt.subplots(nrows = 1, ncols = 2, figsize=(20, 25))
+    #fig, ((ax1, ax2)) = plt.subplots(nrows = 1, ncols = 2, figsize=(15, 5))#(20, 25))
 
     user_platforms_list = []
+    #memlhorar, fazer para so um key_beg_end
     for key_beg_end, platform_data in cmp_results.iteritems():
         for platform, dates in platform_data.iteritems():
-            user_platforms_list.append(platform)
+            if platform not in user_platforms_list:
+                user_platforms_list.append(platform)
 
+    print user_platforms_list
     for platform in user_platforms_list:
+        print('PLATAFORMMMMMMMMM: ' + platform)
         for key_beg_end, platform_data in cmp_results.iteritems():
             print (platform + ' ' + key_beg_end)
-            print cmp_results[key_beg_end][platform]
-        #create_subplot(ax1, df_all_dev_beg, key_beg_end, 'Monday', user)
-    #create_subplot(ax2, df_all_dev_beg, 'Beginning', 'Tuesday', user)
+            timsts = cmp_results[key_beg_end][platform]
+            timsts.sort()
+            #print timsts
+     
+            fig, ((ax1, ax2)) = plt.subplots(nrows = 1, ncols = 2, figsize=(15, 5))#(20, 25))
+            create_subplot(ax1, key_beg_end, platform, timsts, user)
+            create_subplot(ax2, key_beg_end, platform, timsts, user)
+            print ('plotou ****')
 
-
-    #fig.subplots_adjust(hspace = .8)
-    #fig.savefig('figs_comparison/' + user.username + '-' + platform'.png')
-    plt.close(fig)
+            fig.subplots_adjust(hspace = .8)
+            fig.savefig('figs_comparison/' + key_beg_end + '-' + user.username + '-' + platform + '.png')
+            plt.close(fig)
 
     #print cmp_results
 
 
-def create_subplot(ax, df_col, key_beg_end, weekday, user):
-    x = df_col[weekday+'date']
-    y = df_col[weekday+'time']
+def create_subplot(ax, key_beg_end, platform, date_time_list, user):
+    x = []
+    y = []
     sns.set_style('darkgrid')
+    for timst in date_time_list:
+        x.append(timst.date())
+        y.append(timst.hour+timst.minute/60.0)
+    
     #ax.set_xticklabels(x, rotation=45, fontsize = 8, minor=False)
     #ax.set_xticklabels(xlabels, fontsize = 7)
     if len(x) > 1:
         hfmt = dates.DateFormatter('%m-%d')
         ax.xaxis.set_major_formatter(hfmt)
-    ax.set_title(key_beg_end + ' of day device usage on ' + weekday + ' - User: ' +  user.username)
+    ax.set_title(key_beg_end + ' ' + platform + ' - User: ' +  user.username)
     ax.set_ylim([0,24])
     ax.set_ylabel('Hour of Day')
     ax.grid(True)
