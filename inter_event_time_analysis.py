@@ -79,7 +79,7 @@ def main ():
 
 def plot_traces(traces, user, devs, elem_id): 
 
-    fig, ax = plt.subplots(1, 1, figsize=(12, 4))
+    fig, ax = plt.subplots(1, 1, figsize=(12, 8))
     x = []
     y = []
     y_label = []
