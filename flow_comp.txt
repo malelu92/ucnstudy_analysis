@@ -1,0 +1,644 @@
+
+beg neenagupta======
+
+platform: windows-pc****
+
+Monday
+2015-11-23 time diff: 0:02:01.740723
+
+Tuesday
+2015-11-10 time diff: 0:00:07.484507
+
+Friday
+
+Wednesday
+2015-11-18 time diff: 0:03:49.537810
+2015-11-25 time diff: 0:02:09.882581
+
+Thursday
+
+Sunday
+2015-11-22 time diff: 0:00:02.041753
+
+Saturday
+
+max difference between days: 0:03:49.537810
+number of io days not covered: 2
+
+platform: macbook****
+
+Monday
+2015-11-16 time diff: 0:44:49.008759
+2015-11-23 time diff: 8:03:19.811239
+
+Tuesday
+2015-11-10 time diff: 8:18:46.478384
+
+Friday
+2015-11-13 time diff: 4:58:29.972764
+2015-11-20 time diff: 8:25:04.156232
+
+Wednesday
+2015-11-11 time diff: 3:59:29.851751
+2015-11-18 time diff: 4:22:18.367767
+2015-11-25 time diff: 1:13:44.493761
+
+Thursday
+2015-11-12 time diff: 0:59:27.743756
+2015-11-19 time diff: 1:09:18.539762
+
+Sunday
+2015-11-22 time diff: 5:53:52.102759
+
+Saturday
+2015-11-14 time diff: 5:16:42.681709
+2015-11-21 time diff: 1:05:47.213758
+
+max difference between days: 8:25:04.156232
+number of io days not covered: 0
+
+platform: iphone****
+
+Monday
+2015-11-23 time diff: 8:19:09.199239
+
+Tuesday
+2015-11-10 time diff: 10:20:55.820463
+
+Friday
+2015-11-20 time diff: 10:06:39.820227
+
+Wednesday
+2015-11-25 time diff: 1:12:10.665771
+
+Thursday
+2015-11-19 time diff: 8:55:32.992232
+
+Sunday
+2015-11-22 time diff: 2:02:07.505257
+
+Saturday
+2015-11-14 time diff: 4:41:36.965766
+2015-11-21 time diff: 11:14:01.618229
+
+max difference between days: 11:14:01.618229
+number of io days not covered: 5
+
+end neenagupta======
+
+platform: windows-pc****
+
+Monday
+2015-11-23 time diff: 0:03:40.827094
+
+Tuesday
+2015-11-10 time diff: 0:00:04.132157
+
+Friday
+
+Wednesday
+2015-11-18 time diff: 0:49:29.832249
+2015-11-25 time diff: 0:23:29.863267
+
+Thursday
+
+Sunday
+2015-11-22 time diff: 0:00:05.417309
+
+Saturday
+
+max difference between days: 0:49:29.832249
+number of io days not covered: 2
+
+platform: macbook****
+
+Monday
+2015-11-16 time diff: 9:40:58.976310
+2015-11-23 time diff: 10:14:29.653119
+
+Tuesday
+2015-11-10 time diff: 6:18:46.394040
+
+Friday
+2015-11-13 time diff: 11:43:38.711432
+2015-11-20 time diff: 13:17:32.682018
+
+Wednesday
+2015-11-11 time diff: 8:55:57.354552
+2015-11-18 time diff: 10:19:06.866954
+2015-11-25 time diff: 7:02:06.891105
+
+Thursday
+2015-11-12 time diff: 11:47:46.520081
+2015-11-19 time diff: 10:52:13.156069
+
+Sunday
+2015-11-22 time diff: 3:42:48.428936
+
+Saturday
+2015-11-14 time diff: 8:28:24.776220
+2015-11-21 time diff: 9:35:06.017249
+
+max difference between days: 13:17:32.682018
+number of io days not covered: 0
+
+platform: iphone****
+
+Monday
+2015-11-23 time diff: 9:32:39.851834
+
+Tuesday
+2015-11-10 time diff: 6:50:32.113266
+
+Friday
+2015-11-20 time diff: 12:21:14.429796
+
+Wednesday
+2015-11-25 time diff: 7:11:54.392346
+
+Thursday
+2015-11-19 time diff: 11:01:29.158742
+
+Sunday
+2015-11-22 time diff: 2:01:23.246225
+
+Saturday
+2015-11-14 time diff: 9:51:00.076248
+2015-11-21 time diff: 10:05:39.057257
+
+max difference between days: 12:21:14.429796
+number of io days not covered: 5
+
+beg clifford.wife======
+
+platform: windows-laptop****
+
+Monday
+2015-11-16 time diff: 0:01:17.980747
+2015-11-23 time diff: 3:07:21.400114
+
+Tuesday
+2015-11-17 time diff: 0:00:01.960319
+2015-11-24 time diff: 3:36:26.312591
+
+Friday
+2015-11-13 time diff: 0:00:06.332848
+2015-11-20 time diff: 4:34:40.680966
+
+Wednesday
+2015-11-11 time diff: 0:00:00.330193
+2015-11-18 time diff: 0:00:05.419877
+2015-11-25 time diff: 0:57:52.043470
+
+Thursday
+2015-11-12 time diff: 12:13:42.406638
+2015-11-19 time diff: 0:00:40.097115
+2015-11-26 time diff: 2:26:48.495304
+
+Sunday
+2015-11-15 time diff: 1:01:30.667207
+2015-11-22 time diff: 3:23:53.533772
+
+Saturday
+2015-11-14 time diff: 6:28:35.194775
+2015-11-21 time diff: 8:27:49.884028
+
+max difference between days: 12:13:42.406638
+number of io days not covered: 0
+
+platform: iphone****
+
+Monday
+2015-11-16 time diff: 1:24:18.469575
+2015-11-23 time diff: 2:12:53.633769
+
+Tuesday
+2015-11-17 time diff: 1:47:07.491234
+2015-11-24 time diff: 2:12:25.417236
+
+Friday
+2015-11-13 time diff: 4:27:56.436763
+2015-11-20 time diff: 10:12:00.919232
+
+Wednesday
+2015-11-11 time diff: 0:10:48.059240
+2015-11-18 time diff: 3:24:51.387237
+2015-11-25 time diff: 12:56:51.180869
+
+Thursday
+2015-11-12 time diff: 15:46:59.658765
+2015-11-19 time diff: 8:49:31.817763
+2015-11-26 time diff: 8:44:16.633770
+
+Sunday
+2015-11-22 time diff: 9:46:21.030233
+
+Saturday
+2015-11-14 time diff: 6:14:01.642996
+
+max difference between days: 15:46:59.658765
+number of io days not covered: 2
+
+platform: ipad****
+
+Monday
+
+Tuesday
+
+Friday
+2015-11-20 time diff: 9:47:09.839234
+
+Wednesday
+2015-11-11 time diff: 0:28:25.147235
+
+Thursday
+2015-11-12 time diff: 10:40:49.945201
+
+Sunday
+
+Saturday
+2015-11-21 time diff: 2:02:52.257762
+
+max difference between days: 10:40:49.945201
+number of io days not covered: 6
+
+end clifford.wife======
+
+platform: windows-laptop****
+
+Monday
+2015-11-16 time diff: 10:47:09.557851
+2015-11-23 time diff: 0:00:00.373372
+
+Tuesday
+2015-11-17 time diff: 0:00:00.435366
+2015-11-24 time diff: 0:00:06.391032
+
+Friday
+2015-11-13 time diff: 0:35:36.334775
+2015-11-20 time diff: 2:01:34.018115
+
+Wednesday
+2015-11-11 time diff: 0:12:41.826121
+2015-11-18 time diff: 0:00:00.291914
+2015-11-25 time diff: 0:00:00.144636
+
+Thursday
+2015-11-12 time diff: 0:00:01.283940
+2015-11-19 time diff: 0:21:50.415952
+2015-11-26 time diff: 0:00:01.515662
+
+Sunday
+2015-11-15 time diff: 0:00:04.303927
+2015-11-22 time diff: 0:00:02.705879
+
+Saturday
+2015-11-14 time diff: 0:00:18.811561
+2015-11-21 time diff: 0:00:06.356280
+
+max difference between days: 10:47:09.557851
+number of io days not covered: 0
+
+platform: iphone****
+
+Monday
+2015-11-16 time diff: 0:45:41.988775
+2015-11-23 time diff: 15:36:34.271754
+
+Tuesday
+2015-11-17 time diff: 0:29:14.034771
+2015-11-24 time diff: 2:21:40.638775
+
+Friday
+2015-11-13 time diff: 0:34:00.184573
+2015-11-20 time diff: 0:14:30.457226
+
+Wednesday
+2015-11-11 time diff: 8:09:31.790502
+2015-11-18 time diff: 4:34:52.513767
+2015-11-25 time diff: 0:03:41.933287
+
+Thursday
+2015-11-12 time diff: 1:40:24.968871
+2015-11-19 time diff: 22:18:06.504003
+2015-11-26 time diff: 6:38:15.913226
+
+Sunday
+2015-11-22 time diff: 7:25:14.576675
+
+Saturday
+2015-11-14 time diff: 0:58:40.875026
+
+max difference between days: 22:18:06.504003
+number of io days not covered: 2
+
+platform: ipad****
+
+Monday
+
+Tuesday
+
+Friday
+2015-11-20 time diff: 2:55:36.838534
+
+Wednesday
+2015-11-11 time diff: 0:01:19.285777
+
+Thursday
+2015-11-12 time diff: 12:57:23.519706
+
+Sunday
+
+Saturday
+2015-11-21 time diff: 9:10:52.052774
+
+max difference between days: 12:57:23.519706
+number of io days not covered: 6
+
+beg clifford.husband======
+
+platform: macbook****
+
+Monday
+
+Tuesday
+2015-11-17 time diff: 8:34:20.351355
+
+Friday
+2015-11-13 time diff: 6:43:53.792618
+2015-11-20 time diff: 4:25:04.411234
+
+Wednesday
+2015-11-11 time diff: 0:38:29.759237
+
+Thursday
+2015-11-12 time diff: 5:54:05.898767
+
+Sunday
+2015-11-15 time diff: 1:01:19.832230
+
+Saturday
+2015-11-14 time diff: 9:05:44.653328
+2015-11-21 time diff: 1:16:53.777762
+
+max difference between days: 9:05:44.653328
+number of io days not covered: 8
+
+platform: iphone****
+
+Monday
+
+Tuesday
+
+Friday
+
+Wednesday
+2015-11-11 time diff: 0:43:22.451238
+
+Thursday
+2015-11-12 time diff: 8:18:36.342749
+
+Sunday
+
+Saturday
+2015-11-14 time diff: 2:13:00.709232
+
+max difference between days: 8:18:36.342749
+number of io days not covered: 5
+
+end clifford.husband======
+
+platform: macbook****
+
+Monday
+
+Tuesday
+2015-11-17 time diff: 1:57:10.529102
+
+Friday
+2015-11-13 time diff: 20:41:08.236103
+2015-11-20 time diff: 1:45:52.564457
+
+Wednesday
+2015-11-11 time diff: 5:09:03.074217
+
+Thursday
+2015-11-12 time diff: 5:29:14.256786
+
+Sunday
+2015-11-15 time diff: 4:41:21.791581
+
+Saturday
+2015-11-14 time diff: 3:52:19.247770
+2015-11-21 time diff: 3:04:59.497611
+
+max difference between days: 20:41:08.236103
+number of io days not covered: 8
+
+platform: iphone****
+
+Monday
+
+Tuesday
+
+Friday
+
+Wednesday
+2015-11-11 time diff: 1:15:26.962232
+
+Thursday
+2015-11-12 time diff: 6:44:21.978734
+
+Sunday
+
+Saturday
+2015-11-14 time diff: 11:03:27.919770
+
+max difference between days: 11:03:27.919770
+number of io days not covered: 5
+
+beg kemianny======
+
+platform: windows-laptop****
+
+Monday
+2015-11-16 time diff: 0:00:47.753758
+2015-11-23 time diff: 0:19:48.686058
+
+Tuesday
+2015-11-17 time diff: 0:00:43.224912
+2015-11-24 time diff: 0:00:23.182143
+
+Friday
+2015-11-13 time diff: 0:00:24.030201
+2015-11-20 time diff: 0:01:20.481066
+
+Wednesday
+
+Thursday
+2015-11-26 time diff: 5:16:07.859368
+
+Sunday
+2015-11-22 time diff: 5:44:03.991658
+
+Saturday
+
+max difference between days: 5:44:03.991658
+number of io days not covered: 0
+
+end kemianny======
+
+platform: windows-laptop****
+
+Monday
+2015-11-16 time diff: 0:00:02.366277
+2015-11-23 time diff: 1:49:56.012518
+
+Tuesday
+2015-11-17 time diff: 1:56:21.024909
+2015-11-24 time diff: 0:58:06.471413
+
+Friday
+2015-11-13 time diff: 0:30:27.783988
+2015-11-20 time diff: 2:16:58.454593
+
+Wednesday
+
+Thursday
+2015-11-26 time diff: 1:10:28.273473
+
+Sunday
+2015-11-22 time diff: 4:43:48.291206
+
+Saturday
+
+max difference between days: 4:43:48.291206
+number of io days not covered: 0
+
+beg michaelbrogan======
+
+platform: windows-laptop****
+
+Monday
+
+Tuesday
+
+Friday
+
+Wednesday
+
+Thursday
+
+Sunday
+
+Saturday
+
+end michaelbrogan======
+
+platform: windows-laptop****
+
+Monday
+
+Tuesday
+
+Friday
+
+Wednesday
+
+Thursday
+
+Sunday
+
+Saturday
+
+beg gluch======
+
+platform: windows-laptop****
+
+Monday
+2015-11-23 time diff: 7:40:00.452548
+
+Tuesday
+
+Friday
+2015-11-20 time diff: 0:00:24.931838
+
+Wednesday
+2015-11-25 time diff: 4:35:05.319544
+
+Thursday
+2015-11-26 time diff: 2:05:02.350344
+
+Sunday
+
+Saturday
+
+max difference between days: 7:40:00.452548
+number of io days not covered: 0
+
+platform: android-phone****
+
+Monday
+
+Tuesday
+
+Friday
+2015-11-20 time diff: 0:08:36.696236
+
+Wednesday
+
+Thursday
+
+Sunday
+
+Saturday
+2015-11-21 time diff: 6:45:09.524769
+
+max difference between days: 6:45:09.524769
+number of io days not covered: 1
+
+end gluch======
+
+platform: windows-laptop****
+
+Monday
+2015-11-23 time diff: 4:03:48.941481
+
+Tuesday
+
+Friday
+2015-11-20 time diff: 0:00:07.022372
+
+Wednesday
+2015-11-25 time diff: 2:12:40.378040
+
+Thursday
+2015-11-26 time diff: 5:46:35.519546
+
+Sunday
+
+Saturday
+
+max difference between days: 5:46:35.519546
+number of io days not covered: 0
+
+platform: android-phone****
+
+Monday
+
+Tuesday
+
+Friday
+2015-11-20 time diff: 1:02:26.587772
+
+Wednesday
+
+Thursday
+
+Sunday
+
+Saturday
+2015-11-21 time diff: 6:42:05.257323
+
+max difference between days: 6:42:05.257323
+number of io days not covered: 1
