@@ -46,6 +46,10 @@ def main():
             FROM activities \
             WHERE session_id = :d_id AND fullscreen = 1"""
 
+            sql_io = """SELECT logged_at \
+            FROM io \
+            WHERE session_id = :d_id"""
+
             beg = []
             end = []
             print (device.device_id + '==============')
@@ -53,17 +57,22 @@ def main():
                 beg.append(row[0])
                 end.append(row[1])
 
-            if beg:
-                plot_traces(beg, end, device.device_id)
+            io = []
+            for row in ses.execute(text(sql_io).bindparams(d_id = device.id)):
+                io.append(row[0])
+
+            plot_traces(beg, end, io, device.device_id)
 
 
-def plot_traces(beg, end, user): 
+def plot_traces(beg, end, io, user): 
 
     fig, ax = plt.subplots(1, 1, figsize=(12, 8))
     x_beg = []
     x_end = []
     y = []
     y_label = []
+    x_io = []
+    y_io = []
 
     cont = 0
     for timst in beg:
@@ -74,19 +83,31 @@ def plot_traces(beg, end, user):
         y.append(timst.date())
         cont = cont + 1
 
+    for timst in io:
+        x_io.append(timst.hour+timst.minute/60.0+timst.second/3600.0)
+        y_io.append(timst.date())
+
     y_label = list(set(y))
     hfmt = dates.DateFormatter('%m-%d')
     ax.yaxis.set_major_formatter(hfmt)
     #ax.plot(x,y, '.g')
-    print 'x_beg'
-    print x_beg
-    print 'x_end'
-    print x_end
+    #print 'x_beg'
+    #print x_beg
+    #print 'x_end'
+    #print x_end
+
     ax.hlines(y, x_beg, x_end, 'g')
+    ax.plot(x_io, y_io, '.g')
     ax.set_title('Device usage [user=%s]'%(user))
     ax.set_ylabel('Date')
-    ax.set_yticks(y_label)
-    ax.set_ylim(min(y_label), max(y_label))
+    ax.set_yticks(list(set(y_io).union(y_label)))
+    if y_label and y_io:
+        ax.set_ylim(min(min(y_label),min(y_io)), max(max(y_label),max(y_io)))
+    elif y_io:
+        ax.set_ylim(min(y_io), max(y_io))
+    elif y_label:
+        ax.set_ylim(min(y_label), max(y_label))
+
     ax.set_xlabel('Device Activity')
     ax.set_xlim(0,24)
 
