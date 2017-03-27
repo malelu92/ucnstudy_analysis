@@ -66,7 +66,7 @@ def main ():
                     continue
                 iat.append((row[0]-row[1]).total_seconds())
                 traces.append(row[0])   
-                #if (row[0]-row[1]).total_seconds() > 60*60*8:
+                #if (row[0]-row[1]).total_seconds() > 60*60*2:
                     #print 'sleep'
                     #print row[1]
                     #print 'wake up'
@@ -83,31 +83,25 @@ def plot_traces(traces, user, devs, elem_id):
     x = []
     y = []
     y_label = []
-    cont = 0
+
     for timst in traces:
-        #while cont < 10:
-        if timst.date() not in y:
-            y_label.append(timst.date())
         x.append(timst.hour+timst.minute/60.0+timst.second/3600.0)
         y.append(timst.date())
-         #   cont = cont + 1
 
+    y_label = list(set(y))
     hfmt = dates.DateFormatter('%m-%d')
     ax.yaxis.set_major_formatter(hfmt)
-
     ax.plot(x,y, 'og', lw=2)
     ax.set_title('Device usage [user=%s, device=%s]'%(user.username, devs[int(elem_id)]))
-    #ax1.set_ylabel('CDF')
-    print y_label
-    print len(y_label)
+    ax.set_ylabel('Date')
     ax.set_yticks(y_label)
-    ax.set_ylim(y_label[0], y_label[len(y_label)-1])
-    #ax1.set_xscale('log')
-    #ax1.set_xlabel('seconds')
-    #ax1.set_xticks([0.001,1,60,3600,24*3600])
-    #ax1.set_xticklabels(['1ms','1s','1min','1h','1day'])
+    ax.set_ylim(min(y_label), max(y_label))
+    ax.set_xlabel('Device Activity')
     ax.set_xlim(0,24)
-    plt.show()
+
+    plt.tight_layout()
+    fig.savefig('figs_device_constant_usage/%s-%s.png' % (user.username, devs[int(elem_id)]))
+    plt.close(fig)
 
 
 
