@@ -54,11 +54,7 @@ def main ():
         iat = []
         traces = []
     
-        sqlq = """SELECT ts,lag(ts) OVER (ORDER BY ts) FROM \
-        (SELECT ts FROM dnsreqs WHERE devid = :d_id UNION ALL \
-        SELECT ts FROM httpreqs2 WHERE devid = :d_id AND user_url = 't' UNION ALL \
-        SELECT startts from flows WHERE devid = :d_id) \
-        AS events"""
+        sqlq = contains_blacklist(1)
     
         for elem_id in devids:
             for row in ses.execute(text(sqlq).bindparams(d_id = elem_id)):
@@ -91,7 +87,7 @@ def plot_traces(traces, user, devs, elem_id):
     y_label = list(set(y))
     hfmt = dates.DateFormatter('%m-%d')
     ax.yaxis.set_major_formatter(hfmt)
-    ax.plot(x,y, 'og', lw=2)
+    ax.plot(x,y, '.g')
     ax.set_title('Device usage [user=%s, device=%s]'%(user.username, devs[int(elem_id)]))
     ax.set_ylabel('Date')
     ax.set_yticks(y_label)
@@ -142,6 +138,30 @@ def plot_cdf_interval_times(iat, user, devs, elem_id):
     fig.savefig('figs_CDF/%s-%s.png' % (user.username, devs[int(elem_id)]))
     plt.close(fig)
 
+def contains_blacklist (var):
+
+    #contains all
+    if var == 2:
+        return """SELECT ts,lag(ts) OVER (ORDER BY ts) FROM \
+        (SELECT ts FROM dnsreqs WHERE devid = :d_id UNION ALL \
+        SELECT ts FROM httpreqs2 WHERE devid = :d_id AND user_url = 't' UNION ALL \
+        SELECT startts from flows WHERE devid = :d_id) \
+        AS events"""
+
+    #contains only blacklist
+    elif var == 1:
+        return """SELECT ts,lag(ts) OVER (ORDER BY ts) FROM \
+        (SELECT ts FROM dnsreqs WHERE devid =  :d_id AND matches_blacklist = 't' UNION ALL \
+        SELECT ts FROM httpreqs2 WHERE devid = :d_id AND matches_urlblacklist = 't' AND user_url = 't') \
+        AS events;"""
+
+    #doesnt contain blacklist
+    return """SELECT ts,lag(ts) OVER (ORDER BY ts) FROM \
+    (SELECT ts FROM dnsreqs WHERE devid =  :d_id AND matches_blacklist = 'f' UNION ALL \
+    SELECT ts FROM httpreqs2 WHERE devid = :d_id AND matches_urlblacklist = 'f' AND user_url = 't') \
+    AS events;"""
+
+    
 
 if __name__ == "__main__":
     main()
