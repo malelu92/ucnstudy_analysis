@@ -50,48 +50,79 @@ def main ():
         devs = {}
         for d in user.devices:
             devs[d.id] = d.platform
+    
+        sqlq = contains_blacklist(0)
+    
+        sqlq_flow = """SELECT startts, endts FROM flows WHERE devid = :d_id"""
 
-        iat = []
-        traces = []
-    
-        sqlq = contains_blacklist(1)
-    
         for elem_id in devids:
+            iat = []
+            traces = []
             for row in ses.execute(text(sqlq).bindparams(d_id = elem_id)):
                 if (row[1]==None):
                     continue
                 iat.append((row[0]-row[1]).total_seconds())
-                traces.append(row[0])   
+                traces.append(row[0])
                 #if (row[0]-row[1]).total_seconds() > 60*60*2:
                     #print 'sleep'
                     #print row[1]
                     #print 'wake up'
                     #print row[0]
+
+            flow_beg = []
+            flow_end = []
+            for row in ses.execute(text(sqlq_flow).bindparams(d_id = elem_id)):
+                flow_beg.append(row[0])
+                flow_end.append(row[1])
             
-            if iat and user.username != 'desir':
+            #if iat and user.username != 'desir':
+            if flow_beg: 
                 #plot_cdf_interval_times(iat, user, devs, elem_id)
-                plot_traces(traces, user, devs, elem_id)
+                plot_traces(traces, flow_beg, flow_end, user, devs, elem_id)
 
 
-def plot_traces(traces, user, devs, elem_id): 
+def plot_traces(traces, flow_beg, flow_end, user, devs, elem_id): 
 
     fig, ax = plt.subplots(1, 1, figsize=(12, 8))
     x = []
     y = []
     y_label = []
+    x_beg = []
+    x_end = []
+    y_flow = []
 
     for timst in traces:
         x.append(timst.hour+timst.minute/60.0+timst.second/3600.0)
         y.append(timst.date())
 
+    cont = 0
+    for timst in flow_beg:
+        x_beg.append(timst.hour+timst.minute/60.0+timst.second/3600.0)
+        end_timst = flow_end[cont]
+        x_end.append(end_timst.hour+end_timst.minute/60.0+end_timst.second/3600.0)
+        y_flow.append(timst.date())
+        cont = cont + 1
+
+    #print flow_beg
+    
     y_label = list(set(y))
+    y_flow_label = list(set(y_flow))
     hfmt = dates.DateFormatter('%m-%d')
     ax.yaxis.set_major_formatter(hfmt)
     ax.plot(x,y, '.g')
+    #ax.hlines(y, x_beg, x_end, 'g')
+    
     ax.set_title('Device usage [user=%s, device=%s]'%(user.username, devs[int(elem_id)]))
     ax.set_ylabel('Date')
-    ax.set_yticks(y_label)
-    ax.set_ylim(min(y_label), max(y_label))
+    ax.set_yticks(list(set(y_flow).union(y_label)))
+    
+    if y_label and y_flow:
+        ax.set_ylim(min(min(y_label),min(y_flow_label)), max(max(y_label),max(y_flow_label)))
+    elif y_flow:
+        ax.set_ylim(min(y_flow_label), max(y_flow_label))
+    elif y_label:
+        ax.set_ylim(min(y_label), max(y_label))
+
     ax.set_xlabel('Device Activity')
     ax.set_xlim(0,24)
 
@@ -144,8 +175,7 @@ def contains_blacklist (var):
     if var == 2:
         return """SELECT ts,lag(ts) OVER (ORDER BY ts) FROM \
         (SELECT ts FROM dnsreqs WHERE devid = :d_id UNION ALL \
-        SELECT ts FROM httpreqs2 WHERE devid = :d_id AND user_url = 't' UNION ALL \
-        SELECT startts from flows WHERE devid = :d_id) \
+        SELECT ts FROM httpreqs2 WHERE devid = :d_id AND user_url = 't') \
         AS events"""
 
     #contains only blacklist
