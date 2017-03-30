@@ -37,10 +37,9 @@ ses = Session()
 devices = ses.query(Devices)
 
 def get_activities_inter_times():
-
     for device in devices:
         #select only users from ucnstudy
-        if device.id == 5 or device.id == 6 or device.id == 8 or device.id == 12 or device.id == 14 or device.id == 18 or device == 19 or device.id == 21 or device.id == 22:
+        if device.id == 5 or device.id == 6 or device.id == 8 or device.id == 12 or device.id == 14 or device.id == 18 or device.id == 19 or device.id == 21 or device.id == 22:
 
             sql = """SELECT logged_at, finished_at \
             FROM activities \
@@ -66,9 +65,9 @@ def get_activities_inter_times():
                     continue
                 io_iat.append((row[0]-row[1]).total_seconds())
 
-            plot_traces(beg, end, io, device.device_id)
-            plot_cdf_interval_times(io_iat, device.device_id)
-            #calculate_block_intervals(beg, end, io, 30)
+            #plot_traces(beg, end, io, device.device_id)
+            #plot_cdf_interval_times(io_iat, device.device_id)
+            calculate_block_intervals(beg, end, io, 60)
             
 
 def plot_traces(beg, end, io, user): 
@@ -123,39 +122,89 @@ def plot_traces(beg, end, io, user):
     plt.close(fig)
 
 
-def calculate_block_intervals(beg_act, end_act, io, time_itv):
+def calculate_block_intervals(act_beg, act_end, io, time_itv):
 
     io_beg = []
     io_end = []
     #create io blocks
     io_beg.append(io[0])
     for i in range(0,len(io)-1):
-        if (io[i+1] - io[i]).total_seconds() > 30:
+        if (io[i+1] - io[i]).total_seconds() > time_itv:
             io_end.append(io[i])
             io_beg.append(io[i+1])
     io_end.append(io[len(io)-1])
 
-    for i in range (0, len(io_beg)):
-        print 'io_beg'
-        print io_beg[i]
-        print 'io_end'
-        print io_end[i]
+    #for i in range (0, len(io_beg)):
+        #print 'io_beg'
+        #print io_beg[i]
+        #print 'io_end'
+        #print io_end[i]
         
+    mix_beg = []
+    mix_end = []
+    #unite io and act blocks
+    if len(io_beg) > len(act_beg):
+        io_longer = 1
+    else:
+        io_longer = 0
 
-    #j = 0
-    #iat = []
-    #for i in range(0, max(len(beg_act), len(io))):
-     #   mini_interval = []
-        #get iat from blocks of intervals
-      #  act = beg_act[i]
-       # while act > io[j]:
-        #    mini_interval.append(io)
-         #   j = j + 1
-        #mini_interval.append(act)
+    if io_longer:
+        j = 0
+        #first get everything that overlaps
+        for i in range(0, len(io_beg)):
+            if j == len(act_beg):
+                break
+            min_mix = io_beg[i]
+            max_mix = io_end[i]
+
+            overlap = (io_beg[i] <= act_end[j] and io_end[i] >= act_beg[j])
+            #if doesnt overlap
+            while !overlap:
+                if io_beg[i+1] < act_beg[j]:
+                    continue
+                else:
+                    j = j+1
+                overlap = (io_beg[i] <= act_end[j] and io_end[i] >= act_beg[j])
+
+            #if overlaps
+            while overlap:
+                #get border values
+                min_mix = min(min_mix, act_beg[j])
+                max_mix = max(max_mix, act_end[j])
+                if act_end[j] < io_beg[i+1]:
+                    j = j+1
+                else:
+                    continue
+                overlap = (io_beg[i] <= act_end[j] and io_end[i] >= act_beg[j])
+            #merged block
+            mix_beg.append(min_mix)
+            mix_end.append(max_mix)
+
+            
+        j = 0
+        #second add non overlaps
+        for i in range(0, len(io_beg)):
+            if j == len(mix_beg):
+                if 
+            #if doesnt overlap
+            overlap = (io_end[i] < mix_beg[j] and io_beg[i] > mix_end[j])
+
+            while overlap:
+                
         
-        #calculate iat
-        #for k in range(0, len(mini_interval)-1):
-         #   iat.append((mini_interval[k+1]-mini_interval[k]).total_seconds())
+        #in case j is still not complete
+        if 
+
+
+
+
+
+
+
+
+
+
+        
 
 def plot_cdf_interval_times(iat, user):
 
