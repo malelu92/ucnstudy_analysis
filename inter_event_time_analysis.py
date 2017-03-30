@@ -51,9 +51,9 @@ def main ():
         for d in user.devices:
             devs[d.id] = d.platform
     
-        #sqlq = contains_blacklist(0)
-        url = '\'%http://c.go-mpulse.net%\''
-        sqlq = get_inter_event_query(url)
+        sqlq = contains_blacklist(0)
+        #url = '\'%http://su.ff.avast.com%\''
+        #sqlq = get_inter_event_query(url)
         
         sqlq_flow = """SELECT startts, endts FROM flows WHERE devid = :d_id"""
         for elem_id in devids:
@@ -78,11 +78,11 @@ def main ():
                 flow_beg.append(row[0])
                 flow_end.append(row[1])
             
-            if iat:
-                plot_cdf_interval_times(iat, user, devs, elem_id, url)
+            #if iat:
+                #plot_cdf_interval_times(iat, user, devs, elem_id, url)
             
-            #if flow_beg:
-                #plot_traces(traces, flow_beg, flow_end, user, devs, elem_id)
+            if flow_beg:
+                plot_traces(traces, flow_beg, flow_end, user, devs, elem_id)
 
 
 def plot_traces(traces, flow_beg, flow_end, user, devs, elem_id): 
@@ -113,8 +113,9 @@ def plot_traces(traces, flow_beg, flow_end, user, devs, elem_id):
     y_flow_label = list(set(y_flow))
     hfmt = dates.DateFormatter('%m-%d')
     ax.yaxis.set_major_formatter(hfmt)
+    
+    ax.hlines(y, x_beg, x_end, 'm')
     ax.plot(x,y, '.g')
-    ax.hlines(y, x_beg, x_end, 'g')
     
     ax.set_title('Device usage [user=%s, device=%s]'%(user.username, devs[int(elem_id)]))
     ax.set_ylabel('Date')
@@ -175,7 +176,7 @@ def plot_cdf_interval_times(iat, user, devs, elem_id, url):
         ax3.set_xlim(600,max(iat))
     
     plt.tight_layout()
-    fig.savefig('figs_CDF/%s-%s-mpulse.png' % (user.username, devs[int(elem_id)]))
+    fig.savefig('figs_CDF/%s-%s.png' % (user.username, devs[int(elem_id)]))
     plt.close(fig)
 
 def contains_blacklist (var):
@@ -197,7 +198,8 @@ def contains_blacklist (var):
     #doesnt contain blacklist
     return """SELECT ts,lag(ts) OVER (ORDER BY ts) FROM \
     (SELECT ts FROM dnsreqs WHERE devid =  :d_id AND matches_blacklist = 'f' UNION ALL \
-    SELECT ts FROM httpreqs2 WHERE devid = :d_id AND matches_urlblacklist = 'f' AND user_url = 't') \
+    SELECT ts FROM httpreqs2 WHERE devid = :d_id AND matches_urlblacklist = 'f' AND user_url = 't' UNION ALL \
+    SELECT ts FROM sockets WHERE devid = :d_id AND is_foreground = 't') \
     AS events;"""
 
 def get_inter_event_query(url):

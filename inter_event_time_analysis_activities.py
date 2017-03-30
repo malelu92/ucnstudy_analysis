@@ -36,17 +36,17 @@ Session = sessionmaker(bind=engine)
 ses = Session()
 devices = ses.query(Devices)
 
-def main():
+def get_activities_inter_times():
 
     for device in devices:
         #select only users from ucnstudy
-        if device.id == 5 or device.id == 6 or device.id == 8 or device.id == 11 or device.id == 12:
+        if device.id == 5 or device.id == 6 or device.id == 8 or device.id == 12 or device.id == 14 or device.id == 18 or device == 19 or device.id == 21 or device.id == 22:
 
             sql = """SELECT logged_at, finished_at \
             FROM activities \
             WHERE session_id = :d_id AND fullscreen = 1"""
 
-            sql_io = """SELECT logged_at \
+            sql_io = """SELECT logged_at, lag(logged_at) OVER (ORDER BY logged_at) \
             FROM io \
             WHERE session_id = :d_id"""
 
@@ -58,11 +58,18 @@ def main():
                 end.append(row[1])
 
             io = []
+            io_iat = []
+            cont = 0
             for row in ses.execute(text(sql_io).bindparams(d_id = device.id)):
                 io.append(row[0])
+                if (row[1]==None):
+                    continue
+                io_iat.append((row[0]-row[1]).total_seconds())
 
             plot_traces(beg, end, io, device.device_id)
-
+            plot_cdf_interval_times(io_iat, device.device_id)
+            #calculate_block_intervals(beg, end, io, 30)
+            
 
 def plot_traces(beg, end, io, user): 
 
@@ -116,13 +123,46 @@ def plot_traces(beg, end, io, user):
     plt.close(fig)
 
 
+def calculate_block_intervals(beg_act, end_act, io, time_itv):
 
-def plot_cdf_interval_times(iat, user, devs, elem_id):
+    io_beg = []
+    io_end = []
+    #create io blocks
+    io_beg.append(io[0])
+    for i in range(0,len(io)-1):
+        if (io[i+1] - io[i]).total_seconds() > 30:
+            io_end.append(io[i])
+            io_beg.append(io[i+1])
+    io_end.append(io[len(io)-1])
+
+    for i in range (0, len(io_beg)):
+        print 'io_beg'
+        print io_beg[i]
+        print 'io_end'
+        print io_end[i]
+        
+
+    #j = 0
+    #iat = []
+    #for i in range(0, max(len(beg_act), len(io))):
+     #   mini_interval = []
+        #get iat from blocks of intervals
+      #  act = beg_act[i]
+       # while act > io[j]:
+        #    mini_interval.append(io)
+         #   j = j + 1
+        #mini_interval.append(act)
+        
+        #calculate iat
+        #for k in range(0, len(mini_interval)-1):
+         #   iat.append((mini_interval[k+1]-mini_interval[k]).total_seconds())
+
+def plot_cdf_interval_times(iat, user):
 
     fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(12, 4))
     (x,y) = datautils.aecdf(iat)
     ax1.plot(x,y, '-b', lw=2)
-    ax1.set_title('Inter-Event Time [user=%s, events=%d]'%(user.username, len(x)))    
+    ax1.set_title('Inter-Event Time [user=%s, events=%d]'%(user, len(x)))    
     ax1.set_ylabel('CDF')
     ax1.set_xscale('log')
     ax1.set_xlabel('seconds')
@@ -151,10 +191,10 @@ def plot_cdf_interval_times(iat, user, devs, elem_id):
     ax3.set_xlim(600,max(iat))
     
     plt.tight_layout()
-    fig.savefig('figs_CDF/%s-%s.png' % (user.username, devs[int(elem_id)]))
+    fig.savefig('figs_CDF_io/%s.png' % (user))
     plt.close(fig)
 
     
 
 if __name__ == "__main__":
-    main()
+    get_activities_inter_times()
