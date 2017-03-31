@@ -67,8 +67,9 @@ def get_activities_inter_times():
 
             #plot_traces(beg, end, io, device.device_id)
             #plot_cdf_interval_times(io_iat, device.device_id)
-            mix_beg, mix_end = calculate_block_intervals(beg, end, io, 60)
-            plot_traces(mix_beg, mix_end, [], device.device_id)
+            if device.id == 12:
+                mix_beg, mix_end = calculate_block_intervals(beg, end, io, 60)
+                plot_traces(mix_beg, mix_end, [], device.device_id)
 
 def plot_traces(beg, end, io, user): 
 
@@ -83,12 +84,36 @@ def plot_traces(beg, end, io, user):
     cont = 0
     for timst in beg:
         #print timst
-        x_beg.append(timst.hour+timst.minute/60.0+timst.second/3600.0)
         end_timst = end[cont]
-        x_end.append(end_timst.hour+end_timst.minute/60.0+end_timst.second/3600.0)
-        y.append(timst.date())
-        cont = cont + 1
+        d = timst.date()
+        if timst.day == end_timst.day:
+            x_beg.append(timst.hour+timst.minute/60.0+timst.second/3600.0)
+            x_end.append(end_timst.hour+end_timst.minute/60.0+end_timst.second/3600.0)
+            y.append(d)
+            cont = cont + 1
+        else:
+            print 'gaidasdhiuasdas'
+            print timst.day
+            print end_timst.day
+            x_beg.append(timst.hour+timst.minute/60.0+timst.second/3600.0)
+            x_end.append(23.99999)
+            y.append(timst.date())
 
+            x_beg.append(00.00001)
+            x_end.append(end_timst.hour+end_timst.minute/60.0+end_timst.second/3600.0)
+            d += timedelta(days=1)
+            y.append(d)
+            
+            cont = cont + 1
+
+        #if timst.day == 22:
+         #   print '======================'
+          #  print 'beg ' + str(beg[cont-1])
+           # print 'end ' + str(end[cont -1])
+            #print 'beg_t ' + str (x_beg[cont-1])
+            #print 'end_t ' + str (x_end[cont-1])
+
+    print 'lala'
     for timst in io:
         x_io.append(timst.hour+timst.minute/60.0+timst.second/3600.0)
         y_io.append(timst.date())
@@ -101,6 +126,15 @@ def plot_traces(beg, end, io, user):
     #print x_beg
     #print 'x_end'
     #print x_end
+
+    cont = 0
+    while cont < len(y):
+        d = y[cont]
+        if d.day == 24 or d.day == 25:
+            print '======================='
+            print 'beg_t ' + str (x_beg[cont])
+            print 'end_t ' + str (x_end[cont])
+        cont = cont + 1
 
     ax.hlines(y, x_beg, x_end, 'g')
     #ax.plot(x_io, y_io, '.g')
@@ -130,8 +164,8 @@ def calculate_block_intervals(act_beg, act_end, io, time_itv):
     j = 0
     for i in range (0, len(act_beg)):
         #print i
-        print act_beg[i]
-        print io[j]
+        #print act_beg[i]
+        #print io[j]
         #raw_input('Enter your input:')
         if act_beg[i] <= io[j]:
             print 'caso 1'
@@ -167,8 +201,8 @@ def calculate_block_intervals(act_beg, act_end, io, time_itv):
             #print io[j]
             #print act_beg[i]
             while io[j] < act_beg[i]:
-                print 'caso 2 - parte 1'
-                print io[j]
+                #print 'caso 2 - parte 1'
+                #print io[j]
                 block_beg = io[j]
                 block_end = io[j]
                 #if i == 8:
@@ -185,18 +219,23 @@ def calculate_block_intervals(act_beg, act_end, io, time_itv):
                         j =j+1
                         #if ios merge with act
                         if block_end > act_beg[i]:
+                            print 'merge block io'
+                            print block_beg
+                            print block_end
+                            print act_beg[i]
+                            print act_end[i]
                             block_end = act_end[i]
                             mix_beg.append(block_beg)
                             mix_end.append(block_end)
                             #print 'vai sair'
                             mixed = True
                             break
-                        if j == len(io):
+                        if j == len(io)-1:
                             break
-                    print 'block_beg'
-                    print block_beg
-                    print 'block_end'
-                    print block_end
+                   # print 'block_beg'
+                    #print block_beg
+                    #print 'block_end'
+                    #print block_end
                     #raw_input('Enter your input:')
                     #print 'saiu mini loop'
                 #block only of ios
@@ -249,6 +288,14 @@ def calculate_block_intervals(act_beg, act_end, io, time_itv):
         mix_end.append(block_end)
 
     print 'end of function'
+
+    cont = 0
+    for elem in mix_beg:
+        #print 'beg ' + str (elem)
+        #print 'end ' + str (mix_end[cont])
+        cont = cont + 1
+        
+
     return mix_beg, mix_end
                     
    # j = 0
