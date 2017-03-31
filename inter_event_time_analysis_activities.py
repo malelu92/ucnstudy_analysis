@@ -124,14 +124,104 @@ def plot_traces(beg, end, io, user):
 
 def calculate_block_intervals(act_beg, act_end, io, time_itv):
 
+    mix_beg = []
+    mix_end = []
+    
+    j = 0
+    for i in range (0, len(act_beg)):
+        if act_beg[i] <= io[j]:
+            #if done checking io
+            if j == len(io):
+                break
+            block_beg = act_beg[i]
+            block_end = act_end[i]
+            #ignore io points that are already inside act interval
+            while io[j] > block_beg and io[j] < block_end:
+                j = j + 1
+            #merge intervals that are close
+            while (o[j] - block_end).total_seconds() <= time_itv:
+                block_end = o[j]
+                j = j+1
+            mix_beg.append(block_beg)
+            mix_end.append(block_end)
+
+        else:
+            #if done checking io
+            if j == len(io):
+                break
+
+            block_beg = io[j]
+            block_end = io[j]
+            #merge ios
+            while io[j] < act_beg[i] and j < len(io):
+                mixed = False
+                while (io[j+1] - block_end).total_seconds() <= time_itv:
+                    block_end = io[j+1]
+                    j =j+1
+                    #if ios merge with act
+                    if block_end > act_beg[i]:
+                        block_end = act_end[i]
+                        mix_beg.append(block_beg)
+                        mix_end.append(block_end)
+                        print 'vai sair'
+                        mixed = True
+                        break
+                print 'saiu mini loop'
+                #block only of ios
+                if !mixed:
+                    mix_beg.append(block_beg)
+                    mix_end.append(block_end)
+                    j = j + 1
+
+            if !mixed:
+            #if ios dont merge with block
+            block_beg = act_beg[i]
+            block_end = act_end[i]
+            #ignore io points that are already inside act interval
+            while io[j] > block_beg and io[j] < block_end and j < len(io):
+                j = j + 1
+            mix_beg.append(block_beg)
+            mix_end.append(block_end)
+
+
+
+    #in case there is still io to check
+    if j < len(io):
+
+    j = 0
+    if io[0] < act_beg[j]:
+        block_beg = io[0]
+        block_end = io[0]
+        for i in range(0, len(io)-1):
+            if io[i] < act_beg[j]:
+                #merge io
+                if (io[i+1] - io[i]).total_seconds() > time_itv:
+                    mix_beg.append(io[i])
+                    mix_end.append(io[i+1])  
+
+
+    io_beg.append(io[0])
+    for i in range(0,len(io)-1):
+    if io
+        while io[i] < 
+        if (io[i+1] - io[i]).total_seconds() > time_itv:
+            io_beg.append(io[i])
+            io_end.append(io[i+1])
+    io_end.append(io[len(io)-1])
+
+
+
+
+
+
     io_beg = []
     io_end = []
     #create io blocks
     io_beg.append(io[0])
     for i in range(0,len(io)-1):
         if (io[i+1] - io[i]).total_seconds() > time_itv:
-            io_end.append(io[i])
-            io_beg.append(io[i+1])
+            io_beg.append(io[i])
+            io_end.append(io[i+1])
     io_end.append(io[len(io)-1])
 
     #for i in range (0, len(io_beg)):
@@ -148,6 +238,8 @@ def calculate_block_intervals(act_beg, act_end, io, time_itv):
     else:
         io_longer = 0
 
+    cont_i
+    cont_j
     if io_longer:
         j = 0
         #first get everything that overlaps
@@ -164,7 +256,7 @@ def calculate_block_intervals(act_beg, act_end, io, time_itv):
                     continue
                 else:
                     j = j+1
-                overlap = (io_beg[i] <= act_end[j] and io_end[i] >= act_beg[j])
+                    overlap = (io_beg[i] <= act_end[j] and io_end[i] >= act_beg[j])
 
             #if overlaps
             while overlap:
@@ -180,18 +272,26 @@ def calculate_block_intervals(act_beg, act_end, io, time_itv):
             mix_beg.append(min_mix)
             mix_end.append(max_mix)
 
-            
+        union_beg = []
+        union_end = []
         j = 0
         #second add non overlaps
         for i in range(0, len(io_beg)):
             if j == len(mix_beg):
-                if 
-            #if doesnt overlap
-            overlap = (io_end[i] < mix_beg[j] and io_beg[i] > mix_end[j])
+                cont = i
+                break
 
-            while overlap:
-                
-        
+            overlap = (io_end[i] < mix_beg[j] and io_beg[i] > mix_end[j])
+            
+            #if doesnt overlap
+            while !overlap:
+                if io_beg[i] < mix_beg[j]:
+                    union_beg.append(io_beg[i])
+                    union_end.append(io_end[i])
+                    union_beg.append(mix_beg[j])
+                    union_end.append(mix_end[j])
+                else 
+
         #in case j is still not complete
         if 
 
