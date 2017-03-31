@@ -81,9 +81,43 @@ def main ():
             #if iat:
                 #plot_cdf_interval_times(iat, user, devs, elem_id, url)
             
-            if flow_beg:
-                plot_traces(traces, flow_beg, flow_end, user, devs, elem_id)
+            #if flow_beg:
+                #plot_traces(traces, flow_beg, flow_end, user, devs, elem_id)
+            
+            if traces and user.username == 'clifford.wife':
+                print 'entrou'
+                print elem_id
+                if elem_id == str(23):
+                    print 'entrou2'
+                    mix_beg, mix_end = make_block_usage(traces, 60*5)
+                    cont = 0
+                    for elem in mix_beg:
+                        print 'beg ' + str(elem)
+                        print 'end ' + str(mix_end[cont])
+                        print '==========='
+                        cont = cont+1
+                    plot_traces([], mix_beg, mix_end, user, devs, elem_id)
 
+
+def make_block_usage(traces, time_itv):
+
+    mix_beg = []
+    mix_end = []
+    block_beg = traces[0]
+    block_end = block_beg
+    for i in range(0,len(traces)-1):
+        #print len(traces)
+        #if points are in the same block
+        if (traces[i+1] - block_end).total_seconds() <= time_itv:
+            block_end = traces[i+1]
+        else:
+            mix_beg.append(block_beg)
+            mix_end.append(block_end)
+            if i + 1 < len(traces):
+                block_beg = traces[i+1]
+                block_end = block_beg
+
+    return mix_beg, mix_end
 
 def plot_traces(traces, flow_beg, flow_end, user, devs, elem_id): 
 
@@ -101,11 +135,31 @@ def plot_traces(traces, flow_beg, flow_end, user, devs, elem_id):
 
     cont = 0
     for timst in flow_beg:
-        x_beg.append(timst.hour+timst.minute/60.0+timst.second/3600.0)
         end_timst = flow_end[cont]
-        x_end.append(end_timst.hour+end_timst.minute/60.0+end_timst.second/3600.0)
-        y_flow.append(timst.date())
-        cont = cont + 1
+        d = timst.date()
+        if timst.day == end_timst.day:
+            x_beg.append(timst.hour+timst.minute/60.0+timst.second/3600.0)
+            x_end.append(end_timst.hour+end_timst.minute/60.0+end_timst.second/3600.0)
+            y_flow.append(d)
+            cont = cont + 1
+        else:
+            x_beg.append(timst.hour+timst.minute/60.0+timst.second/3600.0)
+            x_end.append(23.99999)
+            y.append(timst.date())
+
+            x_beg.append(00.01)
+            x_end.append(end_timst.hour+end_timst.minute/60.0+end_timst.second/3600.0)
+            d += timedelta(days=1)
+            y_flow.append(d)
+
+            cont = cont + 1
+
+    cont = 0
+    for elem in x_beg:
+        print '__beg ' + str(elem)
+        print '__end ' + str(x_end[cont])
+        print '================='
+        cont +=1
 
     #print flow_beg
     
@@ -114,8 +168,8 @@ def plot_traces(traces, flow_beg, flow_end, user, devs, elem_id):
     hfmt = dates.DateFormatter('%m-%d')
     ax.yaxis.set_major_formatter(hfmt)
     
-    ax.hlines(y, x_beg, x_end, 'm')
-    ax.plot(x,y, '.g')
+    ax.hlines(y_flow, x_beg, x_end, 'g')
+    #ax.plot(x,y, '.g')
     
     ax.set_title('Device usage [user=%s, device=%s]'%(user.username, devs[int(elem_id)]))
     ax.set_ylabel('Date')
@@ -198,8 +252,7 @@ def contains_blacklist (var):
     #doesnt contain blacklist
     return """SELECT ts,lag(ts) OVER (ORDER BY ts) FROM \
     (SELECT ts FROM dnsreqs WHERE devid =  :d_id AND matches_blacklist = 'f' UNION ALL \
-    SELECT ts FROM httpreqs2 WHERE devid = :d_id AND matches_urlblacklist = 'f' AND user_url = 't' UNION ALL \
-    SELECT ts FROM sockets WHERE devid = :d_id AND is_foreground = 't') \
+    SELECT ts FROM httpreqs2 WHERE devid = :d_id AND matches_urlblacklist = 'f' AND user_url = 't') \
     AS events;"""
 
 def get_inter_event_query(url):
