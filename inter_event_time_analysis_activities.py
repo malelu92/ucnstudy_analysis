@@ -67,8 +67,8 @@ def get_activities_inter_times():
 
             #plot_traces(beg, end, io, device.device_id)
             #plot_cdf_interval_times(io_iat, device.device_id)
-            calculate_block_intervals(beg, end, io, 60)
-            
+            mix_beg, mix_end = calculate_block_intervals(beg, end, io, 60)
+            plot_traces(mix_beg, mix_end, [], device.device_id)
 
 def plot_traces(beg, end, io, user): 
 
@@ -103,7 +103,7 @@ def plot_traces(beg, end, io, user):
     #print x_end
 
     ax.hlines(y, x_beg, x_end, 'g')
-    ax.plot(x_io, y_io, '.g')
+    #ax.plot(x_io, y_io, '.g')
     ax.set_title('Device usage [user=%s]'%(user))
     ax.set_ylabel('Date')
     ax.set_yticks(list(set(y_io).union(y_label)))
@@ -118,7 +118,7 @@ def plot_traces(beg, end, io, user):
     ax.set_xlim(0,24)
 
     plt.tight_layout()
-    fig.savefig('figs_device_usage_activities/%s.png' % (user))
+    fig.savefig('figs_device_usage_activities_block/%s.png' % (user))
     plt.close(fig)
 
 
@@ -126,10 +126,15 @@ def calculate_block_intervals(act_beg, act_end, io, time_itv):
 
     mix_beg = []
     mix_end = []
-    
+    #print io.sort()
     j = 0
     for i in range (0, len(act_beg)):
+        #print i
+        print act_beg[i]
+        print io[j]
+        #raw_input('Enter your input:')
         if act_beg[i] <= io[j]:
+            print 'caso 1'
             #if done checking io
             if j == len(io):
                 break
@@ -138,14 +143,20 @@ def calculate_block_intervals(act_beg, act_end, io, time_itv):
             #ignore io points that are already inside act interval
             while io[j] > block_beg and io[j] < block_end:
                 j = j + 1
+                if j == len(io):
+                    break
             #merge intervals that are close
-            while (o[j] - block_end).total_seconds() <= time_itv:
-                block_end = o[j]
+            while (io[j] - block_end).total_seconds() <= time_itv:
+                block_end = io[j]
                 j = j+1
+                if j == len(io):
+                    break
             mix_beg.append(block_beg)
             mix_end.append(block_end)
 
         else:
+            print 'caso 2'
+            #raw_input('Enter your input:')
             #if done checking io
             if j == len(io):
                 break
@@ -153,44 +164,96 @@ def calculate_block_intervals(act_beg, act_end, io, time_itv):
             block_beg = io[j]
             block_end = io[j]
             #merge ios
-            while io[j] < act_beg[i] and j < len(io):
+            #print io[j]
+            #print act_beg[i]
+            while io[j] < act_beg[i]:
+                print 'caso 2 - parte 1'
+                print io[j]
+                block_beg = io[j]
+                block_end = io[j]
+                #if i == 8:
+                 #   print io[j+1]
+                  #  break
                 mixed = False
-                while (io[j+1] - block_end).total_seconds() <= time_itv:
-                    block_end = io[j+1]
-                    j =j+1
-                    #if ios merge with act
-                    if block_end > act_beg[i]:
-                        block_end = act_end[i]
-                        mix_beg.append(block_beg)
-                        mix_end.append(block_end)
-                        print 'vai sair'
-                        mixed = True
-                        break
-                print 'saiu mini loop'
+                if j + 1 < len(io) - 1:
+                    #print len(io)
+                    #print j
+                    while (io[j+1] - block_end).total_seconds() <= time_itv:
+                        #print 'entrou'
+                        #print io[j+1]
+                        block_end = io[j+1]
+                        j =j+1
+                        #if ios merge with act
+                        if block_end > act_beg[i]:
+                            block_end = act_end[i]
+                            mix_beg.append(block_beg)
+                            mix_end.append(block_end)
+                            #print 'vai sair'
+                            mixed = True
+                            break
+                        if j == len(io):
+                            break
+                    print 'block_beg'
+                    print block_beg
+                    print 'block_end'
+                    print block_end
+                    #raw_input('Enter your input:')
+                    #print 'saiu mini loop'
                 #block only of ios
-                if !mixed:
+                if not(mixed):
                     mix_beg.append(block_beg)
                     mix_end.append(block_end)
                     j = j + 1
 
-            if !mixed:
-            #if ios dont merge with block
-            block_beg = act_beg[i]
-            block_end = act_end[i]
-            #ignore io points that are already inside act interval
-            while io[j] > block_beg and io[j] < block_end and j < len(io):
-                j = j + 1
-            mix_beg.append(block_beg)
-            mix_end.append(block_end)
+                if j == len(io):
+                    break
 
 
+            #print 'saiu while case 2'
+            if not(mixed):
+                #if ios dont merge with block
+                block_beg = act_beg[i]
+                block_end = act_end[i]
+                #ignore io points that are already inside act interval
+                if j < len(io):
+                    while io[j] > block_beg and io[j] < block_end:
+                        j = j + 1
+                        if j == len(io):
+                            break
+                #print 'saiu while'
+                mix_beg.append(block_beg)
+                mix_end.append(block_end)
 
+    print 'caso 3'
     #in case there is still io to check
-    if j < len(io):
+    while j < len(io)-1:
+        #print 'while case 3'
+        loop = False
+        block_beg = io[j]
+        block_end = io[j]
+        if j + 1 < len(io): 
+            #print 'aqui'
+            #print j
+            #print len(io)
+            while (io[j+1] - block_end).total_seconds() <= time_itv:
+                block_end = io[j+1]
+                j = j + 1
+                loop = True
+                #print j
+                if j == len(io)-1:
+                    #print 'entrou'
+                    break
+            if loop == False:
+                j = j + 1
+        mix_beg.append(block_beg)
+        mix_end.append(block_end)
 
-    j = 0
-    if io[0] < act_beg[j]:
-        block_beg = io[0]
+    print 'end of function'
+    return mix_beg, mix_end
+                    
+   # j = 0
+   # if io[0] < act_beg[j]:
+    """    block_beg = io[0]
         block_end = io[0]
         for i in range(0, len(io)-1):
             if io[i] < act_beg[j]:
@@ -296,7 +359,7 @@ def calculate_block_intervals(act_beg, act_end, io, time_itv):
         if 
 
 
-
+"""
 
 
 
