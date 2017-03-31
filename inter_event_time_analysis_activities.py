@@ -67,7 +67,7 @@ def get_activities_inter_times():
 
             #plot_traces(beg, end, io, device.device_id)
             #plot_cdf_interval_times(io_iat, device.device_id)
-            if device.id == 12:
+            if device.id == 22:
                 mix_beg, mix_end = calculate_block_intervals(beg, end, io, 60)
                 plot_traces(mix_beg, mix_end, [], device.device_id)
 
@@ -93,13 +93,13 @@ def plot_traces(beg, end, io, user):
             cont = cont + 1
         else:
             print 'gaidasdhiuasdas'
-            print timst.day
-            print end_timst.day
+            print timst
+            print end_timst
             x_beg.append(timst.hour+timst.minute/60.0+timst.second/3600.0)
             x_end.append(23.99999)
             y.append(timst.date())
 
-            x_beg.append(00.00001)
+            x_beg.append(00.01)
             x_end.append(end_timst.hour+end_timst.minute/60.0+end_timst.second/3600.0)
             d += timedelta(days=1)
             y.append(d)
@@ -132,6 +132,7 @@ def plot_traces(beg, end, io, user):
         d = y[cont]
         if d.day == 24 or d.day == 25:
             print '======================='
+            print d.day
             print 'beg_t ' + str (x_beg[cont])
             print 'end_t ' + str (x_end[cont])
         cont = cont + 1
