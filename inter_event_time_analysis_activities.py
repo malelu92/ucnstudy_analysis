@@ -82,7 +82,6 @@ def plot_traces(beg, end, io, user):
 
     cont = 0
     for timst in beg:
-        #print timst
         end_timst = end[cont]
         d = timst.date()
         if timst.day == end_timst.day:
@@ -91,9 +90,6 @@ def plot_traces(beg, end, io, user):
             y.append(d)
             cont = cont + 1
         else:
-            print 'gaidasdhiuasdas'
-            print timst
-            print end_timst
             x_beg.append(timst.hour+timst.minute/60.0+timst.second/3600.0)
             x_end.append(23.99999)
             y.append(timst.date())
@@ -105,14 +101,6 @@ def plot_traces(beg, end, io, user):
             
             cont = cont + 1
 
-        #if timst.day == 22:
-         #   print '======================'
-          #  print 'beg ' + str(beg[cont-1])
-           # print 'end ' + str(end[cont -1])
-            #print 'beg_t ' + str (x_beg[cont-1])
-            #print 'end_t ' + str (x_end[cont-1])
-
-    print 'lala'
     for timst in io:
         x_io.append(timst.hour+timst.minute/60.0+timst.second/3600.0)
         y_io.append(timst.date())
@@ -121,20 +109,6 @@ def plot_traces(beg, end, io, user):
     hfmt = dates.DateFormatter('%m-%d')
     ax.yaxis.set_major_formatter(hfmt)
     #ax.plot(x,y, '.g')
-    #print 'x_beg'
-    #print x_beg
-    #print 'x_end'
-    #print x_end
-
-    cont = 0
-    while cont < len(y):
-        d = y[cont]
-        if d.day == 24 or d.day == 25:
-            print '======================='
-            print d.day
-            print 'beg_t ' + str (x_beg[cont])
-            print 'end_t ' + str (x_end[cont])
-        cont = cont + 1
 
     ax.hlines(y, x_beg, x_end, 'g')
     #ax.plot(x_io, y_io, '.g')
@@ -160,15 +134,9 @@ def calculate_block_intervals(act_beg, act_end, io, time_itv):
 
     mix_beg = []
     mix_end = []
-    #print io.sort()
     j = 0
     for i in range (0, len(act_beg)):
-        #print i
-        #print act_beg[i]
-        #print io[j]
-        #raw_input('Enter your input:')
         if act_beg[i] <= io[j]:
-            print 'caso 1'
             #if done checking io
             if j == len(io):
                 break
@@ -189,8 +157,6 @@ def calculate_block_intervals(act_beg, act_end, io, time_itv):
             mix_end.append(block_end)
 
         else:
-            print 'caso 2'
-            #raw_input('Enter your input:')
             #if done checking io
             if j == len(io):
                 break
@@ -198,46 +164,23 @@ def calculate_block_intervals(act_beg, act_end, io, time_itv):
             block_beg = io[j]
             block_end = io[j]
             #merge ios
-            #print io[j]
-            #print act_beg[i]
             while io[j] < act_beg[i]:
-                #print 'caso 2 - parte 1'
-                #print io[j]
                 block_beg = io[j]
                 block_end = io[j]
-                #if i == 8:
-                 #   print io[j+1]
-                  #  break
                 mixed = False
                 if j + 1 < len(io) - 1:
-                    #print len(io)
-                    #print j
                     while (io[j+1] - block_end).total_seconds() <= time_itv:
-                        #print 'entrou'
-                        #print io[j+1]
                         block_end = io[j+1]
                         j =j+1
                         #if ios merge with act
                         if block_end > act_beg[i]:
-                            print 'merge block io'
-                            print block_beg
-                            print block_end
-                            print act_beg[i]
-                            print act_end[i]
                             block_end = act_end[i]
                             mix_beg.append(block_beg)
                             mix_end.append(block_end)
-                            #print 'vai sair'
                             mixed = True
                             break
                         if j == len(io)-1:
                             break
-                   # print 'block_beg'
-                    #print block_beg
-                    #print 'block_end'
-                    #print block_end
-                    #raw_input('Enter your input:')
-                    #print 'saiu mini loop'
                 #block only of ios
                 if not(mixed):
                     mix_beg.append(block_beg)
@@ -248,7 +191,6 @@ def calculate_block_intervals(act_beg, act_end, io, time_itv):
                     break
 
 
-            #print 'saiu while case 2'
             if not(mixed):
                 #if ios dont merge with block
                 block_beg = act_beg[i]
@@ -259,161 +201,27 @@ def calculate_block_intervals(act_beg, act_end, io, time_itv):
                         j = j + 1
                         if j == len(io):
                             break
-                #print 'saiu while'
                 mix_beg.append(block_beg)
                 mix_end.append(block_end)
 
-    print 'caso 3'
     #in case there is still io to check
     while j < len(io)-1:
-        #print 'while case 3'
         loop = False
         block_beg = io[j]
         block_end = io[j]
         if j + 1 < len(io): 
-            #print 'aqui'
-            #print j
-            #print len(io)
             while (io[j+1] - block_end).total_seconds() <= time_itv:
                 block_end = io[j+1]
                 j = j + 1
                 loop = True
-                #print j
                 if j == len(io)-1:
-                    #print 'entrou'
                     break
             if loop == False:
                 j = j + 1
         mix_beg.append(block_beg)
-        mix_end.append(block_end)
-
-    print 'end of function'
-
-    cont = 0
-    for elem in mix_beg:
-        #print 'beg ' + str (elem)
-        #print 'end ' + str (mix_end[cont])
-        cont = cont + 1
-        
+        mix_end.append(block_end)        
 
     return mix_beg, mix_end
-                    
-   # j = 0
-   # if io[0] < act_beg[j]:
-    """    block_beg = io[0]
-        block_end = io[0]
-        for i in range(0, len(io)-1):
-            if io[i] < act_beg[j]:
-                #merge io
-                if (io[i+1] - io[i]).total_seconds() > time_itv:
-                    mix_beg.append(io[i])
-                    mix_end.append(io[i+1])  
-
-
-    io_beg.append(io[0])
-    for i in range(0,len(io)-1):
-    if io
-        while io[i] < 
-        if (io[i+1] - io[i]).total_seconds() > time_itv:
-            io_beg.append(io[i])
-            io_end.append(io[i+1])
-    io_end.append(io[len(io)-1])
-
-
-
-
-
-
-    io_beg = []
-    io_end = []
-    #create io blocks
-    io_beg.append(io[0])
-    for i in range(0,len(io)-1):
-        if (io[i+1] - io[i]).total_seconds() > time_itv:
-            io_beg.append(io[i])
-            io_end.append(io[i+1])
-    io_end.append(io[len(io)-1])
-
-    #for i in range (0, len(io_beg)):
-        #print 'io_beg'
-        #print io_beg[i]
-        #print 'io_end'
-        #print io_end[i]
-        
-    mix_beg = []
-    mix_end = []
-    #unite io and act blocks
-    if len(io_beg) > len(act_beg):
-        io_longer = 1
-    else:
-        io_longer = 0
-
-    cont_i
-    cont_j
-    if io_longer:
-        j = 0
-        #first get everything that overlaps
-        for i in range(0, len(io_beg)):
-            if j == len(act_beg):
-                break
-            min_mix = io_beg[i]
-            max_mix = io_end[i]
-
-            overlap = (io_beg[i] <= act_end[j] and io_end[i] >= act_beg[j])
-            #if doesnt overlap
-            while !overlap:
-                if io_beg[i+1] < act_beg[j]:
-                    continue
-                else:
-                    j = j+1
-                    overlap = (io_beg[i] <= act_end[j] and io_end[i] >= act_beg[j])
-
-            #if overlaps
-            while overlap:
-                #get border values
-                min_mix = min(min_mix, act_beg[j])
-                max_mix = max(max_mix, act_end[j])
-                if act_end[j] < io_beg[i+1]:
-                    j = j+1
-                else:
-                    continue
-                overlap = (io_beg[i] <= act_end[j] and io_end[i] >= act_beg[j])
-            #merged block
-            mix_beg.append(min_mix)
-            mix_end.append(max_mix)
-
-        union_beg = []
-        union_end = []
-        j = 0
-        #second add non overlaps
-        for i in range(0, len(io_beg)):
-            if j == len(mix_beg):
-                cont = i
-                break
-
-            overlap = (io_end[i] < mix_beg[j] and io_beg[i] > mix_end[j])
-            
-            #if doesnt overlap
-            while !overlap:
-                if io_beg[i] < mix_beg[j]:
-                    union_beg.append(io_beg[i])
-                    union_end.append(io_end[i])
-                    union_beg.append(mix_beg[j])
-                    union_end.append(mix_end[j])
-                else 
-
-        #in case j is still not complete
-        if 
-
-
-"""
-
-
-
-
-
-
-
         
 
 def plot_cdf_interval_times(iat, user):
