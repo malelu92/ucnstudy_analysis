@@ -37,6 +37,9 @@ ses = Session()
 devices = ses.query(Devices)
 
 def get_activities_inter_times():
+    mix_beg = defaultdict(list)
+    mix_end = defaultdict(list)
+
     for device in devices:
         #select only users from ucnstudy
         if device.id == 5 or device.id == 6 or device.id == 8 or device.id == 12 or device.id == 14 or device.id == 18 or device.id == 19 or device.id == 21 or device.id == 22:
@@ -67,8 +70,10 @@ def get_activities_inter_times():
 
             #plot_traces(beg, end, io, device.device_id)
             #plot_cdf_interval_times(io_iat, device.device_id)
-            mix_beg, mix_end = calculate_block_intervals(beg, end, io, 60)
-            plot_traces(mix_beg, mix_end, [], device.device_id)
+            mix_beg[device.device_id], mix_end[device.device_id] = calculate_block_intervals(beg, end, io, 60)
+            plot_traces(mix_beg[device.device_id], mix_end[device.device_id], [], device.device_id)
+
+    return mix_beg, mix_end
 
 def plot_traces(beg, end, io, user): 
 

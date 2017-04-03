@@ -49,7 +49,7 @@ def scatter_plot_io(ax, info_week, key_beg_end, days_str):
     x = []
     y = []
     color = []
-    patch = {'c':'Camera', 'r':'Keyboard', 'g':'Mouse', 'y':'Microphone', 'm':'Speaker'}
+    patch = {'c':'Camera', 'r':'Keyboard', 'g':'Microphone', 'y':'Mouse', 'm':'Speaker'}
     interac_legend = {'r':0, 'c':0, 'g':0, 'y':0, 'm':0}
 
     for weekday in days_str:

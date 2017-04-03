@@ -39,7 +39,8 @@ Session = sessionmaker(bind=engine)
 ses = Session()
 users = ses.query(User)
 
-def main ():
+def get_traces():
+    traces = defaultdict(list)
     for user in users:
         print ('user : ' + user.username)
 
@@ -59,12 +60,12 @@ def main ():
         for elem_id in devids:
             print elem_id
             iat = []
-            traces = []
+            #traces = []
             for row in ses.execute(text(sqlq).bindparams(d_id = elem_id)):
                 if (row[1]==None):
                     continue
                 iat.append((row[0]-row[1]).total_seconds())
-                traces.append(row[0])
+                traces[user.username+'.'+devs[int(elem_id)]].append(row[0])
 
                 #if (row[0]-row[1]).total_seconds() > 60*60*2:
                     #print 'sleep'
@@ -79,27 +80,17 @@ def main ():
                 flow_end.append(row[1])
             
             #if iat:
-                #plot_cdf_interval_times(iat, user, devs, elem_id, url)
+                #plot_cdf_interval_times(iat, user.username, devs[int(elem_id)], 'figs_CDF', '')
             
             #if flow_beg:
-                #plot_traces(traces, flow_beg, flow_end, user, devs, elem_id)
+                #plot_traces(traces[user.username+'.'+devs[int(elem_id)]], flow_beg, flow_end, user, devs, elem_id)
             
-            #if traces and user.username == 'clifford.wife':
-                #print 'entrou'
-                #print elem_id
-                #if elem_id == str(23):
-                    #print 'entrou2'
-            if traces:
-                mix_beg, mix_end = make_block_usage(traces, 60*5)
-                    #cont = 0
-                    #for elem in mix_beg:
-                        #print 'beg ' + str(elem)
-                        #print 'end ' + str(mix_end[cont])
-                        #print '==========='
-                        #cont = cont+1
-                plot_traces([], mix_beg, mix_end, user, devs, elem_id)
+            #if traces:
+                #mix_beg, mix_end = make_block_usage(traces, 60*5)
+                #plot_traces([], mix_beg, mix_end, user, devs, elem_id)
 
 
+    return traces
 def make_block_usage(traces, time_itv):
 
     mix_beg = []
@@ -107,7 +98,6 @@ def make_block_usage(traces, time_itv):
     block_beg = traces[0]
     block_end = block_beg
     for i in range(0,len(traces)-1):
-        #print len(traces)
         #if points are in the same block
         if (traces[i+1] - block_end).total_seconds() <= time_itv:
             block_end = traces[i+1]
@@ -154,15 +144,6 @@ def plot_traces(traces, flow_beg, flow_end, user, devs, elem_id):
             y_flow.append(d)
 
             cont = cont + 1
-
-    #cont = 0
-    #for elem in x_beg:
-        #print '__beg ' + str(elem)
-        #print '__end ' + str(x_end[cont])
-        #print '================='
-        #cont +=1
-
-    #print flow_beg
     
     y_label = list(set(y))
     y_flow_label = list(set(y_flow))
@@ -192,13 +173,13 @@ def plot_traces(traces, flow_beg, flow_end, user, devs, elem_id):
 
 
 
-def plot_cdf_interval_times(iat, user, devs, elem_id, url):
+def plot_cdf_interval_times(iat, username, platform, url, folder):
 
     fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(12, 4))
     (x,y) = datautils.aecdf(iat)
 
     ax1.plot(x,y, '-b', lw=2)
-    ax1.set_title('Inter-Event Time [user=%s, events=%d]'%(user.username, len(x)))    
+    ax1.set_title('Inter-Event Time [user=%s, events=%d]'%(username, len(x)))    
     ax1.set_ylabel('CDF')
     ax1.set_xscale('log')
     ax1.set_xlabel('seconds')
@@ -220,7 +201,6 @@ def plot_cdf_interval_times(iat, user, devs, elem_id, url):
 
     xp = filter(lambda v : v>=600, x)
     if xp:
-        print 'entrou'
         ax3.plot(xp,y[-len(xp):], '-b', lw=2)
         ax3.set_title('Zoom 2 [values=%d]'%(len(xp)))    
         ax3.set_ylabel('CDF')
@@ -231,7 +211,7 @@ def plot_cdf_interval_times(iat, user, devs, elem_id, url):
         ax3.set_xlim(600,max(iat))
     
     plt.tight_layout()
-    fig.savefig('figs_CDF/%s-%s.png' % (user.username, devs[int(elem_id)]))
+    fig.savefig('%s/%s-%s.png' % (folder, username, platform))
     plt.close(fig)
 
 def contains_blacklist (var):
@@ -263,4 +243,4 @@ def get_inter_event_query(url):
     
 
 if __name__ == "__main__":
-    main()
+    get_traces()
