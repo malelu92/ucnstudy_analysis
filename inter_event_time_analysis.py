@@ -52,9 +52,9 @@ def get_traces():
         for d in user.devices:
             devs[d.id] = d.platform
     
-        sqlq = contains_blacklist(0)
-        #url = '\'%http://su.ff.avast.com%\''
-        #sqlq = get_inter_event_query(url)
+        #sqlq = contains_blacklist(0)
+        url = '\'%http://vmp.boldchat.com%\''
+        sqlq = get_inter_event_query(url)
         
         sqlq_flow = """SELECT startts, endts FROM flows WHERE devid = :d_id"""
         for elem_id in devids:
@@ -80,7 +80,7 @@ def get_traces():
                 flow_end.append(row[1])
             
             #if iat:
-                #plot_cdf_interval_times(iat, user.username, devs[int(elem_id)], 'figs_CDF', '')
+                #plot_cdf_interval_times(iat, user.username, devs[int(elem_id)], 'figs_CDF', url)
             
             #if flow_beg:
                 #plot_traces(traces[user.username+'.'+devs[int(elem_id)]], flow_beg, flow_end, user, devs, elem_id)
