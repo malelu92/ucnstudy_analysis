@@ -84,19 +84,20 @@ def main ():
             #if flow_beg:
                 #plot_traces(traces, flow_beg, flow_end, user, devs, elem_id)
             
-            if traces and user.username == 'clifford.wife':
-                print 'entrou'
-                print elem_id
-                if elem_id == str(23):
-                    print 'entrou2'
-                    mix_beg, mix_end = make_block_usage(traces, 60*5)
-                    cont = 0
-                    for elem in mix_beg:
-                        print 'beg ' + str(elem)
-                        print 'end ' + str(mix_end[cont])
-                        print '==========='
-                        cont = cont+1
-                    plot_traces([], mix_beg, mix_end, user, devs, elem_id)
+            #if traces and user.username == 'clifford.wife':
+                #print 'entrou'
+                #print elem_id
+                #if elem_id == str(23):
+                    #print 'entrou2'
+            if traces:
+                mix_beg, mix_end = make_block_usage(traces, 60*5)
+                    #cont = 0
+                    #for elem in mix_beg:
+                        #print 'beg ' + str(elem)
+                        #print 'end ' + str(mix_end[cont])
+                        #print '==========='
+                        #cont = cont+1
+                plot_traces([], mix_beg, mix_end, user, devs, elem_id)
 
 
 def make_block_usage(traces, time_itv):
@@ -154,12 +155,12 @@ def plot_traces(traces, flow_beg, flow_end, user, devs, elem_id):
 
             cont = cont + 1
 
-    cont = 0
-    for elem in x_beg:
-        print '__beg ' + str(elem)
-        print '__end ' + str(x_end[cont])
-        print '================='
-        cont +=1
+    #cont = 0
+    #for elem in x_beg:
+        #print '__beg ' + str(elem)
+        #print '__end ' + str(x_end[cont])
+        #print '================='
+        #cont +=1
 
     #print flow_beg
     
