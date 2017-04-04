@@ -24,10 +24,6 @@ engine = create_engine(DB, echo=False, poolclass=NullPool)
 Base.metadata.bind = engine
 Session = sessionmaker(bind=engine)
 
-def main():
-
-    get_http_data()
-
 def get_http_data():
 
     ses = Session()
@@ -194,4 +190,4 @@ def convert_weekday(weekday):
 
 
 if __name__ == '__main__':
-    main()
+    get_http_data()
