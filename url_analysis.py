@@ -52,7 +52,7 @@ def get_urls():
                 else:
                     url_host[row[0]] += 1
 
-            if url_host:
+            if url_host and user.username == 'clifford.wife':
                 plot_urls(url_host, user.username, devs[int(dev_elem)])
 
 
