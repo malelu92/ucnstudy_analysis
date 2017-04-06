@@ -11,6 +11,9 @@ from model.Device import Device
 from model.HttpReq import HttpReq
 from model.User import User
 
+from blacklist import create_blacklist_dict
+from blacklist import is_in_blacklist
+
 from sqlalchemy import create_engine, text, func
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
@@ -43,14 +46,31 @@ def get_urls():
         sqlq = """SELECT req_url_host FROM httpreqs2 \
         WHERE devid = :d_id AND matches_urlblacklist = 'f'"""
 
+        #extra filter of blacklist
+        blacklist = create_blacklist_dict()
+
         for dev_elem in devids:
             print devs[int(dev_elem)]
             url_host = defaultdict(int)
+            detected_blacklist = defaultdict(list)
+            if user.username != 'clifford.wife':
+                break
             for row in ses.execute(text(sqlq).bindparams(d_id = dev_elem)):
-                if row[0] not in url_host:
-                    url_host[row[0]] = 1
-                else:
-                    url_host[row[0]] += 1
+                print 'lala'
+                if (not row[0]) or (row[0] in detected_blacklist[row[0][0]]):
+                    print 'entrou'
+                    continue
+
+                if not is_in_blacklist(row[0], blacklist):
+                    print 'lajdid'
+                    if row[0] not in url_host:
+                        url_host[row[0]] = 1
+                    else:
+                        url_host[row[0]] += 1
+                else: 
+                    if row[0] not in detected_blacklist:
+                        detected_blacklist[row[0][0]].append(row[0])
+                    
 
             if url_host and user.username == 'clifford.wife':
                 plot_urls(url_host, user.username, devs[int(dev_elem)])
@@ -80,7 +100,7 @@ def plot_urls(url, username, platform):
     plt.xlabel('Url')
     plt.bar(X, sorted_values, align='center', width=0.5)
     plt.xticks(X, sorted_keys, rotation = 90)
-    plt.savefig('figs_url/%s-%s.png'%(username, platform))
+    plt.savefig('figs_histogram_url/%s-%s.png'%(username, platform))
     plt.close()
 
 

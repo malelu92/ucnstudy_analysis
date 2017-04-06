@@ -20,6 +20,9 @@ from model.HttpReq import HttpReq
 from model.DnsReq import DnsReq
 from model.user_devices import user_devices;
 
+from blacklist import create_blacklist_dict
+from blacklist import is_in_blacklist
+
 from sqlalchemy import create_engine, text, func
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
@@ -41,6 +44,8 @@ users = ses.query(User)
 
 def get_traces():
     traces = defaultdict(list)
+    blacklist = create_blacklist_dict()
+
     for user in users:
         print ('user : ' + user.username)
 
@@ -52,26 +57,27 @@ def get_traces():
         for d in user.devices:
             devs[d.id] = d.platform
     
-        #sqlq = contains_blacklist(0)
-        url = '\'%ad4.liverail.com%\''
-        sqlq = get_inter_event_query(url)
+        sqlq = contains_blacklist(0)
+        #url = '\'%ad4.liverail.com%\''
+        #sqlq = get_inter_event_query(url)
         
         sqlq_flow = """SELECT startts, endts FROM flows WHERE devid = :d_id"""
         for elem_id in devids:
+            idt = user.username+'.'+devs[int(elem_id)]
+            if user.username != 'clifford.wife':
+                continue
             print elem_id
             iat = []
             #traces = []
             for row in ses.execute(text(sqlq).bindparams(d_id = elem_id)):
-                if (row[1]==None):
+                if (row[2]==None):
                     continue
-                iat.append((row[0]-row[1]).total_seconds())
-                traces[user.username+'.'+devs[int(elem_id)]].append(row[0])
-
-                #if (row[0]-row[1]).total_seconds() > 60*60*2:
-                    #print 'sleep'
-                    #print row[1]
-                    #print 'wake up'
-                    #print row[0]
+                iat.append((row[1]-row[2]).total_seconds())
+                if row[0]:
+                    if not (is_in_blacklist(row[0], blacklist)):
+                        traces[idt].append(row[1])
+                else:
+                    traces[idt].append(row[1])
 
             flow_beg = []
             flow_end = []
@@ -79,16 +85,16 @@ def get_traces():
                 flow_beg.append(row[0])
                 flow_end.append(row[1])
             
-            if iat:
-                plot_cdf_interval_times(iat, user.username, devs[int(elem_id)], 'figs_CDF', url)
+            #if iat:
+            #    plot_cdf_interval_times(iat, user.username, devs[int(elem_id)], 'figs_CDF', url)
             
             #if flow_beg:
                 #plot_traces(traces[user.username+'.'+devs[int(elem_id)]], flow_beg, flow_end, user, devs, elem_id)
             
-            #if traces:
+            if traces[idt] and user.username == 'clifford.wife':
                 #mix_beg, mix_end = make_block_usage(traces, 60*5)
-                #plot_traces([], mix_beg, mix_end, user, devs, elem_id)
-
+                #plot_traces([], mix_beg, mix_end, user.username, devs[int(elem_id)])
+                plot_traces(traces[idt], [], [], user.username, devs[int(elem_id)])
 
     return traces
 def make_block_usage(traces, time_itv):
@@ -110,7 +116,7 @@ def make_block_usage(traces, time_itv):
 
     return mix_beg, mix_end
 
-def plot_traces(traces, flow_beg, flow_end, user, devs, elem_id): 
+def plot_traces(traces, flow_beg, flow_end, username, platform): 
 
     fig, ax = plt.subplots(1, 1, figsize=(12, 8))
     x = []
@@ -150,10 +156,10 @@ def plot_traces(traces, flow_beg, flow_end, user, devs, elem_id):
     hfmt = dates.DateFormatter('%m-%d')
     ax.yaxis.set_major_formatter(hfmt)
     
-    ax.hlines(y_flow, x_beg, x_end, 'g')
-    #ax.plot(x,y, '.g')
+    #ax.hlines(y_flow, x_beg, x_end, 'g')
+    ax.plot(x,y, '.g')
     
-    ax.set_title('Device usage [user=%s, device=%s]'%(user.username, devs[int(elem_id)]))
+    ax.set_title('Device usage [user=%s, device=%s]'%(username, platform))
     ax.set_ylabel('Date')
     ax.set_yticks(list(set(y_flow).union(y_label)))
     
@@ -168,7 +174,7 @@ def plot_traces(traces, flow_beg, flow_end, user, devs, elem_id):
     ax.set_xlim(0,24)
 
     plt.tight_layout()
-    fig.savefig('figs_device_constant_usage/%s-%s.png' % (user.username, devs[int(elem_id)]))
+    fig.savefig('figs_device_constant_usage/%s-%s.png' % (username, platform))
     plt.close(fig)
 
 
@@ -231,16 +237,23 @@ def contains_blacklist (var):
         AS events;"""
 
     #doesnt contain blacklist
-    return """SELECT ts,lag(ts) OVER (ORDER BY ts) FROM \
-    (SELECT ts FROM dnsreqs WHERE devid =  :d_id AND matches_blacklist = 'f' UNION ALL \
-    SELECT ts FROM httpreqs2 WHERE devid = :d_id AND matches_urlblacklist = 'f' AND user_url = 't') \
+    #return """SELECT ts,lag(ts) OVER (ORDER BY ts) FROM \
+    #(SELECT ts FROM dnsreqs WHERE devid =  :d_id AND matches_blacklist = 'f' UNION ALL \
+    #SELECT ts FROM httpreqs2 WHERE devid = :d_id AND matches_urlblacklist = 'f' AND user_url = 't') \
+    #AS events;"""
+
+    return """SELECT req_url_host,ts,lag(ts) OVER (ORDER BY ts) FROM \
+    (SELECT ts, null as req_url_host FROM dnsreqs WHERE devid = :d_id AND matches_blacklist = 'f' UNION ALL \
+    SELECT ts, req_url_host FROM httpreqs2 WHERE devid = :d_id AND matches_urlblacklist = 'f' AND user_url = 't') \
     AS events;"""
+
+
 
 def get_inter_event_query(url):
 
     return ("""SELECT ts, lag(ts) OVER (ORDER BY ts) FROM httpreqs WHERE \
     devid = :d_id AND req_url LIKE %s ORDER BY ts""")%(url)
-    
+
 
 if __name__ == "__main__":
     get_traces()
