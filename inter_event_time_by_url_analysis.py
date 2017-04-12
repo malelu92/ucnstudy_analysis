@@ -42,15 +42,16 @@ Session = sessionmaker(bind=engine)
 ses = Session()
 users = ses.query(User)
 
-def get_traces():
-    traces = defaultdict(list)
+def get_filtered_traces():
+    #traces = defaultdict(list)
     blacklist = create_blacklist_dict()
+    user_traces_dict = defaultdict(list)
 
     for user in users:
         print ('user : ' + user.username)
 
-        if user.username != 'clifford.wife':
-            continue
+        #if user.username != 'clifford.wife':
+            #continue
 
         devids = []
         for d in user.devices:
@@ -65,22 +66,29 @@ def get_traces():
 
         sqlq = """SELECT ts, lag(ts) OVER (ORDER BY ts) FROM httpreqs2 \
         WHERE devid =:d_id AND req_url_host =:url AND matches_urlblacklist = 'f'"""
+
+        sql_domain = """SELECT DISTINCT query_domain FROM dnsreqs \
+        WHERE devid =:d_id AND matches_blacklist = 'f'"""
         
         sql_dns = """SELECT ts, lag(ts) OVER (ORDER BY ts) FROM dnsreqs \
-        WHERE devid =:d_id AND matches_blacklist = 'f'"""
+        WHERE devid =:d_id AND matches_blacklist = 'f' AND query_domain =:qdomain"""
+
+        sql_userid = """SELECT login FROM devices WHERE id =:d_id"""
 
         for elem_id in devids: 
             valid_url_list = []
             traces_dict = defaultdict(list)
-            cdf_dist = defaultdict(int)
-            total_url_traces = 0
+            #idt = user.username+'.'+devs[int(elem_id)]
+            user_id = ses.execute(text(sql_userid).bindparams(d_id = elem_id)).fetchone()
+            idt = user_id[0]
             for row in ses.execute(text(sql_url).bindparams(d_id = elem_id)):
                 if row[0] and not (is_in_blacklist(row[0], blacklist)):
                     valid_url_list.append(row[0])
-
             valid_url_list.append('dns')
 
             for valid_url in valid_url_list:
+                cdf_dist = defaultdict(int)
+                total_url_traces = 0
                 #get inter event times per url
                 for row in ses.execute(text(sqlq).bindparams(d_id = elem_id, url = valid_url)):
                     total_url_traces += 1
@@ -97,28 +105,56 @@ def get_traces():
                         continue
                     iat = (row[0]-row[1]).total_seconds()
                     #filter by > 1s and percentage of iat 
-                    if iat > 1 and (cdf_dist[iat]/float(total_url_traces) < 0.10):
+                    if iat > 1 and (cdf_dist[iat]/float(total_url_traces) < 0.05)  and valid_url != 'su.ff.avast.com' and valid_url != 'stream1.bskyb.fyre.co':
                         traces_dict[valid_url].append(row[0])
+                        user_traces_dict[idt].append(row[0])
 
-                        
-            #add dnsreqs
-            for row in ses.execute(text(sql_dns).bindparams(d_id = elem_id)):
-                if row[1] == None:
+            """#get inter event times per query domain
+            valid_dns_list = []
+            for dnsreq in ses.execute(text(sql_domain).bindparams(d_id = elem_id)):
+                if not dnsreq[0]:
                     continue
-                if (row[0]-row[1]).total_seconds() > 1:
-                    traces_dict['dns'].append(row[0])
+                dom = dnsreq[0]
+                if dom.rsplit('.')[-1] != 'Home':
+                    valid_dns_list.append(dom)
 
-            if user.username == 'clifford.wife':
+            for dnsreq in valid_dns_list:
+                total_domain_traces = 0
+                cdf_domain_dist = defaultdict(list)
+                for row in ses.execute(text(sql_dns).bindparams(d_id = elem_id, qdomain = dnsreq)):
+                    total_domain_traces += 1
+                    if row[1] == None:
+                        continue
+                    iat = (row[0]-row[1]).total_seconds()
+                    if not cdf_domain_dist[iat]:
+                        cdf_domain_dist[iat] = 1
+                    else:
+                        cdf_domain_dist[iat] += 1
+              
+                #add dnsreqs
+                for row in ses.execute(text(sql_dns).bindparams(d_id = elem_id, qdomain = dnsreq)):
+                    if row[1] == None:
+                        continue
+                    iat = (row[0]-row[1]).total_seconds()
+                    if iat > 1 and cdf_domain_dist[iat]/float(total_domain_traces) < 0.05:
+                        traces_dict['dns'].append(row[0])
+                        user_traces_dict[idt].append(row[0])
+                        if total_domain_traces > 1000:
+                            print row[0]"""
+
+            """if user.username == 'clifford.wife':
                 if elem_id == str(23):
                     print elem_id
                     for valid_url in valid_url_list:
                         for timst in traces_dict[valid_url]:
                             if timst.day == 14 and timst.hour < 5 and valid_url != 'dns':
-                                #print timst
-                                print valid_url
+                                print valid_url + ' ' + str(timst)"""
 
-            if traces_dict:
-                plot_traces(traces_dict, valid_url_list, user.username, devs[int(elem_id)])
+
+            #if traces_dict:
+                #plot_traces(traces_dict, valid_url_list, user.username, devs[int(elem_id)])
+
+    return user_traces_dict
 
 def plot_traces(traces_dict, url_list, username, platform):
     x = []
@@ -148,4 +184,4 @@ def plot_traces(traces_dict, url_list, username, platform):
 
                         
 if __name__ == '__main__':
-    get_traces()
+    get_filtered_traces()

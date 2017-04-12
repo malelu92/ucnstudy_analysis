@@ -16,7 +16,7 @@ from datetime import datetime, timedelta
 from inter_event_time_analysis_activities import get_activities_inter_times
 from inter_event_time_analysis import get_traces
 from inter_event_time_analysis import plot_cdf_interval_times
-
+from inter_event_time_by_url_analysis import get_filtered_traces
 
 #from model_io.Base import Base
 #from model_io.Devices import Devices
@@ -40,6 +40,71 @@ output_notebook()
 #devices = ses.query(Devices)
 
 def main():
+
+    traces = get_filtered_traces()
+    mix_beg, mix_end = get_activities_inter_times()
+
+    print 'ajdlajsdlsajdas'
+    for key, values in traces.iteritems():
+        print key
+
+    for key, values in mix_beg.iteritems():
+        print key
+
+    file_precision = open('activity_precision.txt','w')
+
+    for user_mix, blocks_beg in mix_beg.items():
+        for user_traces, row in traces.items():
+            #get same user
+            #dev = user_traces.rsplit('.')[-1]
+            #if user_mix.rsplit('.')[0] == user_traces.rsplit('.')[0] and dev != 'iphone' and dev != 'ipad' and dev != 'macbook':
+            if user_mix == user_traces:
+                sorted_traces = sorted(row)
+                sorted_blocks_beg = sorted(blocks_beg)
+                sorted_blocks_end = sorted(mix_end[user_mix], reverse = True)
+
+                perc_hour, perc_15min, perc_min = get_precision(sorted_traces, sorted_blocks_beg)
+                file_precision.write('\n\n\n' + user_traces + '========\n')
+                file_precision.write('\nbeginning of day:')
+                file_precision.write('\n1 hour range - precision: ' + str(perc_hour))
+                file_precision.write('\n15 min range - precision: ' + str(perc_15min))
+                file_precision.write('\n1 min range - precision: ' + str(perc_min))
+                
+                perc_hour, perc_15min, perc_min = get_precision(sorted_traces, sorted_blocks_end)
+                file_precision.write('\n\nend of day:')
+                file_precision.write('\n1 hour range - precision: ' + str(perc_hour))
+                file_precision.write('\n15 min range - precision: ' + str(perc_15min))
+                file_precision.write('\n1 min range - precision: ' + str(perc_min))
+                break
+
+def get_precision(traces, blocks):
+    dt = 0
+    total_days = 0
+    diff_hour = 0
+    diff_15min = 0
+    diff_min = 0
+    for timst in traces:
+        if dt != timst.day:
+            dt = timst.day
+            for timst_block in blocks:
+                if timst_block.date() == timst.date():
+                    total_days += 1
+                    #print timst
+                    #print timst_beg
+                    time_diff =  abs(timst_block-timst).total_seconds()
+                    if time_diff <= 60*60:
+                        diff_hour +=1
+                    if time_diff <= 60*15:
+                        diff_15min +=1
+                    if time_diff <= 60:
+                        diff_min +=1
+                    break
+
+    return diff_hour/float(total_days), diff_15min/float(total_days), diff_min/float(total_days)
+
+
+
+def get_intersection():
 
     mix_beg, mix_end = get_activities_inter_times()
     traces = get_traces()

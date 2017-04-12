@@ -71,7 +71,7 @@ def get_activities_inter_times():
             #plot_traces(beg, end, io, device.device_id)
             #plot_cdf_interval_times(io_iat, device.device_id)
             mix_beg[device.device_id], mix_end[device.device_id] = calculate_block_intervals(beg, end, io, 60)
-            plot_traces(mix_beg[device.device_id], mix_end[device.device_id], [], device.device_id)
+            #plot_traces(mix_beg[device.device_id], mix_end[device.device_id], [], device.device_id)
 
     return mix_beg, mix_end
 

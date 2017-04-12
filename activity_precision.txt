@@ -1,0 +1,118 @@
+
+
+
+gluch.laptop========
+
+beginning of day:
+1 hour range - precision: 0.5
+15 min range - precision: 0.0
+1 min range - precision: 0.0
+
+end of day:
+1 hour range - precision: 0.0
+15 min range - precision: 0.0
+1 min range - precision: 0.0
+
+
+bridgeman.stuartlaptop========
+
+beginning of day:
+1 hour range - precision: 1.0
+15 min range - precision: 1.0
+1 min range - precision: 0.0
+
+end of day:
+1 hour range - precision: 0.333333333333
+15 min range - precision: 0.333333333333
+1 min range - precision: 0.0
+
+
+neenagupta.workpc========
+
+beginning of day:
+1 hour range - precision: 1.0
+15 min range - precision: 1.0
+1 min range - precision: 0.153846153846
+
+end of day:
+1 hour range - precision: 0.692307692308
+15 min range - precision: 0.538461538462
+1 min range - precision: 0.0
+
+
+bridgeman.laptop2========
+
+beginning of day:
+1 hour range - precision: 1.0
+15 min range - precision: 1.0
+1 min range - precision: 1.0
+
+end of day:
+1 hour range - precision: 0.0
+15 min range - precision: 0.0
+1 min range - precision: 0.0
+
+
+bowen.laptop========
+
+beginning of day:
+1 hour range - precision: 0.666666666667
+15 min range - precision: 0.666666666667
+1 min range - precision: 0.666666666667
+
+end of day:
+1 hour range - precision: 0.333333333333
+15 min range - precision: 0.166666666667
+1 min range - precision: 0.0
+
+
+chrismaley.mainpc========
+
+beginning of day:
+1 hour range - precision: 1.0
+15 min range - precision: 1.0
+1 min range - precision: 0.583333333333
+
+end of day:
+1 hour range - precision: 0.333333333333
+15 min range - precision: 0.25
+1 min range - precision: 0.0
+
+
+clifford.mainlaptop========
+
+beginning of day:
+1 hour range - precision: 0.625
+15 min range - precision: 0.5625
+1 min range - precision: 0.3125
+
+end of day:
+1 hour range - precision: 0.0625
+15 min range - precision: 0.0
+1 min range - precision: 0.0
+
+
+kemianny.mainlaptop========
+
+beginning of day:
+1 hour range - precision: 1.0
+15 min range - precision: 0.818181818182
+1 min range - precision: 0.545454545455
+
+end of day:
+1 hour range - precision: 0.0909090909091
+15 min range - precision: 0.0
+1 min range - precision: 0.0
+
+
+chrismaley.loungepc========
+
+beginning of day:
+1 hour range - precision: 1.0
+15 min range - precision: 1.0
+1 min range - precision: 0.916666666667
+
+end of day:
+1 hour range - precision: 0.833333333333
+15 min range - precision: 0.0833333333333
+1 min range - precision: 0.0
