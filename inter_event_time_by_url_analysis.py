@@ -50,8 +50,8 @@ def get_filtered_traces():
     for user in users:
         print ('user : ' + user.username)
 
-        if user.username != 'neenagupta': #'clifford.wife':
-            continue
+        #if user.username != 'neenagupta': #'clifford.wife':
+            #continue
 
         devids = []
         for d in user.devices:
