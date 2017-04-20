@@ -50,8 +50,8 @@ def get_filtered_traces():
     for user in users:
         print ('user : ' + user.username)
 
-        #if user.username != 'clifford.wife':
-            #continue
+        if user.username != 'neenagupta': #'clifford.wife':
+            continue
 
         devids = []
         for d in user.devices:
@@ -81,6 +81,10 @@ def get_filtered_traces():
             #idt = user.username+'.'+devs[int(elem_id)]
             user_id = ses.execute(text(sql_userid).bindparams(d_id = elem_id)).fetchone()
             idt = user_id[0]
+
+            #if idt != 'chrismaley.mainpc':
+                #continue
+
             for row in ses.execute(text(sql_url).bindparams(d_id = elem_id)):
                 if row[0] and not (is_in_blacklist(row[0], blacklist)):
                     valid_url_list.append(row[0])
@@ -152,11 +156,11 @@ def get_filtered_traces():
 
 
             #if traces_dict:
-                #plot_traces(traces_dict, valid_url_list, user.username, devs[int(elem_id)])
+                #plot_traces(traces_dict, valid_url_list, idt)#user.username, devs[int(elem_id)])
 
     return user_traces_dict
 
-def plot_traces(traces_dict, url_list, username, platform):
+def plot_traces(traces_dict, url_list, user_id):
     x = []
     y = []
     fig, ax = plt.subplots(1, 1, figsize=(12, 8))
@@ -171,7 +175,7 @@ def plot_traces(traces_dict, url_list, username, platform):
 
     ax.plot(x,y, ',g')
 
-    ax.set_title('Device usage [user=%s, device=%s]'%(username, platform))
+    ax.set_title('Device usage [user=%s]'%(user_id))#, device=%s]'%(username, platform))
     ax.set_ylabel('Date')
     ax.set_yticks(y_label)
 
@@ -179,7 +183,7 @@ def plot_traces(traces_dict, url_list, username, platform):
     ax.set_xlim(0,24)
 
     plt.tight_layout()
-    fig.savefig('figs_device_constant_usage_filtered/%s-%s.png' % (username, platform))
+    fig.savefig('figs_device_constant_usage_filtered/%s.png' % (user_id))
     plt.close(fig)
 
                         
