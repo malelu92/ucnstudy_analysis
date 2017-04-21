@@ -22,26 +22,16 @@ import datautils
 
 #output_notebook()
 
+time_intervals = [1,2,3,4,5,10,15,30,45,60]
+
 def main():
 
     traces = get_filtered_traces()
     mix_beg, mix_end = get_activities_inter_times()
 
-
-    #for key, values in traces.iteritems():
-        #print key
-
-    #for key, values in mix_beg.iteritems():
-        #print key
-
     file_precision = open('activity_precision.txt','w')
 
-    #tp_list = defaultdict(list)
-    #fp_list = defaultdict(list)
-    #_min_list = defaultdict(list)
-    #total_days_list = defaultdict(list)
-
-    time_intervals = [1,2,3,4,5,10,15,20,30,45,60]
+    #time_intervals = [1,2,3,4,5,10,15,30,45,60]
     for user_mix, blocks_beg in mix_beg.items():
         for user_traces, row in traces.items():
             #get same user
@@ -121,13 +111,13 @@ def get_precision(traces, blocks, interval):
     if total_days > matched_days:
         #more info on dns and http reqs than act
         if traces_days > matched_days:
-            fn += total_days - matched_days
+            fp += total_days - matched_days
         #days without info on both
         elif traces_days == matched_days:
             tn += total_days - matched_days
         #more info on act than dns and http
         else:
-            fp += total_days - matched_days
+            fn += total_days - matched_days
 
     #return diff_hour, diff_15min, diff_min, total_days
     return tp, fp, tn, fn, total_days
@@ -184,26 +174,39 @@ def plot_ROC_curve(tp_list, fp_list, tn_list, fn_list, username, beg_end):
     #print 'total: ' + str(total)
 
     for i in range (0, len(tp_list)):
-        if tp_list[i]+fn_list[i] != 0 and fp_list[i]+tn_list[i] != 0:
-            sensitivity = tp_list[i]/float(tp_list[i]+fn_list[i])
-            specificity = tn_list[i]/float(fp_list[i]+tn_list[i])
-            x.append(1-specificity)# false_positive_rate
-            y.append(sensitivity)# true_positive_rate 
+        if tp_list[i]+fp_list[i] != 0 and tp_list[i]+fn_list[i] != 0:
+            #sensitivity = tp_list[i]/float(tp_list[i]+fn_list[i])
+            #specificity = tn_list[i]/float(fp_list[i]+tn_list[i])
+            precision = tp_list[i]/float(tp_list[i]+fp_list[i])
+            recall = tp_list[i]/float(tp_list[i]+fn_list[i])
+            x.append(precision)# false_positive_rate
+            y.append(recall)# true_positive_rate 
 
-    print 'sensitivity ' + str(y)
-    print '1 - specificity ' + str(x)
+    print 'recall ' + str(y)
+    print 'precision ' + str(x)
     print '======'
 
     # This is the ROC curve
     sns.set(style='darkgrid')
     plt.title('ROC curve [%s]' % (username))
-    plt.ylabel('True positive rate')
+    plt.ylabel('Recall')
     plt.ylim((0.0, 1.0))
-    plt.xlabel('False positive rate')
+    plt.xlabel('Precision')
     plt.xlim((0.0, 1.0))
     plt.plot(x,y)
 
-    #for xy in zip(x, y):                                       
+    pos = defaultdict(int)
+    for i in range(0, len(x)):
+        label = str(time_intervals[i]) + ' min'
+        if not pos[x[i]+y[i]]:
+            pos[x[i]+y[i]] = 0
+        else:
+            print 'entrou'
+            pos[x[i]+y[i]] += 0.1
+            print pos[x[i]+y[i]]
+
+        plt.text (pos[x[i]+y[i]] + x[i], y[i], label, bbox=dict(facecolor='blue', alpha=0.5))
+    #for xy in zip(x, y):                             
         #plt.annotate('(%s)' % xy, xy=xy, textcoords='data')
 
     plt.savefig('figs_ROC_curves/%s-%s.png' % (username, beg_end))
