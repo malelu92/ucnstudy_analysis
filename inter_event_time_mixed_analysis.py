@@ -31,38 +31,39 @@ def main():
 
     file_precision = open('activity_precision.txt','w')
 
-    #time_intervals = [1,2,3,4,5,10,15,30,45,60]
+    tp_list = defaultdict(int)
+    fp_list = defaultdict(int)
+    tn_list = defaultdict(int)
+    fn_list = defaultdict(int)
+    initialize_list(tp_list, fp_list, tn_list, fn_list)
+
     for user_mix, blocks_beg in mix_beg.items():
         for user_traces, row in traces.items():
             #get same user
             if user_mix == user_traces:
-                tp_list = defaultdict(list)
-                fp_list = defaultdict(list)
-                tn_list = defaultdict(list)
-                fn_list = defaultdict(list)
                 sorted_traces = sorted(row)
                 sorted_blocks_beg = sorted(blocks_beg)
                 sorted_blocks_end = sorted(mix_end[user_mix], reverse = True)
 
                 for i in range(0, len(time_intervals)):
                     tp, fp, tn, fn, total_days = get_precision(sorted_traces, sorted_blocks_beg, time_intervals[i])
-                    tp_list['beg'].append(tp)
-                    fp_list['beg'].append(fp)
-                    tn_list['beg'].append(tn)
-                    fn_list['beg'].append(fn)
+                    tp_list['beg'+str(time_intervals[i])] += tp
+                    fp_list['beg'+str(time_intervals[i])] += fp
+                    tn_list['beg'+str(time_intervals[i])] += tn
+                    fn_list['beg'+str(time_intervals[i])] += fn
                 #edit_precision_file(file_precision, user_traces, 'beginning', tp_list['beg'][5], tp_list['beg'][3], tp_list['beg'][0], total_days)
                
                 for i in range(0, len(time_intervals)):
                     tp, fp, tn, fn, total_days = get_precision(sorted(sorted_traces, reverse = True), sorted_blocks_end, time_intervals[i])
-                    tp_list['end'].append(tp)
-                    fp_list['end'].append(fp)
-                    tn_list['end'].append(tn)
-                    fn_list['end'].append(fn)
+                    tp_list['end'+str(time_intervals[i])] += tp
+                    fp_list['end'+str(time_intervals[i])] += fp
+                    tn_list['end'+str(time_intervals[i])] += tn
+                    fn_list['end'+str(time_intervals[i])] += fn
                 #edit_precision_file(file_precision, user_traces, 'end', tp_list['end'][5], tp_list['end'][3] tp_list['end'][0], total_days)
-
-                plot_ROC_curve(tp_list['beg'], fp_list['beg'], tn_list['beg'], fn_list['beg'], user_traces, 'beg')
-                plot_ROC_curve(tp_list['end'], fp_list['end'], tn_list['end'], fn_list['end'], user_traces, 'end')
                 break
+
+    plot_ROC_curve(tp_list, fp_list, tn_list, fn_list, user_traces, 'beg')
+    plot_ROC_curve(tp_list, fp_list, tn_list, fn_list, user_traces, 'end')
 
     file_precision.close()
 
@@ -75,6 +76,17 @@ def edit_precision_file (file_precision, username, beg_end, tp_hour, tp_15min, t
     file_precision.write('\n15 min range - precision: ' + str(tp_15min/float(total_days)))
     file_precision.write('\n1 min range - precision: ' + str(tp_min/float(total_days)))
 
+def initialize_list(tp_list, fp_list, tn_list, fn_list):
+
+    for i in range(0, len(time_intervals)):
+        tp_list['beg'+str(time_intervals[i])] = 0
+        tp_list['end'+str(time_intervals[i])] = 0
+        fp_list['beg'+str(time_intervals[i])] = 0
+        fp_list['end'+str(time_intervals[i])] = 0
+        tn_list['beg'+str(time_intervals[i])] = 0
+        tn_list['end'+str(time_intervals[i])] = 0
+        fn_list['beg'+str(time_intervals[i])] = 0
+        fn_list['end'+str(time_intervals[i])] = 0
 
 def get_precision(traces, blocks, interval):
     dt, tp, tn, fp, fn, traces_days, matched_days = 0, 0, 0, 0, 0, 0, 0
@@ -173,12 +185,14 @@ def plot_ROC_curve(tp_list, fp_list, tn_list, fn_list, username, beg_end):
     print 'tn_list: ' + str(tn_list)
     #print 'total: ' + str(total)
 
-    for i in range (0, len(tp_list)):
-        if tp_list[i]+fp_list[i] != 0 and tp_list[i]+fn_list[i] != 0:
+    #for i in range (0, len(tp_list)):
+    for i in range (0, len(time_intervals)):
+        key = str(beg_end)+str(time_intervals[i])
+        if tp_list[key]+fp_list[key] != 0 and tp_list[key]+fn_list[key] != 0:
             #sensitivity = tp_list[i]/float(tp_list[i]+fn_list[i])
             #specificity = tn_list[i]/float(fp_list[i]+tn_list[i])
-            precision = tp_list[i]/float(tp_list[i]+fp_list[i])
-            recall = tp_list[i]/float(tp_list[i]+fn_list[i])
+            precision = tp_list[key]/float(tp_list[key]+fp_list[key])
+            recall = tp_list[key]/float(tp_list[key]+fn_list[key])
             x.append(precision)# false_positive_rate
             y.append(recall)# true_positive_rate 
 
@@ -188,7 +202,7 @@ def plot_ROC_curve(tp_list, fp_list, tn_list, fn_list, username, beg_end):
 
     # This is the ROC curve
     sns.set(style='darkgrid')
-    plt.title('ROC curve [%s]' % (username))
+    plt.title('ROC curve [filtered]')
     plt.ylabel('Recall')
     plt.ylim((0.0, 1.0))
     plt.xlabel('Precision')
@@ -209,7 +223,7 @@ def plot_ROC_curve(tp_list, fp_list, tn_list, fn_list, username, beg_end):
     #for xy in zip(x, y):                             
         #plt.annotate('(%s)' % xy, xy=xy, textcoords='data')
 
-    plt.savefig('figs_ROC_curves/%s-%s.png' % (username, beg_end))
+    plt.savefig('figs_ROC_curves/filtered-%s.png' % (beg_end))
     plt.close()
     
 
