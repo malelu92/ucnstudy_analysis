@@ -207,7 +207,7 @@ def plot_ROC_curve(tp_list, fp_list, tn_list, fn_list, username, beg_end):
     plt.ylim((0.0, 1.0))
     plt.xlabel('Precision')
     plt.xlim((0.0, 1.0))
-    plt.plot(x,y)
+    plt.plot(x,y, 'g')
 
     pos = defaultdict(int)
     for i in range(0, len(x)):
@@ -219,7 +219,7 @@ def plot_ROC_curve(tp_list, fp_list, tn_list, fn_list, username, beg_end):
             pos[x[i]+y[i]] += 0.1
             print pos[x[i]+y[i]]
 
-        plt.text (pos[x[i]+y[i]] + x[i], y[i], label, bbox=dict(facecolor='blue', alpha=0.5))
+        plt.text (pos[x[i]+y[i]] + x[i], y[i], label, bbox=dict(facecolor='green', alpha=0.5))
     #for xy in zip(x, y):                             
         #plt.annotate('(%s)' % xy, xy=xy, textcoords='data')
 
