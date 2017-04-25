@@ -90,7 +90,7 @@ def get_filtered_traces():
                 continue
 
             for row in ses.execute(text(sql_url).bindparams(d_id = elem_id)):
-                if row[0]:# and not (is_in_blacklist(row[0], blacklist)):
+                if row[0] and not (is_in_blacklist(row[0], blacklist)):
                     valid_url_list.append(row[0])
             valid_url_list.append('dns')
 
@@ -111,43 +111,38 @@ def get_filtered_traces():
 
                 for row in ses.execute(text(sqlq).bindparams(d_id = elem_id, url = valid_url)):
                     if row[1] == None:
+                        user_traces_dict[idt].append(row[0])
                         continue
                     iat = (row[0]-row[1]).total_seconds()
                     #filter by > 1s and percentage of iat 
-                    if True: #valid_url != 'su.ff.avast.com' and valid_url != 'stream1.bskyb.fyre.co': #and iat > 1:
+                    if valid_url != 'su.ff.avast.com' and valid_url != 'stream1.bskyb.fyre.co' and iat > 1:
                     #traces_dict[valid_url].append(row[0])
                     #print 'total url traces: ' + str(total_url_traces)
-                        """if total_url_traces > 200:
-                            if cdf_dist[iat]/float(total_url_traces) < 0.25:
-                                user_traces_dict[idt].append(row[0])
-                        elif total_url_traces < 200 and total_url_traces > 50:
-                            if cdf_dist[iat]/float(total_url_traces) < 0.60:
-                                user_traces_dict[idt].append(row[0])
-                        else:"""
-                        user_traces_dict[idt].append(row[0])
+                        if not_in_spike(cdf_dist[iat], total_url_traces):
+                            user_traces_dict[idt].append(row[0])
                         
 
             #get inter event times per query domain
-            """valid_dns_list = []
+            valid_dns_list = []
             for dnsreq in ses.execute(text(sql_domain).bindparams(d_id = elem_id)):
                 if not dnsreq[0]:
                     continue
                 dom = dnsreq[0]
                 if dom.rsplit('.')[-1] != 'Home':
                     valid_dns_list.append(dom)
-            print len(valid_dns_list)"""
+            print len(valid_dns_list)
             
             #========= filtered by domain =============
             #add dnsreqs
-            for row in ses.execute(text(sql_dns_domain_time).bindparams(d_id = elem_id)):
-                dom = row[0]
+            #for row in ses.execute(text(sql_dns_domain_time).bindparams(d_id = elem_id)):
+                #dom = row[0]
                 #if dom == None:
                     #user_traces_dict[idt].append(row[1])
                 #elif dom.rsplit('.')[-1] != 'Home':
-                user_traces_dict[idt].append(row[1])
+                #user_traces_dict[idt].append(row[1])
             #=======================
 
-            """for dnsreq in valid_dns_list:
+            for dnsreq in valid_dns_list:
                 total_domain_traces = 0
                 cdf_domain_dist = defaultdict(list)
                 for row in ses.execute(text(sql_dns).bindparams(d_id = elem_id, qdomain = dnsreq)):
@@ -162,19 +157,14 @@ def get_filtered_traces():
                 #add dnsreqs
                 for row in ses.execute(text(sql_dns).bindparams(d_id = elem_id, qdomain = dnsreq)):
                     if row[1] == None:
+                        user_traces_dict[idt].append(row[0])
                         continue
                     iat = (row[0]-row[1]).total_seconds()
                     #print 'total domain traces ' + str(total_domain_traces)
+                    #traces_dict['dns'].append(row[0])
                     if iat > 1:
-                        if total_domain_traces > 200:
-                            if cdf_domain_dist[iat]/float(total_domain_traces) < 0.25:# and iat > 1:
-                            #traces_dict['dns'].append(row[0])
-                                user_traces_dict[idt].append(row[0])
-                        elif total_domain_traces < 200 and total_domain_traces > 50:
-                            if cdf_domain_dist[iat]/float(total_domain_traces) < 0.60:
-                                user_traces_dict[idt].append(row[0])
-                        else:
-                            user_traces_dict[idt].append(row[0])"""
+                        if not_in_spike(cdf_domain_dist[iat], total_domain_traces):
+                            user_traces_dict[idt].append(row[0])
 
             """if user.username == 'clifford.wife':
                 if elem_id == str(23):
@@ -189,6 +179,20 @@ def get_filtered_traces():
                 #plot_traces(traces_dict, valid_url_list, idt)#user.username, devs[int(elem_id)])
 
     return user_traces_dict
+
+def not_in_spike(total_intv, total_traces):
+
+    if total_traces > 200:
+        if total_intv/float(total_traces) < 0.25:
+            return True
+        return False
+    elif total_traces < 200 and total_traces > 50:
+        if total_intv/float(total_traces) < 0.60:
+            return True
+        return False
+    else:
+        return True
+
 
 def plot_traces(traces_dict, url_list, user_id):
     x = []
