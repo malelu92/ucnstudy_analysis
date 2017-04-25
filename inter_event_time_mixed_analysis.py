@@ -202,26 +202,24 @@ def plot_ROC_curve(tp_list, fp_list, tn_list, fn_list, username, beg_end):
 
     # This is the ROC curve
     sns.set(style='darkgrid')
-    plt.title('ROC curve [filtered]')
+    plt.title('ROC curve [blacklist - filtered]')
     plt.ylabel('Recall')
     plt.ylim((0.0, 1.0))
     plt.xlabel('Precision')
     plt.xlim((0.0, 1.0))
-    plt.plot(x,y, 'g')
+    plt.plot(x,y, 'r')
 
-    pos = defaultdict(int)
+    #time text
+    """pos = defaultdict(int)
     for i in range(0, len(x)):
         label = str(time_intervals[i]) + ' min'
         if not pos[x[i]+y[i]]:
             pos[x[i]+y[i]] = 0
         else:
-            print 'entrou'
             pos[x[i]+y[i]] += 0.1
             print pos[x[i]+y[i]]
 
-        plt.text (pos[x[i]+y[i]] + x[i], y[i], label, bbox=dict(facecolor='green', alpha=0.5))
-    #for xy in zip(x, y):                             
-        #plt.annotate('(%s)' % xy, xy=xy, textcoords='data')
+        plt.text (pos[x[i]+y[i]] + x[i], y[i], label, bbox=dict(facecolor='blue', alpha=0.5))"""
 
     plt.savefig('figs_ROC_curves/filtered-%s.png' % (beg_end))
     plt.close()

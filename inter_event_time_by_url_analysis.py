@@ -50,8 +50,8 @@ def get_filtered_traces():
     for user in users:
         print ('user : ' + user.username)
 
-        if user.username != 'neenagupta' and user.username != 'clifford.wife' and user.username != 'bowen.wife' and user.username != 'bridgemen.wife' and user.username != 'bridgemen.husband' and user.username != 'chrismaley' and user.username != 'glutch' and user.username != 'kemianny':
-            continue
+        #if user.username != 'neenagupta' and user.username != 'clifford.wife' and user.username != 'bowen.wife' and user.username != 'bridgemen.wife' and user.username != 'bridgemen.husband' and user.username != 'chrismaley' and user.username != 'glutch' and user.username != 'kemianny':
+            #continue
 
         devids = []
         for d in user.devices:
@@ -80,20 +80,17 @@ def get_filtered_traces():
         print devs
         for elem_id in devids:
 
-            plat =  devs[int(elem_id)]
-            if plat == 'macbook' or plat == 'ipad' or plat == 'iphone':
-                continue
             valid_url_list = []
             traces_dict = defaultdict(list)
             #idt = user.username+'.'+devs[int(elem_id)]
             user_id = ses.execute(text(sql_userid).bindparams(d_id = elem_id)).fetchone()
             idt = user_id[0]
 
-            #if idt != 'chrismaley.mainpc':
-                #continue
+            if idt != 'bowen.laptop' and idt != 'bridgeman.laptop2' and idt != 'bridgeman.stuartlaptop' and idt != 'chrismaley.loungepc' and idt != 'chrismaley.mainpc' and idt != 'clifford.mainlaptop' and idt != 'gluch.laptop' and idt != 'kemianny.mainlaptop' and idt != 'neenagupta.workpc':
+                continue
 
             for row in ses.execute(text(sql_url).bindparams(d_id = elem_id)):
-                if row[0] and not (is_in_blacklist(row[0], blacklist)):
+                if row[0]:# and not (is_in_blacklist(row[0], blacklist)):
                     valid_url_list.append(row[0])
             valid_url_list.append('dns')
 
@@ -106,6 +103,7 @@ def get_filtered_traces():
                     if row[1] == None:
                         continue
                     iat = (row[0]-row[1]).total_seconds()
+                    #print iat
                     if not cdf_dist[iat]:
                         cdf_dist[iat] = 1
                     else:
@@ -116,34 +114,40 @@ def get_filtered_traces():
                         continue
                     iat = (row[0]-row[1]).total_seconds()
                     #filter by > 1s and percentage of iat 
-                    if iat > 1 and (cdf_dist[iat]/float(total_url_traces) < 0.05)  and valid_url != 'su.ff.avast.com' and valid_url != 'stream1.bskyb.fyre.co':
+                    if True: #valid_url != 'su.ff.avast.com' and valid_url != 'stream1.bskyb.fyre.co': #and iat > 1:
                     #traces_dict[valid_url].append(row[0])
+                    #print 'total url traces: ' + str(total_url_traces)
+                        """if total_url_traces > 200:
+                            if cdf_dist[iat]/float(total_url_traces) < 0.25:
+                                user_traces_dict[idt].append(row[0])
+                        elif total_url_traces < 200 and total_url_traces > 50:
+                            if cdf_dist[iat]/float(total_url_traces) < 0.60:
+                                user_traces_dict[idt].append(row[0])
+                        else:"""
                         user_traces_dict[idt].append(row[0])
+                        
 
             #get inter event times per query domain
-            valid_dns_list = []
+            """valid_dns_list = []
             for dnsreq in ses.execute(text(sql_domain).bindparams(d_id = elem_id)):
                 if not dnsreq[0]:
                     continue
                 dom = dnsreq[0]
                 if dom.rsplit('.')[-1] != 'Home':
                     valid_dns_list.append(dom)
-            print len(valid_dns_list)
+            print len(valid_dns_list)"""
             
             #========= filtered by domain =============
             #add dnsreqs
-            """for row in ses.execute(text(sql_dns_domain_time).bindparams(d_id = elem_id)):
+            for row in ses.execute(text(sql_dns_domain_time).bindparams(d_id = elem_id)):
                 dom = row[0]
-                if dom == None:
-                    user_traces_dict[idt].append(row[1])
-                elif dom.rsplit('.')[-1] != 'Home':
-                    user_traces_dict[idt].append(row[1])"""
+                #if dom == None:
+                    #user_traces_dict[idt].append(row[1])
+                #elif dom.rsplit('.')[-1] != 'Home':
+                user_traces_dict[idt].append(row[1])
             #=======================
 
-            cont = 0
-            for dnsreq in valid_dns_list:
-                #cont +=1
-                #print cont
+            """for dnsreq in valid_dns_list:
                 total_domain_traces = 0
                 cdf_domain_dist = defaultdict(list)
                 for row in ses.execute(text(sql_dns).bindparams(d_id = elem_id, qdomain = dnsreq)):
@@ -160,9 +164,17 @@ def get_filtered_traces():
                     if row[1] == None:
                         continue
                     iat = (row[0]-row[1]).total_seconds()
-                    if iat > 1 and cdf_domain_dist[iat]/float(total_domain_traces) < 0.05:
-                        traces_dict['dns'].append(row[0])
-                        user_traces_dict[idt].append(row[0])
+                    #print 'total domain traces ' + str(total_domain_traces)
+                    if iat > 1:
+                        if total_domain_traces > 200:
+                            if cdf_domain_dist[iat]/float(total_domain_traces) < 0.25:# and iat > 1:
+                            #traces_dict['dns'].append(row[0])
+                                user_traces_dict[idt].append(row[0])
+                        elif total_domain_traces < 200 and total_domain_traces > 50:
+                            if cdf_domain_dist[iat]/float(total_domain_traces) < 0.60:
+                                user_traces_dict[idt].append(row[0])
+                        else:
+                            user_traces_dict[idt].append(row[0])"""
 
             """if user.username == 'clifford.wife':
                 if elem_id == str(23):
