@@ -94,10 +94,19 @@ def calculate_average_periodicity(interval_dict):
             if iat_total != 'total' and \
                distrib_dict['total'] > 10 and \
                (distrib_dict[iat_total]/float(distrib_dict['total'])) > 0.5:
-                
 
                 if iat_total != 0:
-                    print 'interval ' + str(iat_total)
+
+                    timsts = interval_dict[key]
+                    beg_block = timsts[0]
+                    end_block = timsts[len(timsts)-1]
+
+                    block_time = (end_block - beg_block).total_seconds()
+                    print '***'
+                    print 'block time ' + str(block_time)
+                    print 'iat ' + str(iat_total)
+                    print 'theoretic count ' + str(block_time/float(iat_total))
+                    print 'real count ' + str(distrib_dict[iat_total])
                     print 'total ' + str(distrib_dict['total'])
 
 
