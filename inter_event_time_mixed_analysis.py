@@ -22,7 +22,7 @@ import datautils
 
 #output_notebook()
 
-time_intervals = [1,2,3,4,5,10,15,30,45,60]
+time_intervals = [1]#, 2, 3, 4, 5]
 
 def main():
 
@@ -41,12 +41,16 @@ def main():
         for user_traces, row in traces.items():
             #get same user
             if user_mix == user_traces:
+                print user_mix
                 sorted_traces = sorted(row)
                 sorted_blocks_beg = sorted(blocks_beg)
                 sorted_blocks_end = sorted(mix_end[user_mix], reverse = True)
 
                 for i in range(0, len(time_intervals)):
                     tp, fp, tn, fn, total_days = get_precision(sorted_traces, sorted_blocks_beg, time_intervals[i])
+                    print 'tp ' + str(tp)
+                    print 'fp ' + str(fp)
+                    print 'fn ' + str(fn)
                     tp_list['beg'+str(time_intervals[i])] += tp
                     fp_list['beg'+str(time_intervals[i])] += fp
                     tn_list['beg'+str(time_intervals[i])] += tn
@@ -110,6 +114,9 @@ def get_precision(traces, blocks, interval):
                     time_diff =  abs(timst_block-timst).total_seconds()
                     if time_diff <= 60*interval:
                         tp +=1
+                        print timst_block
+                        print timst
+                        print '====='
                     else:
                         #person not awaken yet
                         if timst < timst_block:
@@ -201,13 +208,13 @@ def plot_ROC_curve(tp_list, fp_list, tn_list, fn_list, username, beg_end):
     print '======'
 
     # This is the ROC curve
-    sns.set(style='darkgrid')
-    plt.title('ROC curve [blacklist - filtered]')
+    sns.set(style='whitegrid')
+    plt.title('ROC curve [spikes - filtered]')
     plt.ylabel('Recall')
     plt.ylim((0.0, 1.0))
     plt.xlabel('Precision')
     plt.xlim((0.0, 1.0))
-    plt.plot(x,y, 'r')
+    plt.plot(x,y, 'orange')
 
     #time text
     """pos = defaultdict(int)

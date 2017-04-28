@@ -50,9 +50,6 @@ def get_filtered_traces():
     for user in users:
         print ('user : ' + user.username)
 
-        #if user.username != 'neenagupta' and user.username != 'clifford.wife' and user.username != 'bowen.wife' and user.username != 'bridgemen.wife' and user.username != 'bridgemen.husband' and user.username != 'chrismaley' and user.username != 'glutch' and user.username != 'kemianny':
-            #continue
-
         devids = []
         for d in user.devices:
             devids.append(str(d.id))
@@ -86,11 +83,12 @@ def get_filtered_traces():
             user_id = ses.execute(text(sql_userid).bindparams(d_id = elem_id)).fetchone()
             idt = user_id[0]
 
-            if idt != 'bowen.laptop' and idt != 'bridgeman.laptop2' and idt != 'bridgeman.stuartlaptop' and idt != 'chrismaley.loungepc' and idt != 'chrismaley.mainpc' and idt != 'clifford.mainlaptop' and idt != 'gluch.laptop' and idt != 'kemianny.mainlaptop' and idt != 'neenagupta.workpc':
+            #if idt != 'bowen.laptop' and idt != 'bridgeman.laptop2' and idt != 'bridgeman.stuartlaptop' and idt != 'chrismaley.loungepc' and idt != 'chrismaley.mainpc' and idt != 'clifford.mainlaptop' and idt != 'gluch.laptop' and idt != 'kemianny.mainlaptop' and idt != 'neenagupta.workpc':
+            if idt != 'kemianny.mainlaptop': 
                 continue
 
             for row in ses.execute(text(sql_url).bindparams(d_id = elem_id)):
-                if row[0] and not (is_in_blacklist(row[0], blacklist)):
+                if row[0]:# and not (is_in_blacklist(row[0], blacklist)):
                     valid_url_list.append(row[0])
             valid_url_list.append('dns')
 
@@ -109,18 +107,30 @@ def get_filtered_traces():
                     else:
                         cdf_dist[iat] += 1
 
+                row_number = 0
                 for row in ses.execute(text(sqlq).bindparams(d_id = elem_id, url = valid_url)):
+                    row_number +=1
                     if row[1] == None:
-                        user_traces_dict[idt].append(row[0])
                         continue
                     iat = (row[0]-row[1]).total_seconds()
+                    #the first event is always considereed:
+                    if row_number == 2:
+                        traces_dict[valid_url].append(row[1])
+                        user_traces_dict[idt].append(row[1])
                     #filter by > 1s and percentage of iat 
-                    if valid_url != 'su.ff.avast.com' and valid_url != 'stream1.bskyb.fyre.co' and iat > 1:
-                    #traces_dict[valid_url].append(row[0])
-                    #print 'total url traces: ' + str(total_url_traces)
-                        if not_in_spike(cdf_dist[iat], total_url_traces):
+                    if iat > 1:#valid_url != 'su.ff.avast.com' and valid_url != 'stream1.bskyb.fyre.co': #and iat > 1:
+                        #if row_number == 2:
+                            #traces_dict[valid_url].append(row[1])
+                        #traces_dict[valid_url].append(row[0])
+                        if True:#not_in_spike(cdf_dist[iat], total_url_traces):
                             user_traces_dict[idt].append(row[0])
+                            traces_dict[valid_url].append(row[0])
                         
+                        else:
+                            print valid_url
+                            print cdf_dist[iat]/float(total_url_traces)
+                            
+
 
             #get inter event times per query domain
             valid_dns_list = []
@@ -128,8 +138,8 @@ def get_filtered_traces():
                 if not dnsreq[0]:
                     continue
                 dom = dnsreq[0]
-                if dom.rsplit('.')[-1] != 'Home':
-                    valid_dns_list.append(dom)
+                #if dom.rsplit('.')[-1] != 'Home':
+                valid_dns_list.append(dom)
             print len(valid_dns_list)
             
             #========= filtered by domain =============
@@ -139,7 +149,7 @@ def get_filtered_traces():
                 #if dom == None:
                     #user_traces_dict[idt].append(row[1])
                 #elif dom.rsplit('.')[-1] != 'Home':
-                #user_traces_dict[idt].append(row[1])
+                    #user_traces_dict[idt].append(row[1])
             #=======================
 
             for dnsreq in valid_dns_list:
@@ -155,16 +165,25 @@ def get_filtered_traces():
                     else:
                         cdf_domain_dist[iat] += 1
                 #add dnsreqs
+                row_number = 0
                 for row in ses.execute(text(sql_dns).bindparams(d_id = elem_id, qdomain = dnsreq)):
+                    row_number += 1
                     if row[1] == None:
-                        user_traces_dict[idt].append(row[0])
                         continue
                     iat = (row[0]-row[1]).total_seconds()
                     #print 'total domain traces ' + str(total_domain_traces)
                     #traces_dict['dns'].append(row[0])
+                    #always consider fisrt event
+                    if row_number == 2:
+                        user_traces_dict[idt].append(row[1])
+                        traces_dict['dns'].append(row[1])
                     if iat > 1:
-                        if not_in_spike(cdf_domain_dist[iat], total_domain_traces):
+                        if True:#not_in_spike(cdf_domain_dist[iat], total_domain_traces):
                             user_traces_dict[idt].append(row[0])
+                            traces_dict['dns'].append(row[0])
+                        else:
+                            print dnsreq
+                            print cdf_domain_dist[iat]/float(total_domain_traces)
 
             """if user.username == 'clifford.wife':
                 if elem_id == str(23):
@@ -197,6 +216,7 @@ def not_in_spike(total_intv, total_traces):
 def plot_traces(traces_dict, url_list, user_id):
     x = []
     y = []
+    sns.set(style='whitegrid')
     fig, ax = plt.subplots(1, 1, figsize=(12, 8))
     for url in url_list:
         for timst in traces_dict[url]:
@@ -207,7 +227,7 @@ def plot_traces(traces_dict, url_list, user_id):
     hfmt = dates.DateFormatter('%m-%d')
     ax.yaxis.set_major_formatter(hfmt)
 
-    ax.plot(x,y, ',g')
+    ax.plot(x,y, '.g')
 
     ax.set_title('Device usage [user=%s]'%(user_id))#, device=%s]'%(username, platform))
     ax.set_ylabel('Date')

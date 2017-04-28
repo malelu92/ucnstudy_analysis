@@ -1,0 +1,92 @@
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+from collections import defaultdict
+
+def main():
+
+    x = defaultdict(list)
+    y = defaultdict(list)
+
+    y_not_filtered_beg = [0.671875, 0.7857142857142857, 0.8450704225352113, 0.8873239436619719, 0.9154929577464789]
+    x_not_filtered_beg = [0.7543859649122807, 0.873015873015873, 0.8955223880597015, 0.9, 0.9027777777777778]
+
+    y_not_filtered_end = [0.7323943661971831, 0.8309859154929577, 0.8591549295774648, 0.8732394366197183, 0.9027777777777778]
+    x_not_filtered_end = [0.8666666666666667, 0.8805970149253731, 0.8840579710144928, 0.8857142857142857, 0.9027777777777778]
+
+    y_blist_filtered_beg = [0.671875, 0.7857142857142857, 0.8450704225352113, 0.8873239436619719, 0.9154929577464789]
+    x_blist_filtered_beg = [0.7543859649122807, 0.873015873015873, 0.8955223880597015, 0.9, 0.9027777777777778]
+
+    y_blist_filtered_end = [0.6901408450704225, 0.7746478873239436, 0.8450704225352113, 0.8591549295774648, 0.9027777777777778]
+    x_blist_filtered_end = [0.8596491228070176, 0.873015873015873, 0.8823529411764706, 0.8840579710144928, 0.9027777777777778]
+
+    #obs: no difference when considering only spikes
+    y_interval_filtered_beg = [0.6666666666666666, 0.7857142857142857, 0.8450704225352113, 0.8873239436619719, 0.9154929577464789]
+    x_interval_filtered_beg = [0.7368421052631579, 0.873015873015873, 0.8955223880597015, 0.9, 0.9027777777777778]
+
+    y_interval_filtered_end = [0.7323943661971831, 0.8309859154929577, 0.8591549295774648, 0.8732394366197183, 0.9027777777777778]
+    x_interval_filtered_end = [0.8666666666666667, 0.8805970149253731, 0.8840579710144928, 0.8857142857142857, 0.9027777777777778]
+
+    y_1s_filtered_beg = [0.6612903225806451, 0.782608695652174, 0.8450704225352113, 0.8873239436619719, 0.9154929577464789]
+    x_1s_filtered_beg = [0.7192982456140351, 0.8571428571428571, 0.8955223880597015, 0.9, 0.9027777777777778]
+
+    y_1s_filtered_end = [0.7323943661971831, 0.8169014084507042, 0.8450704225352113, 0.8591549295774648, 0.8888888888888888]
+    x_1s_filtered_end = [0.8666666666666667, 0.8787878787878788, 0.8823529411764706, 0.8840579710144928, 0.9014084507042254]
+
+    x['not_filtered_beg'] = x_not_filtered_beg
+    y['not_filtered_beg'] = y_not_filtered_beg
+    x['not_filtered_end'] = x_not_filtered_end
+    y['not_filtered_end'] = y_not_filtered_end
+
+    #x['filtered_beg'] = x_filtered_beg
+    #y['filtered_beg'] = y_filtered_beg
+    #x['filtered_end'] = x_filtered_end
+    #y['filtered_end'] = y_filtered_end
+
+    x['blist_beg'] = x_blist_filtered_beg
+    y['blist_beg'] = y_blist_filtered_beg
+    x['blist_end'] = x_blist_filtered_end
+    y['blist_end'] = y_blist_filtered_end
+
+    # both spikes and >1s filter
+    x['interval_beg'] = x_interval_filtered_beg
+    y['interval_beg'] = y_interval_filtered_beg
+    x['interval_end'] = x_interval_filtered_end
+    y['interval_end'] = y_interval_filtered_end
+
+    plot_roc_curve(x,y,'end')
+
+
+def plot_roc_curve (x, y, beg_end):
+
+    sns.set(style='whitegrid')
+    plt.title('ROC curve - ' + str(beg_end))
+    plt.ylabel('Recall')
+    plt.ylim((0.0, 1.0))
+    plt.xlabel('Precision')
+    plt.xlim((0.0, 1.0))
+
+    for key, x_values in x.iteritems():
+        if key == 'not_filtered_' + str(beg_end):
+            plt.plot(x_values,y[key], 'b', label = 'not filtered')
+        elif key == 'filtered_' + str(beg_end):
+            plt.plot(x_values,y[key], 'g', label = 'filtered by both spikes and blcklist')
+        elif key == 'interval_' + str(beg_end):
+            plt.plot(x_values,y[key], 'c', label = 'filtered by interval')
+        elif key == 'blist_' + str(beg_end):
+            plt.plot(x_values,y[key], 'r', label = 'filtered by blacklist')
+
+    plt.legend (loc=2, borderaxespad=0.)
+    #plt.grid(True)
+    plt.savefig('figs_ROC_curves/general-%s.png'%(beg_end))
+    plt.close()
+
+
+
+if __name__ == "__main__":
+    main()
+
+
+
+
+
