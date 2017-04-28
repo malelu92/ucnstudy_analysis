@@ -118,7 +118,7 @@ def get_filtered_traces():
                         traces_dict[valid_url].append(row[1])
                         user_traces_dict[idt].append(row[1])
                     #filter by > 1s and percentage of iat 
-                    if valid_url != 'su.ff.avast.com' and valid_url != 'stream1.bskyb.fyre.co': #and iat > 1:
+                    if True:#iat > 1:
                         #if row_number == 2:
                             #traces_dict[valid_url].append(row[1])
                         #traces_dict[valid_url].append(row[0])

@@ -75,6 +75,27 @@ def main():
                             print key
                             for item in values:
                                 print item
+
+                    calculate_average_periodicity(interval_list)
+
+
+
+def calculate_average_periodicity(interval_list):
+
+    #calculate theoretic periodicity per interval
+    for key in interval_list.keys():
+        timsts = interval_list[key]
+        print '==='
+        print timsts[0]
+        print timsts[len(timsts)-1]
+
+
+    """key_check = -1
+    for key, value in interval_list.iteritems():
+        if key != key_check:
+            print(key, len(interval_list[key]))
+            key_check = key"""
+                    
                     
 def analyze_user_device(user_dev):
 
