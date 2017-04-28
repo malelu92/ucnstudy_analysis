@@ -4,7 +4,7 @@ from collections import defaultdict
 def main():
     blacklist = create_blacklist_dict()
     #url = 'ad4.liverail.com'
-    url = 'ad4.liverail'
+    url = 'su.ff.avast.com'
     if is_in_blacklist(url, blacklist):
         print 'yes'
     else:

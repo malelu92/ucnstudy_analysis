@@ -88,7 +88,7 @@ def get_filtered_traces():
                 continue
 
             for row in ses.execute(text(sql_url).bindparams(d_id = elem_id)):
-                if row[0]:# and not (is_in_blacklist(row[0], blacklist)):
+                if row[0] and not (is_in_blacklist(row[0], blacklist)):
                     valid_url_list.append(row[0])
             valid_url_list.append('dns')
 
@@ -118,7 +118,7 @@ def get_filtered_traces():
                         traces_dict[valid_url].append(row[1])
                         user_traces_dict[idt].append(row[1])
                     #filter by > 1s and percentage of iat 
-                    if iat > 1:#valid_url != 'su.ff.avast.com' and valid_url != 'stream1.bskyb.fyre.co': #and iat > 1:
+                    if valid_url != 'su.ff.avast.com' and valid_url != 'stream1.bskyb.fyre.co': #and iat > 1:
                         #if row_number == 2:
                             #traces_dict[valid_url].append(row[1])
                         #traces_dict[valid_url].append(row[0])
@@ -126,10 +126,15 @@ def get_filtered_traces():
                             user_traces_dict[idt].append(row[0])
                             traces_dict[valid_url].append(row[0])
                         
+                            dat = row[0]
+                            if dat.day == 11:
+                                print dat
+                                print valid_url
+
                         else:
                             print valid_url
                             print cdf_dist[iat]/float(total_url_traces)
-                            
+                    
 
 
             #get inter event times per query domain
@@ -138,8 +143,8 @@ def get_filtered_traces():
                 if not dnsreq[0]:
                     continue
                 dom = dnsreq[0]
-                #if dom.rsplit('.')[-1] != 'Home':
-                valid_dns_list.append(dom)
+                if dom.rsplit('.')[-1] != 'Home':
+                    valid_dns_list.append(dom)
             print len(valid_dns_list)
             
             #========= filtered by domain =============
@@ -177,7 +182,7 @@ def get_filtered_traces():
                     if row_number == 2:
                         user_traces_dict[idt].append(row[1])
                         traces_dict['dns'].append(row[1])
-                    if iat > 1:
+                    if True:#iat > 1:
                         if True:#not_in_spike(cdf_domain_dist[iat], total_domain_traces):
                             user_traces_dict[idt].append(row[0])
                             traces_dict['dns'].append(row[0])
