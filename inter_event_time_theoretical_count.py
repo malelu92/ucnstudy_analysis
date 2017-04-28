@@ -84,10 +84,27 @@ def calculate_average_periodicity(interval_list):
 
     #calculate theoretic periodicity per interval
     for key in interval_list.keys():
+        interval_dist = defaultdict(int)
+        if key != 5:
+            continue
         timsts = interval_list[key]
-        print '==='
-        print timsts[0]
-        print timsts[len(timsts)-1]
+        if len(timsts) > 1:
+            for i in range (0, len(timsts)-1):
+                iat = (timsts[i+1]-timsts[i]).total_seconds()
+
+                #round interval
+                if iat - int(iat) >= 0.5:
+                    iat = int(iat)+1
+                else:
+                    iat = int(iat)
+
+                if iat not in interval_dist.keys():
+                    interval_dist[iat] = 1
+                else:
+                    interval_dist[iat] += 1
+                print iat
+
+        print interval_dist
 
 
     """key_check = -1
