@@ -76,42 +76,55 @@ def main():
                             for item in values:
                                 print item
 
-                    calculate_average_periodicity(interval_list)
+                calculate_average_periodicity(interval_list)
 
 
 
-def calculate_average_periodicity(interval_list):
+def calculate_average_periodicity(interval_dict):
 
     #calculate theoretic periodicity per interval
-    for key in interval_list.keys():
-        interval_dist = defaultdict(int)
-        if key != 5:
-            continue
-        timsts = interval_list[key]
-        if len(timsts) > 1:
-            for i in range (0, len(timsts)-1):
-                iat = (timsts[i+1]-timsts[i]).total_seconds()
+    for key in interval_dict.keys():
+        #if key != 5:
+            #continue
 
-                #round interval
-                if iat - int(iat) >= 0.5:
-                    iat = int(iat)+1
-                else:
-                    iat = int(iat)
+        distrib_dict = get_interval_distribution(key, interval_dict)
+        #print distrib_dict
 
-                if iat not in interval_dist.keys():
-                    interval_dist[iat] = 1
-                else:
-                    interval_dist[iat] += 1
-                print iat
+        for iat_total in distrib_dict.keys():
+            if iat_total != 'total' and \
+               distrib_dict['total'] > 10 and \
+               (distrib_dict[iat_total]/float(distrib_dict['total'])) > 0.5:
+                
 
-        print interval_dist
+                if iat_total != 0:
+                    print 'interval ' + str(iat_total)
+                    print 'total ' + str(distrib_dict['total'])
 
 
-    """key_check = -1
-    for key, value in interval_list.iteritems():
-        if key != key_check:
-            print(key, len(interval_list[key]))
-            key_check = key"""
+def get_interval_distribution(key, interval_list):
+
+    interval_dist = defaultdict(int)
+    interval_dist['total'] = 0
+    timsts = interval_list[key]
+
+    if len(timsts) > 1:
+        for i in range (0, len(timsts)-1):
+            iat = (timsts[i+1]-timsts[i]).total_seconds()
+
+            #round interval
+            if iat - int(iat) >= 0.5:
+                iat = int(iat)+1
+            else:
+                iat = int(iat)
+
+            if iat not in interval_dist.keys():
+                interval_dist[iat] = 1
+            else:
+                interval_dist[iat] += 1
+
+            interval_dist['total'] +=1
+
+    return interval_dist
                     
                     
 def analyze_user_device(user_dev):
