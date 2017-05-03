@@ -94,6 +94,32 @@ def main():
             plot_counts_ditr(theoretic_count[idt], real_count[idt], idt)
 
 
+def get_interval_list(traces_list):
+
+    intv = 0
+    interval_list = defaultdict(list)
+
+    interval_list[intv].append(traces_list[0])
+    for i in range(0, len(traces_list)-1):
+        iat = (traces_list[i+1]-traces_list[i]).total_seconds()
+        if iat > gap_interval:
+            intv += 1
+        interval_list[intv].append(traces_list[i+1])
+
+    cont = 0
+    print 'list'
+    for elem in traces_list:
+            print elem
+
+    print 'intervals'
+    for key, values in interval_list.iteritems():
+        #if key >= 0 and key <= 5:
+        print key
+        for item in values:
+            print item
+
+    return interval_list
+
 def calculate_average_periodicity(interval_dict):
 
     #calculate theoretic periodicity per interval

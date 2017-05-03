@@ -22,7 +22,7 @@ import datautils
 
 #output_notebook()
 
-time_intervals = [1]#, 2, 3, 4, 5]
+time_intervals = [1, 2, 3, 4, 5]
 
 def main():
 

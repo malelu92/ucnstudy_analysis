@@ -23,6 +23,8 @@ from model.user_devices import user_devices;
 from blacklist import create_blacklist_dict
 from blacklist import is_in_blacklist
 
+from inter_event_time_theoretical_count import get_interval_list
+
 from sqlalchemy import create_engine, text, func
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
@@ -118,17 +120,15 @@ def get_filtered_traces():
                         traces_dict[valid_url].append(row[1])
                         user_traces_dict[idt].append(row[1])
                     #filter by > 1s and percentage of iat 
-                    if True:#iat > 1:
-                        #if row_number == 2:
-                            #traces_dict[valid_url].append(row[1])
+                    if iat > 1:
                         #traces_dict[valid_url].append(row[0])
                         if True:#not_in_spike(cdf_dist[iat], total_url_traces):
                             user_traces_dict[idt].append(row[0])
                             traces_dict[valid_url].append(row[0])
-                        else:
-                            print valid_url
-                            print cdf_dist[iat]/float(total_url_traces)
-                    
+
+                print valid_url
+                if traces_dict[valid_url]:
+                    get_interval_list(traces_dict[valid_url])
 
 
             #get inter event times per query domain
