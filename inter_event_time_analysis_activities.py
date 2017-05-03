@@ -77,6 +77,7 @@ def get_activities_inter_times():
 
 def plot_traces(beg, end, io, user): 
 
+    sns.set_style('whitegrid')
     fig, ax = plt.subplots(1, 1, figsize=(12, 8))
     x_beg = []
     x_end = []
@@ -117,7 +118,7 @@ def plot_traces(beg, end, io, user):
 
     ax.hlines(y, x_beg, x_end, 'g')
     #ax.plot(x_io, y_io, '.g')
-    ax.set_title('Device usage [user=%s]'%(user))
+    ax.set_title('Device usage [user=%s]'%(user), fontsize = 25)
     ax.set_ylabel('Date')
     ax.set_yticks(list(set(y_io).union(y_label)))
     if y_label and y_io:
@@ -131,7 +132,7 @@ def plot_traces(beg, end, io, user):
     ax.set_xlim(0,24)
 
     plt.tight_layout()
-    fig.savefig('figs_device_usage_activities_block/%s.png' % (user))
+    fig.savefig('figs_device_usage_activities_block/teste_%s.png' % (user))
     plt.close(fig)
 
 

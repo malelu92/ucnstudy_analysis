@@ -57,15 +57,15 @@ def get_traces():
         for d in user.devices:
             devs[d.id] = d.platform
     
-        sqlq = contains_blacklist(0)
-        #url = '\'%ad4.liverail.com%\''
-        #sqlq = get_inter_event_query(url)
+        #sqlq = contains_blacklist(0)
+        url = '\'%http://su.ff.avast.com%\''
+        sqlq = get_inter_event_query(url)
         
         sqlq_flow = """SELECT startts, endts FROM flows WHERE devid = :d_id"""
         for elem_id in devids:
             idt = user.username+'.'+devs[int(elem_id)]
-            #if user.username != 'clifford.wife':
-                #continue
+            if user.username != 'clifford.wife':
+                continue
             print elem_id
             iat = []
             #traces = []
@@ -86,7 +86,7 @@ def get_traces():
                 flow_end.append(row[1])
             
             #if iat:
-            #    plot_cdf_interval_times(iat, user.username, devs[int(elem_id)], 'figs_CDF', url)
+                #plot_cdf_interval_times(iat, user.username, devs[int(elem_id)], 'figs_CDF', url)
             
             #if flow_beg:
                 #plot_traces(traces[user.username+'.'+devs[int(elem_id)]], flow_beg, flow_end, user, devs, elem_id)
@@ -182,6 +182,8 @@ def plot_traces(traces, flow_beg, flow_end, username, platform):
 
 def plot_cdf_interval_times(iat, username, platform, folder, url):
 
+    sns.set_style('whitegrid')
+
     fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(12, 4))
     (x,y) = datautils.aecdf(iat)
 
@@ -218,7 +220,7 @@ def plot_cdf_interval_times(iat, username, platform, folder, url):
         ax3.set_xlim(600,max(iat))
     
     plt.tight_layout()
-    fig.savefig('%s/%s-%s-liverail.png' % (folder, username, platform))
+    fig.savefig('%s/%s-%s-avast-white.png' % (folder, username, platform))
     plt.close(fig)
 
 def contains_blacklist (var):
@@ -252,7 +254,7 @@ def contains_blacklist (var):
 
 def get_inter_event_query(url):
 
-    return ("""SELECT ts, lag(ts) OVER (ORDER BY ts) FROM httpreqs WHERE \
+    return ("""SELECT req_url_host, ts, lag(ts) OVER (ORDER BY ts) FROM httpreqs WHERE \
     devid = :d_id AND req_url LIKE %s ORDER BY ts""")%(url)
 
 

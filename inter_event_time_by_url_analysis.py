@@ -88,7 +88,7 @@ def get_filtered_traces():
                 continue
 
             for row in ses.execute(text(sql_url).bindparams(d_id = elem_id)):
-                if row[0] and not (is_in_blacklist(row[0], blacklist)):
+                if row[0]:# and not (is_in_blacklist(row[0], blacklist)):
                     valid_url_list.append(row[0])
             valid_url_list.append('dns')
 
@@ -125,12 +125,6 @@ def get_filtered_traces():
                         if True:#not_in_spike(cdf_dist[iat], total_url_traces):
                             user_traces_dict[idt].append(row[0])
                             traces_dict[valid_url].append(row[0])
-                        
-                            dat = row[0]
-                            if dat.day == 11:
-                                print dat
-                                print valid_url
-
                         else:
                             print valid_url
                             print cdf_dist[iat]/float(total_url_traces)
@@ -143,8 +137,8 @@ def get_filtered_traces():
                 if not dnsreq[0]:
                     continue
                 dom = dnsreq[0]
-                if dom.rsplit('.')[-1] != 'Home':
-                    valid_dns_list.append(dom)
+                #if dom.rsplit('.')[-1] != 'Home':
+                valid_dns_list.append(dom)
             print len(valid_dns_list)
             
             #========= filtered by domain =============
@@ -199,8 +193,8 @@ def get_filtered_traces():
                                 print valid_url + ' ' + str(timst)"""
 
 
-            #if traces_dict:
-                #plot_traces(traces_dict, valid_url_list, idt)#user.username, devs[int(elem_id)])
+            if traces_dict:
+                plot_traces(traces_dict, valid_url_list, idt)#user.username, devs[int(elem_id)])
 
     return user_traces_dict
 
@@ -234,7 +228,7 @@ def plot_traces(traces_dict, url_list, user_id):
 
     ax.plot(x,y, '.g')
 
-    ax.set_title('Device usage [user=%s]'%(user_id))#, device=%s]'%(username, platform))
+    ax.set_title('Device usage [user=%s]'%(user_id), fontsize = 30)#, device=%s]'%(username, platform))
     ax.set_ylabel('Date')
     ax.set_yticks(y_label)
 
@@ -242,7 +236,7 @@ def plot_traces(traces_dict, url_list, user_id):
     ax.set_xlim(0,24)
 
     plt.tight_layout()
-    fig.savefig('figs_device_constant_usage_filtered/%s.png' % (user_id))
+    fig.savefig('figs_device_constant_usage_filtered/teste_%s.png' % (user_id))
     plt.close(fig)
 
                         

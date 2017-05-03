@@ -263,7 +263,7 @@ def plot_comparison (cmp_results, user):
 def create_subplot(ax, key_beg_end, platform, date_time_list, user):
     x = []
     y = []
-    sns.set_style('darkgrid')
+    sns.set_style('whitegrid')
     for timst in date_time_list:
         x.append(timst.date())
         y.append(timst.hour+timst.minute/60.0)

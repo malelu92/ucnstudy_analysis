@@ -164,9 +164,9 @@ def get_intersection():
                     else:
                         iat_out_block.append(iat)
                 if iat_block:
-                    plot_cdf_interval_times(iat_block, user_traces.rsplit('.', 1)[0], str(user_traces.rsplit('.')[-1]+'-boldchat-inBlock'), '', 'figs_CDF_mix')
+                    plot_cdf_interval_times(iat_block, user_traces.rsplit('.', 1)[0], str(user_traces.rsplit('.')[-1]+'-avast-white-inBlock'), '', 'figs_CDF_mix')
                 if iat_out_block:
-                    plot_cdf_interval_times(iat_out_block, user_traces.rsplit('.', 1)[0], str(user_traces.rsplit('.')[-1]+'-boldchat-outBlock'), '', 'figs_CDF_mix')
+                    plot_cdf_interval_times(iat_out_block, user_traces.rsplit('.', 1)[0], str(user_traces.rsplit('.')[-1]+'-avast-white-outBlock'), '', 'figs_CDF_mix')
                 break
             else:
                 continue
