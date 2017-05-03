@@ -267,10 +267,12 @@ def get_approximation(value):
         return 43200 #12 hrs
     
 
-
 def analyze_user_device(user_dev):
 
-    if user_dev != 'neenagupta.macair':#'clifford.mainlaptop':
+    if user_dev != 'bowen.laptop' and user_dev != 'bridgeman.laptop2' and \
+       user_dev != 'bridgeman.stuartlaptop' and user_dev != 'chrismaley.loungepc' and \
+        user_dev != 'chrismaley.mainpc' and user_dev != 'clifford.mainlaptop' and \
+        user_dev != 'gluch.laptop' and user_dev != 'kemianny.mainlaptop' and user_dev != 'neenagupta.workpc':
         return False
     return True
 
@@ -288,21 +290,31 @@ def plot_counts_ditr(theoretic_counts, real_counts, username):
     ax1.set_title('Theoretic interval sizes per block [user=%s, events=%d]'%(username, len(x)), fontsize = 15)
     ax1.set_ylabel('CDF', fontsize = 10)
     ax1.set_xscale('log')
-    ax1.set_xlabel('seconds', fontsize = 10)
-    ax1.set_xticks([0.001,1,60,3600,24*3600])
-    ax1.set_xticklabels(['1ms','1s','1min','1h','1day'], fontsize = 10)
-    ax1.set_xlim(0.001,max(merged_theoretic_counts))
+    #ax1.set_xlabel('seconds', fontsize = 10)
+    #ax1.set_xticks([0.001,1,60,3600,24*3600])
+    #ax1.set_xticklabels(['1ms','1s','1min','1h','1day'], fontsize = 10)
+    ax1.set_xlabel('conts', fontsize = 10)
+    ax1.set_xticks([1,10,100,1000])
+    ax1.set_xticklabels(['1','10','100','1000'], fontsize = 10)
 
-    xp = filter(lambda v : v>=60, x)
+    #ax1.set_xlim(0.001,max(merged_theoretic_counts))
+    ax1.set_xlim(1,max(merged_theoretic_counts))
+
+
+    xp = filter(lambda v : v>=100, x)
     if xp:
         ax2.plot(xp,y[-len(xp):], '-b', lw=2)
         ax2.set_title('Zoom 1 [values=%d]'%(len(xp)))
         ax2.set_ylabel('CDF')
         ax2.set_xscale('log')
-        ax2.set_xlabel('seconds')
-        ax2.set_xticks([60,600,3600,24*3600])
-        ax2.set_xticklabels(['1min','10min','1h','1day'])
-        ax2.set_xlim(60,max(merged_theoretic_counts))
+        #ax2.set_xlabel('seconds')
+        #ax2.set_xticks([60,600,3600,24*3600])
+        #ax2.set_xticklabels(['1min','10min','1h','1day'])
+        ax2.set_xlabel('conts')
+        ax2.set_xticks([100,1000])
+        ax2.set_xticklabels(['100','1000'])
+
+        ax2.set_xlim(100,max(merged_theoretic_counts))
 
     plt.tight_layout()
     fig.savefig('figs_CDF_theoretic_counts/%s.png' % (username))
