@@ -109,7 +109,7 @@ def calculate_average_periodicity(interval_dict):
         for iat_total in distrib_dict.keys():
             if iat_total != 'total' and \
                distrib_dict['total'] > 5 and \
-               (distrib_dict[iat_total]/float(distrib_dict['total'])) > 0.5:
+               (distrib_dict[iat_total]/float(distrib_dict['total'])) > 0.40:
 
                 if iat_total != 0:
 
@@ -122,12 +122,12 @@ def calculate_average_periodicity(interval_dict):
                     theoretic_count.append(theo_count)
                     real_count.append(distrib_dict[iat_total])
 
-                    print '***'
-                    print 'block time ' + str(block_time)
-                    print 'interval that appears more than 50% of times ' + str(iat_total)
-                    print 'theoretic periodicity ' + str(theo_count)
-                    print 'real periodicity ' + str(distrib_dict[iat_total])
-                    print 'total number of intervals ' + str(distrib_dict['total'])
+                    #print '***'
+                    #print 'block time ' + str(block_time)
+                    #print 'interval that appears more than 40% of times ' + str(iat_total)
+                    #print 'theoretic periodicity ' + str(theo_count)
+                    #print 'real periodicity ' + str(distrib_dict[iat_total])
+                    #print 'total number of intervals ' + str(distrib_dict['total'])
 
     #contains values for a certain url
     return theoretic_count, real_count
@@ -143,7 +143,8 @@ def get_interval_distribution(key, interval_list):
             iat = (timsts[i+1]-timsts[i]).total_seconds()
 
             #round interval
-            iat = round(iat)
+            #iat = round(iat)
+            iat = get_approximation(iat)
 
             if iat not in interval_dist.keys():
                 interval_dist[iat] = 1
@@ -164,6 +165,109 @@ def round(value):
 
     return value
 
+def get_approximation(value):
+
+    if value <= 5:
+        return round(value)
+    #10 seconds gap
+    elif value > 5 and value <= 15:
+        return 10
+    elif value > 15 and value <= 25:
+        return 20
+    elif value >25 and value <= 35:
+        return 30
+    elif value > 35 and value <= 45:
+        return 40
+    #30 seconds gap
+    elif value > 45 and value <= 75:
+        return 60
+    elif value > 75 and value <= 105:
+        return 90
+    elif value > 105 and value <=135:
+        return 120
+    elif value > 135 and value <= 165:
+        return 150
+    elif value > 165 and value <= 195:
+        return 180
+    elif value > 195 and value <= 225:
+        return 210
+    elif value > 225 and value <= 270:
+        return 240
+    #60 seconds gap
+    elif value > 270 and value <= 330:
+        return 300
+    elif value > 330 and value <= 390:
+        return 360
+    elif value > 390 and value <= 450:
+        return 420
+    elif value > 450 and value <= 510:
+        return 480
+    elif value > 510 and value <= 570:
+        return 540
+    elif value > 570 and value <= 675:
+        return 600
+    #150 seconds gaps -> 2.5 min
+    elif value > 675 and value <= 825:
+        return 750
+    elif value > 825 and value <= 975:
+        return 900
+    elif value > 975 and value <= 1125:
+        return 1050
+    elif value > 1125 and value <= 1350:
+        return 1200 #20 min
+    #300 seconds gaps -> 5 min
+    elif value > 1350 and value <= 1650:
+        return 1500
+    elif value > 1650 and value <= 1950:
+        return 1800
+    elif value > 1950 and value <= 2250:
+        return 2100
+    elif value > 2250 and value <= 2550:
+        return 2400 # 40 min
+    elif value > 2550 and value <= 2850:
+        return 2700
+    elif value > 2850 and value <= 3150:
+        return 3000
+    #900 seconds gaps -> 15 min gaps
+    elif value > 3150 and value <= 4050:
+        return 3600 # 1 hr
+    elif value > 4050 and value <= 4950:
+        return 4500
+    elif value > 4950 and value <= 5850:
+        return 5400
+    elif value > 5850 and value <= 6750:
+        return 6300
+    elif value > 6750 and value <= 8100:
+        return 7200 #2 hrs
+    #1800 seconds gaps -> 30 min
+    elif value > 8100 and value <= 9900:
+        return 9000
+    elif value > 9900 and value <= 11700:
+        return 10800 #3 hrs
+    elif value > 11700 and value <= 13500:
+        return 12600
+    elif value > 13500 and value <= 15300:
+        return 14400 #4 hrs
+    elif value > 15300 and value <= 17100:
+        return 16200
+    elif value > 17100 and value <= 18900:
+        return 18000 #5 hrs
+    #3600 seconds intervals
+    elif value > 18900 and value <= 22500:
+        return 21600
+    elif value > 22500 and value <= 26100:
+        return 25200
+    elif value > 26100 and value <= 29700:
+        return 28800
+    elif value > 29700 and value <= 33300:
+        return 32400
+    elif value > 33300 and value <= 36900:
+        return 36000 #10 hrs
+    else:
+        return 43200 #12 hrs
+    
+
+
 def analyze_user_device(user_dev):
 
     if user_dev != 'neenagupta.macair':#'clifford.mainlaptop':
@@ -177,17 +281,16 @@ def plot_counts_ditr(theoretic_counts, real_counts, username):
     merged_theoretic_counts = list(itertools.chain(*theoretic_counts))
 
     #print merged_theoretic_counts
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
     (x,y) = datautils.aecdf(merged_theoretic_counts)
 
     ax1.plot(x,y, '-b', lw=2)
-    ax1.set_title('Interval sizes per block [user=%s, events=%d]'%(username, len(x)))  \
-
-    ax1.set_ylabel('CDF')
+    ax1.set_title('Theoretic interval sizes per block [user=%s, events=%d]'%(username, len(x)), fontsize = 15)
+    ax1.set_ylabel('CDF', fontsize = 10)
     ax1.set_xscale('log')
-    ax1.set_xlabel('seconds')
+    ax1.set_xlabel('seconds', fontsize = 10)
     ax1.set_xticks([0.001,1,60,3600,24*3600])
-    ax1.set_xticklabels(['1ms','1s','1min','1h','1day'])
+    ax1.set_xticklabels(['1ms','1s','1min','1h','1day'], fontsize = 10)
     ax1.set_xlim(0.001,max(merged_theoretic_counts))
 
     xp = filter(lambda v : v>=60, x)
