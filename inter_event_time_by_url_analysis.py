@@ -24,6 +24,7 @@ from blacklist import create_blacklist_dict
 from blacklist import is_in_blacklist
 
 from inter_event_time_theoretical_count import get_interval_list
+from inter_event_time_theoretical_count import get_free_spikes_traces
 
 from sqlalchemy import create_engine, text, func
 from sqlalchemy.orm import sessionmaker
@@ -81,6 +82,7 @@ def get_filtered_traces():
 
             valid_url_list = []
             traces_dict = defaultdict(list)
+            filtered_traces = defaultdict(list)
             #idt = user.username+'.'+devs[int(elem_id)]
             user_id = ses.execute(text(sql_userid).bindparams(d_id = elem_id)).fetchone()
             idt = user_id[0]
@@ -121,14 +123,27 @@ def get_filtered_traces():
                         user_traces_dict[idt].append(row[1])
                     #filter by > 1s and percentage of iat 
                     if iat > 1:
-                        #traces_dict[valid_url].append(row[0])
-                        if True:#not_in_spike(cdf_dist[iat], total_url_traces):
-                            user_traces_dict[idt].append(row[0])
-                            traces_dict[valid_url].append(row[0])
+                        traces_dict[valid_url].append(row[0])
+                        #if True:#not_in_spike(cdf_dist[iat], total_url_traces):
+                            #user_traces_dict[idt].append(row[0])
+                            #traces_dict[valid_url].append(row[0])
 
-                print valid_url
+                #eliminate spikes
                 if traces_dict[valid_url]:
-                    get_interval_list(traces_dict[valid_url])
+                    interval_list = get_interval_list(traces_dict[valid_url])
+                    filtered_traces[valid_url] = get_free_spikes_traces(interval_list)
+
+                if len(traces_dict[valid_url]) != len(filtered_traces[valid_url]):
+                    print '==============='
+                    print valid_url
+                    print 'not filtered'
+                    print len(traces_dict[valid_url])
+                    #for elem in traces_dict[valid_url]:
+                        #print elem
+                    print 'filtered'
+                    print len(filtered_traces[valid_url])
+                    #for elem in filtered_traces[valid_url]:
+                        #print elem
 
 
             #get inter event times per query domain

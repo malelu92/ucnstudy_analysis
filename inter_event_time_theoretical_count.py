@@ -106,18 +106,6 @@ def get_interval_list(traces_list):
             intv += 1
         interval_list[intv].append(traces_list[i+1])
 
-    cont = 0
-    print 'list'
-    for elem in traces_list:
-            print elem
-
-    print 'intervals'
-    for key, values in interval_list.iteritems():
-        #if key >= 0 and key <= 5:
-        print key
-        for item in values:
-            print item
-
     return interval_list
 
 def calculate_average_periodicity(interval_dict):
@@ -157,7 +145,74 @@ def calculate_average_periodicity(interval_dict):
 
     #contains values for a certain url
     return theoretic_count, real_count
+
+
+def get_free_spikes_traces(interval_dict):
+
+    #calculate theoretic periodicity per interval
+    theoretic_count = []
+    real_count = []
+    filtered_traces = []
+
+    for key in interval_dict.keys():
+
+        distrib_dict = get_interval_distribution(key, interval_dict)
+
+        filt_int = False
+        for iat_total in distrib_dict.keys():
+            #if potential spike
+            if iat_total != 'total' and \
+               distrib_dict['total'] > 10 and \
+               (distrib_dict[iat_total]/float(distrib_dict['total'])) > 0.30:
+
+                if iat_total != 0:
+                    timsts = interval_dict[key]
+                    beg_block = timsts[0]
+                    end_block = timsts[len(timsts)-1]
+
+                    block_time = (end_block - beg_block).total_seconds()
+                    theo_count = round(block_time/iat_total)
+                    re_count = distrib_dict[iat_total]
+                    theoretic_count.append(theo_count)
+                    real_count.append(re_count)
+
+                    #E SE HOUVER DOIS PERIODICITIES A SEREM RETIRADOS NUM MESMO INTERVALO?
+                    #if number of intervals is close enough to theoretical number of intervals, eliminate traces
+                    if re_count > (theo_count - theo_count*0.1):
+                        filtered_interval_list = eliminate_spikes(key, interval_dict, iat_total)
+                        filtered_traces.append(filtered_interval_list)
+                        filt_int = True
+        #if no spikes on interval
+        if filt_int == False:
+            filtered_traces.append(interval_dict[key])        
+
+
+    filtered_traces = list(itertools.chain(*filtered_traces))
+
+    #print filtered_traces
+    return filtered_traces
+
+
+def eliminate_spikes(key, interval_list, iat_to_eliminate):
+
+    timsts = interval_list[key]
+    filtered_interval_list = []
+
+    filtered_interval_list.append(timsts[0])
+    if len(timsts) > 1:
+        for i in range (0, len(timsts)-1):
+            iat = (timsts[i+1]-timsts[i]).total_seconds()
+
+            #round interval
+            iat = get_approximation(iat)
+
+            if iat != iat_to_eliminate:
+                filtered_interval_list.append(timsts[i+1])
+
+    return filtered_interval_list
                     
+
+
 def get_interval_distribution(key, interval_list):
 
     interval_dist = defaultdict(int)
