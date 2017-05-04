@@ -94,7 +94,7 @@ def get_filtered_traces():
             for row in ses.execute(text(sql_url).bindparams(d_id = elem_id)):
                 if row[0]:# and not (is_in_blacklist(row[0], blacklist)):
                     valid_url_list.append(row[0])
-            valid_url_list.append('dns')
+            #valid_url_list.append('dns')
 
             for valid_url in valid_url_list:
                 cdf_dist = defaultdict(int)
@@ -124,16 +124,14 @@ def get_filtered_traces():
                     #filter by > 1s and percentage of iat 
                     if iat > 1:
                         traces_dict[valid_url].append(row[0])
-                        #if True:#not_in_spike(cdf_dist[iat], total_url_traces):
-                            #user_traces_dict[idt].append(row[0])
-                            #traces_dict[valid_url].append(row[0])
 
                 #eliminate spikes
                 if traces_dict[valid_url]:
                     interval_list = get_interval_list(traces_dict[valid_url])
-                    filtered_traces[valid_url] = get_free_spikes_traces(interval_list)
+                    #filtered_traces[valid_url] = get_free_spikes_traces(interval_list)
+                    traces_dict[valid_url] = get_free_spikes_traces(interval_list)
 
-                if len(traces_dict[valid_url]) != len(filtered_traces[valid_url]):
+                """if len(traces_dict[valid_url]) != len(filtered_traces[valid_url]):
                     print '==============='
                     print valid_url
                     print 'not filtered'
@@ -143,7 +141,7 @@ def get_filtered_traces():
                     print 'filtered'
                     print len(filtered_traces[valid_url])
                     #for elem in filtered_traces[valid_url]:
-                        #print elem
+                        #print elem"""
 
 
             #get inter event times per query domain
@@ -167,6 +165,7 @@ def get_filtered_traces():
             #=======================
 
             for dnsreq in valid_dns_list:
+                valid_url_list.append(dnsreq)
                 total_domain_traces = 0
                 cdf_domain_dist = defaultdict(list)
                 for row in ses.execute(text(sql_dns).bindparams(d_id = elem_id, qdomain = dnsreq)):
@@ -185,19 +184,19 @@ def get_filtered_traces():
                     if row[1] == None:
                         continue
                     iat = (row[0]-row[1]).total_seconds()
-                    #print 'total domain traces ' + str(total_domain_traces)
-                    #traces_dict['dns'].append(row[0])
                     #always consider fisrt event
                     if row_number == 2:
                         user_traces_dict[idt].append(row[1])
-                        traces_dict['dns'].append(row[1])
-                    if True:#iat > 1:
-                        if True:#not_in_spike(cdf_domain_dist[iat], total_domain_traces):
-                            user_traces_dict[idt].append(row[0])
-                            traces_dict['dns'].append(row[0])
-                        else:
-                            print dnsreq
-                            print cdf_domain_dist[iat]/float(total_domain_traces)
+                        traces_dict[dnsreq].append(row[1])
+                    if iat > 1:
+                        user_traces_dict[idt].append(row[0])
+                        traces_dict[dnsreq].append(row[0])
+
+                #eliminate spikes
+                if traces_dict[dnsreq]:
+                    interval_list = get_interval_list(traces_dict[dnsreq])
+                    #filtered_traces[valid_url] = get_free_spikes_traces(interval_list)
+                    traces_dict[dnsreq] = get_free_spikes_traces(interval_list)
 
             """if user.username == 'clifford.wife':
                 if elem_id == str(23):
