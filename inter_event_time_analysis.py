@@ -64,8 +64,8 @@ def get_traces():
         sqlq_flow = """SELECT startts, endts FROM flows WHERE devid = :d_id"""
         for elem_id in devids:
             idt = user.username+'.'+devs[int(elem_id)]
-            if user.username != 'clifford.wife':
-                continue
+            #if user.username != 'clifford.wife':
+                #continue
             print elem_id
             iat = []
             #traces = []

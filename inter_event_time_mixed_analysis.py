@@ -99,24 +99,20 @@ def get_precision(traces, blocks, interval):
     #print 'first_day :' + str(first_date.day)
     #print 'last_day : ' + str(last_date.day)
     for timst in traces:
-        #print timst
         if dt != timst.day:
             traces_days += 1
             dt = timst.day
             check = False
             for timst_block in blocks:
-                #print timst_block
                 if timst_block.date() == timst.date() and check == False:
-                    #print timst_block
-                    #print timst
                     matched_days += 1
                     check = True
                     time_diff =  abs(timst_block-timst).total_seconds()
                     if time_diff <= 60*interval:
                         tp +=1
-                        print timst_block
-                        print timst
-                        print '====='
+                        #print timst_block
+                        #print timst
+                        #print '====='
                     else:
                         #person not awaken yet
                         if timst < timst_block:
@@ -209,7 +205,7 @@ def plot_ROC_curve(tp_list, fp_list, tn_list, fn_list, username, beg_end):
 
     # This is the ROC curve
     sns.set(style='whitegrid')
-    plt.title('ROC curve [spikes - filtered]')
+    plt.title('ROC curve [interval - filtered]')
     plt.ylabel('Recall')
     plt.ylim((0.0, 1.0))
     plt.xlabel('Precision')

@@ -87,8 +87,8 @@ def get_filtered_traces():
             user_id = ses.execute(text(sql_userid).bindparams(d_id = elem_id)).fetchone()
             idt = user_id[0]
 
-            #if idt != 'bowen.laptop' and idt != 'bridgeman.laptop2' and idt != 'bridgeman.stuartlaptop' and idt != 'chrismaley.loungepc' and idt != 'chrismaley.mainpc' and idt != 'clifford.mainlaptop' and idt != 'gluch.laptop' and idt != 'kemianny.mainlaptop' and idt != 'neenagupta.workpc':
-            if idt != 'kemianny.mainlaptop': 
+            if idt != 'bowen.laptop' and idt != 'bridgeman.laptop2' and idt != 'bridgeman.stuartlaptop' and idt != 'chrismaley.loungepc' and idt != 'chrismaley.mainpc' and idt != 'clifford.mainlaptop' and idt != 'gluch.laptop' and idt != 'kemianny.mainlaptop' and idt != 'neenagupta.workpc':
+            #if idt != 'kemianny.mainlaptop': 
                 continue
 
             for row in ses.execute(text(sql_url).bindparams(d_id = elem_id)):
@@ -127,21 +127,7 @@ def get_filtered_traces():
 
                 #eliminate spikes
                 if traces_dict[valid_url]:
-                    interval_list = get_interval_list(traces_dict[valid_url])
-                    #filtered_traces[valid_url] = get_free_spikes_traces(interval_list)
-                    traces_dict[valid_url] = get_free_spikes_traces(interval_list)
-
-                """if len(traces_dict[valid_url]) != len(filtered_traces[valid_url]):
-                    print '==============='
-                    print valid_url
-                    print 'not filtered'
-                    print len(traces_dict[valid_url])
-                    #for elem in traces_dict[valid_url]:
-                        #print elem
-                    print 'filtered'
-                    print len(filtered_traces[valid_url])
-                    #for elem in filtered_traces[valid_url]:
-                        #print elem"""
+                    traces_dict[valid_url] = filter_spikes(traces_dict[valid_url], valid_url)
 
 
             #get inter event times per query domain
@@ -194,17 +180,7 @@ def get_filtered_traces():
 
                 #eliminate spikes
                 if traces_dict[dnsreq]:
-                    interval_list = get_interval_list(traces_dict[dnsreq])
-                    #filtered_traces[valid_url] = get_free_spikes_traces(interval_list)
-                    traces_dict[dnsreq] = get_free_spikes_traces(interval_list)
-
-            """if user.username == 'clifford.wife':
-                if elem_id == str(23):
-                    print elem_id
-                    for valid_url in valid_url_list:
-                        for timst in traces_dict[valid_url]:
-                            if timst.day == 14 and timst.hour < 5 and valid_url != 'dns':
-                                print valid_url + ' ' + str(timst)"""
+                    traces_dict[dnsreq] = filter_spikes(traces_dict[dnsreq], dnsreq)
 
 
             if traces_dict:
@@ -212,18 +188,22 @@ def get_filtered_traces():
 
     return user_traces_dict
 
-def not_in_spike(total_intv, total_traces):
+def filter_spikes(traces_list, url_domain):
 
-    if total_traces > 200:
-        if total_intv/float(total_traces) < 0.25:
-            return True
-        return False
-    elif total_traces < 200 and total_traces > 50:
-        if total_intv/float(total_traces) < 0.60:
-            return True
-        return False
-    else:
-        return True
+    pre_filtered_list = []
+    cont = 0
+    while pre_filtered_list != traces_list:
+        pre_filtered_list = traces_list
+        interval_list = get_interval_list(traces_list)
+        traces_list = get_free_spikes_traces(interval_list)
+        cont +=1
+        if traces_list != pre_filtered_list:
+            print '===== round ' + str(cont)
+            print url_domain
+            print len(pre_filtered_list)
+            print len(traces_list)
+
+    return traces_list
 
 
 def plot_traces(traces_dict, url_list, user_id):
@@ -250,7 +230,7 @@ def plot_traces(traces_dict, url_list, user_id):
     ax.set_xlim(0,24)
 
     plt.tight_layout()
-    fig.savefig('figs_device_constant_usage_filtered/teste_%s.png' % (user_id))
+    fig.savefig('figs_device_constant_usage_filtered/%s.png' % (user_id))
     plt.close(fig)
 
                         
