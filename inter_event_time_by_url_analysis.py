@@ -87,8 +87,8 @@ def get_filtered_traces():
             user_id = ses.execute(text(sql_userid).bindparams(d_id = elem_id)).fetchone()
             idt = user_id[0]
 
-            if idt != 'bowen.laptop' and idt != 'bridgeman.laptop2' and idt != 'bridgeman.stuartlaptop' and idt != 'chrismaley.loungepc' and idt != 'chrismaley.mainpc' and idt != 'clifford.mainlaptop' and idt != 'gluch.laptop' and idt != 'kemianny.mainlaptop' and idt != 'neenagupta.workpc':
-            #if idt != 'kemianny.mainlaptop': 
+            #if idt != 'bowen.laptop' and idt != 'bridgeman.laptop2' and idt != 'bridgeman.stuartlaptop' and idt != 'chrismaley.loungepc' and idt != 'chrismaley.mainpc' and idt != 'clifford.mainlaptop' and idt != 'gluch.laptop' and idt != 'kemianny.mainlaptop' and idt != 'neenagupta.workpc':
+            if idt != 'clifford.mainlaptop': 
                 continue
 
             for row in ses.execute(text(sql_url).bindparams(d_id = elem_id)):
@@ -195,8 +195,10 @@ def filter_spikes(traces_list, url_domain):
     while pre_filtered_list != traces_list:
         pre_filtered_list = traces_list
         interval_list = get_interval_list(traces_list)
-        traces_list = get_free_spikes_traces(interval_list)
+        traces_list = get_free_spikes_traces(interval_list, url_domain)
         cont +=1
+        #if url_domain == 'su.ff.avast.com':
+            #print interval_list
         if traces_list != pre_filtered_list:
             print '===== round ' + str(cont)
             print url_domain

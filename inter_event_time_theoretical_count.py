@@ -146,8 +146,8 @@ def calculate_average_periodicity(interval_dict):
     #contains values for a certain url
     return theoretic_count, real_count
 
-
-def get_free_spikes_traces(interval_dict):
+#obs: url_domain just for printing, can take it off
+def get_free_spikes_traces(interval_dict, url_domain):
 
     #calculate theoretic periodicity per interval
     theoretic_count = []
@@ -155,10 +155,9 @@ def get_free_spikes_traces(interval_dict):
     filtered_traces = []
 
     for key in interval_dict.keys():
-
         distrib_dict = get_interval_distribution(key, interval_dict)
+        filtered_interval_list = interval_dict[key]
 
-        filt_int = False
         for iat_total in distrib_dict.keys():
             #if potential spike
             if iat_total != 'total' and \
@@ -176,16 +175,17 @@ def get_free_spikes_traces(interval_dict):
                     theoretic_count.append(theo_count)
                     real_count.append(re_count)
 
-                    #E SE HOUVER DOIS PERIODICITIES A SEREM RETIRADOS NUM MESMO INTERVALO?
+                if url_domain == 'su.ff.avast.com':
+                    print '===='
+                    print 'interval size: ' + str(iat_total)
+                    print 'theoretic counts: ' + str(theo_count)
+                    print 'real counts: ' + str(re_count)
+
                     #if number of intervals is close enough to theoretical number of intervals, eliminate traces
                     if re_count > (theo_count - theo_count*0.1):
-                        filtered_interval_list = eliminate_spikes(key, interval_dict, iat_total)
-                        filtered_traces.append(filtered_interval_list)
-                        filt_int = True
-        #if no spikes on interval
-        if filt_int == False:
-            filtered_traces.append(interval_dict[key])        
+                        filtered_interval_list = eliminate_spikes(filtered_interval_list, iat_total)
 
+        filtered_traces.append(filtered_interval_list)        
 
     filtered_traces = list(itertools.chain(*filtered_traces))
 
@@ -193,9 +193,9 @@ def get_free_spikes_traces(interval_dict):
     return filtered_traces
 
 
-def eliminate_spikes(key, interval_list, iat_to_eliminate):
+def eliminate_spikes(interval_list, iat_to_eliminate):
 
-    timsts = interval_list[key]
+    timsts = interval_list
     filtered_interval_list = []
 
     filtered_interval_list.append(timsts[0])
