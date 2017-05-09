@@ -64,8 +64,8 @@ def get_traces():
         sqlq_flow = """SELECT startts, endts FROM flows WHERE devid = :d_id"""
         for elem_id in devids:
             idt = user.username+'.'+devs[int(elem_id)]
-            #if user.username != 'clifford.wife':
-                #continue
+            if user.username != 'kemianny':
+                continue
             print elem_id
             iat = []
             #traces = []
@@ -99,7 +99,7 @@ def get_traces():
     return traces
 
 def make_block_usage(traces, time_itv):
-
+    
     mix_beg = []
     mix_end = []
     block_beg = traces[0]

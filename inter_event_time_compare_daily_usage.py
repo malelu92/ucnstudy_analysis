@@ -1,0 +1,27 @@
+#from inter_event_time_analysis import get_traces
+from inter_event_time_analysis_activities import get_activities_inter_times
+from inter_event_time_analysis import make_block_usage
+from inter_event_time_by_url_analysis import get_filtered_traces
+
+
+def compare_daily_activity():
+
+    traces = get_filtered_traces()
+    mix_beg, mix_end = get_activities_inter_times()
+
+    for user_mix, blocks_beg in mix_beg.items():
+        for user_traces, row in traces.items():
+            #get same user
+            if user_mix == user_traces:
+                print user_mix
+                traces_beg, traces_end = make_block_usage(sorted(traces[user_traces]), 60*10)
+
+                cont = 0 
+                for elem in traces_beg:
+                    print 'beg ' + str(elem)
+                    print 'end ' + str(traces_end[cont])
+                    cont+=1
+    #print traces
+
+if __name__ == "__main__":
+    compare_daily_activity()

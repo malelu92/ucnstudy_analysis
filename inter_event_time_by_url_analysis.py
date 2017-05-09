@@ -88,7 +88,7 @@ def get_filtered_traces():
             idt = user_id[0]
 
             #if idt != 'bowen.laptop' and idt != 'bridgeman.laptop2' and idt != 'bridgeman.stuartlaptop' and idt != 'chrismaley.loungepc' and idt != 'chrismaley.mainpc' and idt != 'clifford.mainlaptop' and idt != 'gluch.laptop' and idt != 'kemianny.mainlaptop' and idt != 'neenagupta.workpc':
-            if idt != 'clifford.mainlaptop': 
+            if idt != 'kemianny.mainlaptop': 
                 continue
 
             for row in ses.execute(text(sql_url).bindparams(d_id = elem_id)):
@@ -127,9 +127,17 @@ def get_filtered_traces():
 
                 #eliminate spikes
                 if traces_dict[valid_url]:
+
+                    #if valid_url == 'content.very.co.uk':
+                        #print 'BEFORE filtering'
+                        #for elem in traces_dict[valid_url]:
+                            #print elem
+
                     traces_dict[valid_url] = filter_spikes(traces_dict[valid_url], valid_url)
-
-
+                    #if valid_url == 'content.very.co.uk':
+                        #print 'after FILTERING'
+                        #for elem in traces_dict[valid_url]:
+                            #print elem
             #get inter event times per query domain
             valid_dns_list = []
             for dnsreq in ses.execute(text(sql_domain).bindparams(d_id = elem_id)):
@@ -182,7 +190,6 @@ def get_filtered_traces():
                 if traces_dict[dnsreq]:
                     traces_dict[dnsreq] = filter_spikes(traces_dict[dnsreq], dnsreq)
 
-
             if traces_dict:
                 plot_traces(traces_dict, valid_url_list, idt)#user.username, devs[int(elem_id)])
 
@@ -199,11 +206,11 @@ def filter_spikes(traces_list, url_domain):
         cont +=1
         #if url_domain == 'su.ff.avast.com':
             #print interval_list
-        if traces_list != pre_filtered_list:
+        """if traces_list != pre_filtered_list:
             print '===== round ' + str(cont)
             print url_domain
             print len(pre_filtered_list)
-            print len(traces_list)
+            print len(traces_list)"""
 
     return traces_list
 
