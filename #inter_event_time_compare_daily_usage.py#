@@ -30,6 +30,33 @@ def get_matching_nonmatching_time(traces_beg, traces_end, act_beg, act_end):
     non_match_time = 0
     first_daytime = min(act_beg[0], traces_beg[0]))
     last_daytime = max(act_end[len(act_end)-1], traces_end[len(traces_end)-1])
+    first_date = first_daytime.date()
+    last_date = last_daytime.date()
+    current_date = first_day
+    curr_act_date_index = 0
+    curr_trac_date_index = 0
+
+    while current_date <= last_date:
+        t_beg_curr_date = get_beginning_of_day_time(current_date, traces_beg)
+        a_beg_curr_date = get_beginning_of_day_time(current_date, act_beg)
+
+        #match until beginning of day
+        if t_beg_curr_date.date() != datetime.datetime.now().date() or a_beg_curr_date.date() != datetime.datetime.now().date():
+            match_time += min(a_beg_curr_day.time().total_seconds(), t_beg_curr_day.time().total_seconds())
+        #no interaction on both
+        else:
+            match_time += 24*60*60
+
+        #get matches for the middle of the day
+        j = curr_trac_date_index
+        for i in range (curr_act_date_index,act_beg):
+            #no intersection
+            if act_end[i] < traces_beg[j]:
+                non_match_time += act_end[i] - act_beg[i]
+            
+
+        current_date = current_date + datetime.timedelta(days=1)
+
     for i in range(0,len(act_beg)):
         a_beg = act_beg[i]
         current_date = a_beg.date()

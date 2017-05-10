@@ -79,14 +79,6 @@ def main():
                         intv += 1
                     interval_list[intv].append(row[0])
 
-                """if url == 'google.com':
-                    print url
-                    for key, values in interval_list.iteritems():
-                        if key >= 0 and key <= 5:
-                            print key
-                            for item in values:
-                                print item"""
-
                 theoretic_count_per_url_list, real_count_per_url_list = calculate_average_periodicity(interval_list)
 
                 if theoretic_count_per_url_list:
@@ -159,13 +151,13 @@ def get_free_spikes_traces(interval_dict, url_domain):
 
     for key in interval_dict.keys():
 
-        if url_domain == 'content.very.co.uk':
+        if url_domain == 'stream1.bskyb.fyre.co':#'http.00.s.sophosxl.net':#'content.very.co.uk':
             iat_list = []
             int_list = interval_dict[key]
             for i in range(0, len(int_list)-1):
                 iat = (int_list[i+1]-int_list[i]).total_seconds()
                 iat_list.append(iat)
-            plot_cdf_interval_times(iat_list, 'kemianny'+str(key), 'main_laptop', 'figs_CDF_theoretic_counts', 'content.very.co.uk')
+            plot_cdf_interval_times(iat_list, 'kemianny'+str(key), 'main_laptop', 'figs_CDF_theoretic_counts', 'stream1.bskyb.fyre.co')
 
 
         distrib_dict = get_interval_distribution(key, interval_dict)
@@ -174,12 +166,12 @@ def get_free_spikes_traces(interval_dict, url_domain):
         for iat_total in distrib_dict.keys():
             #if potential spike
 
-            if url_domain == 'content.very.co.uk':
+            """if url_domain == 'stream1.bskyb.fyre.co':#'http.00.s.sophosxl.net':#'content.very.co.uk':
                 print '===='
                 print url_domain
                 print 'interval size: ' + str(iat_total)
                 print 'appears this many times: ' + str(distrib_dict[iat_total])
-                print 'total number of intervals: ' + str(distrib_dict['total'])
+                print 'total number of intervals: ' + str(distrib_dict['total'])"""
 
 
             if iat_total != 'total' and \
@@ -197,7 +189,7 @@ def get_free_spikes_traces(interval_dict, url_domain):
                     theoretic_count.append(theo_count)
                     real_count.append(re_count)
 
-                    if url_domain == 'content.very.co.uk':
+                    if url_domain == 'stream1.bskyb.fyre.co':
                         print '===='
                         print url_domain
                         print 'interval size: ' + str(iat_total)
@@ -211,13 +203,29 @@ def get_free_spikes_traces(interval_dict, url_domain):
                         error_margin = 0.1
                     else:
                         error_margin = 0.05
+                    if url_domain == 'stream1.bskyb.fyre.co':
+                        print 'recont ' + str(re_count)
+                        print 'limit ' + str(theo_count - theo_count*error_margin)
+                    #take whole interval off
                     if re_count > (theo_count - theo_count*error_margin):
-                        #print 'lele'
+                        print 'lele'
+                        filtered_interval_list = []
+                    #take only spike off
+                    else:
                         filtered_interval_list = eliminate_spikes(filtered_interval_list, iat_total)
 
         filtered_traces.append(filtered_interval_list)        
 
     filtered_traces = list(itertools.chain(*filtered_traces))
+
+    """if url_domain == 'stream1.bskyb.fyre.co':#'http.00.s.sophosxl.net':#'content.very.co.uk':
+        iat_list = []
+        int_list = filtered_traces
+        for i in range(0, len(int_list)-1):
+            iat = (int_list[i+1]-int_list[i]).total_seconds()
+            iat_list.append(iat)
+            plot_cdf_interval_times(iat_list, 'kemianny'+str(key), 'main_laptop', 'figs_CDF_theoretic_counts', 'stream1.bskyb.fyre.co')"""
+
 
     #print filtered_traces
     return filtered_traces
