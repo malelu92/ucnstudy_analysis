@@ -208,7 +208,6 @@ def get_free_spikes_traces(interval_dict, url_domain):
                         print 'limit ' + str(theo_count - theo_count*error_margin)
                     #take whole interval off
                     if re_count > (theo_count - theo_count*error_margin):
-                        print 'lele'
                         filtered_interval_list = []
                     #take only spike off
                     else:

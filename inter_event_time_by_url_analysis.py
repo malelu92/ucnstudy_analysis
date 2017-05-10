@@ -201,7 +201,7 @@ def filter_spikes(traces_list, url_domain):
 
     pre_filtered_list = []
     cont = 0
-    while pre_filtered_list != traces_list:
+    while pre_filtered_list != traces_list and traces_list:
         if url_domain == 'stream1.bskyb.fyre.co':
             print 'antes'
             print  len(traces_list)
