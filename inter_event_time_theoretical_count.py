@@ -148,6 +148,7 @@ def get_free_spikes_traces(interval_dict, url_domain):
     theoretic_count = []
     real_count = []
     filtered_traces = []
+    eliminate_url = False
 
     for key in interval_dict.keys():
 
@@ -166,13 +167,17 @@ def get_free_spikes_traces(interval_dict, url_domain):
         for iat_total in distrib_dict.keys():
             #if potential spike
 
-            """if url_domain == 'stream1.bskyb.fyre.co':#'http.00.s.sophosxl.net':#'content.very.co.uk':
+            if url_domain == 'http.00.s.sophosxl.net':#'stream1.bskyb.fyre.co':#'content.very.co.uk':
                 print '===='
                 print url_domain
                 print 'interval size: ' + str(iat_total)
                 print 'appears this many times: ' + str(distrib_dict[iat_total])
-                print 'total number of intervals: ' + str(distrib_dict['total'])"""
+                print 'total number of intervals: ' + str(distrib_dict['total'])
 
+
+            #agressive strategy
+            #if distrib_dict[iat_total] >= 5:
+                #eliminate_url = True
 
             if iat_total != 'total' and \
                distrib_dict['total'] > 5 and \
@@ -188,6 +193,9 @@ def get_free_spikes_traces(interval_dict, url_domain):
                     re_count = distrib_dict[iat_total]
                     theoretic_count.append(theo_count)
                     real_count.append(re_count)
+
+                    #agressive strategy
+                    eliminate_url = True
 
                     if url_domain == 'stream1.bskyb.fyre.co':
                         print '===='
@@ -215,8 +223,10 @@ def get_free_spikes_traces(interval_dict, url_domain):
 
         filtered_traces.append(filtered_interval_list)        
 
-    filtered_traces = list(itertools.chain(*filtered_traces))
-
+    if eliminate_url:
+        filtered_traces = []
+    else:
+        filtered_traces = list(itertools.chain(*filtered_traces))
     """if url_domain == 'stream1.bskyb.fyre.co':#'http.00.s.sophosxl.net':#'content.very.co.uk':
         iat_list = []
         int_list = filtered_traces

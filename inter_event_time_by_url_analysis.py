@@ -67,13 +67,13 @@ def get_filtered_traces():
         sqlq = """SELECT ts, lag(ts) OVER (ORDER BY ts) FROM httpreqs2 \
         WHERE devid =:d_id AND req_url_host =:url AND matches_urlblacklist = 'f'"""
 
-        sql_domain = """SELECT DISTINCT query_domain FROM dnsreqs \
+        sql_domain = """SELECT DISTINCT query FROM dnsreqs \
         WHERE devid =:d_id AND matches_blacklist = 'f'"""
         
         sql_dns = """SELECT ts, lag(ts) OVER (ORDER BY ts) FROM dnsreqs \
-        WHERE devid =:d_id AND matches_blacklist = 'f' AND query_domain =:qdomain"""
+        WHERE devid =:d_id AND matches_blacklist = 'f' AND query =:qdomain"""
 
-        sql_dns_domain_time = """SELECT query_domain, ts, lag(ts) OVER (ORDER BY ts) FROM dnsreqs \
+        sql_dns_domain_time = """SELECT query, ts, lag(ts) OVER (ORDER BY ts) FROM dnsreqs \
         WHERE devid =:d_id AND matches_blacklist = 'f'"""
 
         sql_userid = """SELECT login FROM devices WHERE id =:d_id"""
@@ -92,7 +92,7 @@ def get_filtered_traces():
                 continue
 
             for row in ses.execute(text(sql_url).bindparams(d_id = elem_id)):
-                if row[0]:# and not (is_in_blacklist(row[0], blacklist)):
+                if row[0] and not (is_in_blacklist(row[0], blacklist)):
                     valid_url_list.append(row[0])
             #valid_url_list.append('dns')
 
@@ -122,10 +122,10 @@ def get_filtered_traces():
                         traces_dict[valid_url].append(row[1])
                         user_traces_dict[idt].append(row[1])
                     #filter by > 1s and percentage of iat 
-                    if iat > 1:
-                        traces_dict[valid_url].append(row[0])
+                    #if iat > 1:
+                    traces_dict[valid_url].append(row[0])
 
-                #eliminate spikes
+                """#eliminate spikes
                 if traces_dict[valid_url]:
 
                     if valid_url == 'stream1.bskyb.fyre.co':
@@ -139,15 +139,16 @@ def get_filtered_traces():
                         print 'after FILTERING'
                         print len(traces_dict[valid_url])
                         #for elem in traces_dict[valid_url]:
-                            #print elem
+                            #print elem"""
             #get inter event times per query domain
             valid_dns_list = []
             for dnsreq in ses.execute(text(sql_domain).bindparams(d_id = elem_id)):
                 if not dnsreq[0]:
                     continue
                 dom = dnsreq[0]
-                #if dom.rsplit('.')[-1] != 'Home':
-                valid_dns_list.append(dom)
+                if dom.rsplit('.')[-1] != 'Home' and not (is_in_blacklist(dom, blacklist)):
+                    print 'filtered dom'
+                    valid_dns_list.append(dom)
             print len(valid_dns_list)
             
             #========= filtered by domain =============
@@ -184,13 +185,13 @@ def get_filtered_traces():
                     if row_number == 2:
                         user_traces_dict[idt].append(row[1])
                         traces_dict[dnsreq].append(row[1])
-                    if iat > 1:
-                        user_traces_dict[idt].append(row[0])
-                        traces_dict[dnsreq].append(row[0])
+                    #if iat > 1:
+                    user_traces_dict[idt].append(row[0])
+                    traces_dict[dnsreq].append(row[0])
 
                 #eliminate spikes
-                if traces_dict[dnsreq]:
-                    traces_dict[dnsreq] = filter_spikes(traces_dict[dnsreq], dnsreq)
+                #if traces_dict[dnsreq]:
+                    #traces_dict[dnsreq] = filter_spikes(traces_dict[dnsreq], dnsreq)
 
             if traces_dict:
                 plot_traces(traces_dict, valid_url_list, idt)#user.username, devs[int(elem_id)])
