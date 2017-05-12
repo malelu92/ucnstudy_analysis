@@ -25,8 +25,17 @@ def compare_daily_activity():
 
         act_timsts = get_seconds_activities(act_beg[user], act_end[user])
             
-        for elem in act_timsts:
-            print elem
+        #for elem in act_timsts:
+            #print elem
+        
+        first_day = act_beg[user][0]
+        first_day = first_day.replace(hour=00, minute=00, second=00, microsecond=0)
+        last_day = act_end[user][len(act_end[user])-1]
+        last_day = last_day.replace(hour=23, minute=59, second=59, microsecond=0)
+
+        print first_day
+        print last_day
+
     """for user_mix, blocks_beg in act_beg.items():
         for user_traces, row in traces.items():
             #get same user
