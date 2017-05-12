@@ -1,4 +1,5 @@
-#from inter_event_time_analysis import get_traces
+import datetime
+
 from inter_event_time_analysis_activities import get_activities_inter_times
 from inter_event_time_analysis import make_block_usage
 from inter_event_time_by_url_analysis import get_filtered_traces
@@ -12,14 +13,19 @@ def compare_daily_activity():
     for user, timsts in traces_dict.iteritems():
         traces = []
         print user
-        #timsts = sorted(timsts)
+
+        #get traces in seconds
         for timst in timsts:
             timst = timst.replace(microsecond=0)
             traces.append(timst)
-
         traces = list(set(traces))
         traces = sorted(traces)
-        for elem in traces:
+        #for elem in traces:
+            #print elem
+
+        act_timsts = get_seconds_activities(act_beg[user], act_end[user])
+            
+        for elem in act_timsts:
             print elem
     """for user_mix, blocks_beg in act_beg.items():
         for user_traces, row in traces.items():
@@ -29,7 +35,20 @@ def compare_daily_activity():
                 traces_beg, traces_end = make_block_usage(sorted(traces[user_traces]), 60*10)"""
 
 
+def get_seconds_activities(act_beg_user, act_end_user):
 
+    act_list = []
+    
+    for i in range(0, len(act_beg_user)):
+        timst = act_beg_user[i]
+        timst = timst.replace(microsecond=0)
+
+        while timst < act_end_user[i]:
+            act_list.append(timst)
+            timst += datetime.timedelta(0,1)
+
+    return sorted(act_list)
+        
 
 
 
