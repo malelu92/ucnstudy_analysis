@@ -88,15 +88,16 @@ def get_filtered_traces():
             idt = user_id[0]
 
             #if idt != 'bowen.laptop' and idt != 'bridgeman.laptop2' and idt != 'bridgeman.stuartlaptop' and idt != 'chrismaley.loungepc' and idt != 'chrismaley.mainpc' and idt != 'clifford.mainlaptop' and idt != 'gluch.laptop' and idt != 'kemianny.mainlaptop' and idt != 'neenagupta.workpc':
-            if idt != 'clifford.mainlaptop':#'kemianny.mainlaptop': 
+            if idt != 'kemianny.mainlaptop': 
                 continue
 
             for row in ses.execute(text(sql_url).bindparams(d_id = elem_id)):
-                if row[0] and not (is_in_blacklist(row[0], blacklist)):
+                if row[0]: #and not (is_in_blacklist(row[0], blacklist)):
                     valid_url_list.append(row[0])
             #valid_url_list.append('dns')
 
             for valid_url in valid_url_list:
+                print '=========DOMAIN ' + str(valid_url)
                 cdf_dist = defaultdict(int)
                 total_url_traces = 0
                 #get inter event times per url
@@ -122,33 +123,32 @@ def get_filtered_traces():
                         traces_dict[valid_url].append(row[1])
                         user_traces_dict[idt].append(row[1])
                     #filter by > 1s and percentage of iat 
-                    #if iat > 1:
-                    traces_dict[valid_url].append(row[0])
+                    if iat > 1:
+                        traces_dict[valid_url].append(row[0])
 
-                """#eliminate spikes
-                if traces_dict[valid_url]:
+                #eliminate spikes
+                if traces_dict[valid_url] and len(traces_dict[valid_url]) > 1:
 
                     if valid_url == 'stream1.bskyb.fyre.co':
                         print 'BEFORE filtering'
                         print len(traces_dict[valid_url])
                         #for elem in traces_dict[valid_url]:
                             #print elem
-
+                    print 'CHAMOU'
                     traces_dict[valid_url] = filter_spikes(traces_dict[valid_url], valid_url)
                     if valid_url == 'stream1.bskyb.fyre.co':
                         print 'after FILTERING'
                         print len(traces_dict[valid_url])
                         #for elem in traces_dict[valid_url]:
-                            #print elem"""
+                            #print elem
             #get inter event times per query domain
             valid_dns_list = []
             for dnsreq in ses.execute(text(sql_domain).bindparams(d_id = elem_id)):
                 if not dnsreq[0]:
                     continue
                 dom = dnsreq[0]
-                if dom.rsplit('.')[-1] != 'Home' and not (is_in_blacklist(dom, blacklist)):
-                    print 'filtered dom'
-                    valid_dns_list.append(dom)
+                #if dom.rsplit('.')[-1] != 'Home' and not (is_in_blacklist(dom, blacklist)):
+                valid_dns_list.append(dom)
             print len(valid_dns_list)
             
             #========= filtered by domain =============
@@ -185,13 +185,14 @@ def get_filtered_traces():
                     if row_number == 2:
                         user_traces_dict[idt].append(row[1])
                         traces_dict[dnsreq].append(row[1])
-                    #if iat > 1:
-                    user_traces_dict[idt].append(row[0])
-                    traces_dict[dnsreq].append(row[0])
+                    if iat > 1:
+                        user_traces_dict[idt].append(row[0])
+                        traces_dict[dnsreq].append(row[0])
 
                 #eliminate spikes
-                #if traces_dict[dnsreq]:
-                    #traces_dict[dnsreq] = filter_spikes(traces_dict[dnsreq], dnsreq)
+                if traces_dict[dnsreq] and len(traces_dict[dnsreq]) > 1:
+                    print 'CHAMOU'
+                    traces_dict[dnsreq] = filter_spikes(traces_dict[dnsreq], dnsreq)
 
             if traces_dict:
                 plot_traces(traces_dict, valid_url_list, idt)#user.username, devs[int(elem_id)])
@@ -202,24 +203,24 @@ def filter_spikes(traces_list, url_domain):
 
     pre_filtered_list = []
     cont = 0
-    while pre_filtered_list != traces_list and traces_list:
-        if url_domain == 'stream1.bskyb.fyre.co':
-            print 'antes'
-            print  len(traces_list)
+
+    while pre_filtered_list != traces_list and len(traces_list) > 1:
         pre_filtered_list = traces_list
+        print 'LEN'
+        print len(traces_list)
         interval_list = get_interval_list(traces_list)
         traces_list = get_free_spikes_traces(interval_list, url_domain)
         cont +=1
-        if url_domain == 'stream1.bskyb.fyre.co':
-            print 'depois'
-            print len(traces_list)
+
         #if url_domain == 'su.ff.avast.com':
             #print interval_list
-        if traces_list != pre_filtered_list and url_domain == 'stream1.bskyb.fyre.co':
+        if traces_list != pre_filtered_list and url_domain == '===u-ads.adap.tv':
             print '===== round ' + str(cont)
             print url_domain
             print len(pre_filtered_list)
             print len(traces_list)
+            #for elem in traces_list:
+                #print elem
 
     return traces_list
 
@@ -238,7 +239,7 @@ def plot_traces(traces_dict, url_list, user_id):
     hfmt = dates.DateFormatter('%m-%d')
     ax.yaxis.set_major_formatter(hfmt)
 
-    ax.plot(x,y, '.g')
+    ax.plot(x,y, ',g')
 
     ax.set_title('Device usage [user=%s]'%(user_id), fontsize = 30)#, device=%s]'%(username, platform))
     ax.set_ylabel('Date')

@@ -26,8 +26,6 @@ Session = sessionmaker(bind=engine)
 ses = Session()
 users = ses.query(User)
 
-gap_interval = 10*60
-
 def main():
     for user in users:
         print ('user : ' + user.username)
@@ -88,11 +86,32 @@ def main():
 
             plot_counts_ditr(theoretic_count[idt], real_count[idt], idt)
 
+def calculate_gap_interval(traces_list):
+    print len(traces_list)
+    iat_list = []
+    for i in range(0, len(traces_list)-1):
+        iat = (traces_list[i+1]-traces_list[i]).total_seconds()
+        iat = get_approximation(iat)
+        iat_list.append(iat)
+
+    (iats,cumulative_perc) = datautils.aecdf(iat_list)
+
+    cont = 0
+    for elem in cumulative_perc:
+        if elem > 0.9:
+            print 'MAX INTERVAL ' + str(iats[cont])
+            return iats[cont] 
+        cont += 1
+
+    return iats[cont-1]
+
 
 def get_interval_list(traces_list):
 
     intv = 0
     interval_list = defaultdict(list)
+    gap_interval = calculate_gap_interval(traces_list)
+    print 'gap interval ' + str(gap_interval)
 
     interval_list[intv].append(traces_list[0])
     for i in range(0, len(traces_list)-1):
@@ -110,9 +129,6 @@ def calculate_average_periodicity(interval_dict):
     real_count = []
 
     for key in interval_dict.keys():
-        #if key != 5:
-            #continue
-
         distrib_dict = get_interval_distribution(key, interval_dict)
 
         for iat_total in distrib_dict.keys():
@@ -150,6 +166,11 @@ def get_free_spikes_traces(interval_dict, url_domain):
     filtered_traces = []
     eliminate_url = False
 
+    for key, values in interval_dict.iteritems():
+        print key
+        for elem in values:
+            print elem
+
     for key in interval_dict.keys():
 
         if url_domain == 'stream1.bskyb.fyre.co':#'http.00.s.sophosxl.net':#'content.very.co.uk':
@@ -160,29 +181,39 @@ def get_free_spikes_traces(interval_dict, url_domain):
                 iat_list.append(iat)
             plot_cdf_interval_times(iat_list, 'kemianny'+str(key), 'main_laptop', 'figs_CDF_theoretic_counts', 'stream1.bskyb.fyre.co')
 
-
         distrib_dict = get_interval_distribution(key, interval_dict)
         filtered_interval_list = interval_dict[key]
+
+        #if True:#url_domain == 'fupdates.trusteer.com':
+            #print 'distrib_dict ' + str(distrib_dict)
+            #print 'interval_list ' + str(filtered_interval_list)
+
+        """timsts = filtered_interval_list
+        for timst in timsts:
+            if timst.day == 13:
+                print str(timst) + ' ' + str(url_domain)"""
+
 
         for iat_total in distrib_dict.keys():
             #if potential spike
 
-            if url_domain == 'http.00.s.sophosxl.net':#'stream1.bskyb.fyre.co':#'content.very.co.uk':
+            if url_domain == 'fupdates.trusteer.com':#'http.00.s.sophosxl.net':#'stream1.bskyb.fyre.co':#'content.very.co.uk':
                 print '===='
                 print url_domain
                 print 'interval size: ' + str(iat_total)
                 print 'appears this many times: ' + str(distrib_dict[iat_total])
                 print 'total number of intervals: ' + str(distrib_dict['total'])
-
+                #print 'rate: ' + str(distrib_dict[iat_total]/float(distrib_dict['total'])) 
 
             #agressive strategy
-            #if distrib_dict[iat_total] >= 5:
+            #if iat_total != 'total' and distrib_dict[iat_total] >= 5:
                 #eliminate_url = True
 
             if iat_total != 'total' and \
-               distrib_dict['total'] > 5 and \
-               (distrib_dict[iat_total]/float(distrib_dict['total'])) > 0.40:
-
+               ((distrib_dict['total'] > 1 and distrib_dict['total'] <= 5 and \
+               (distrib_dict[iat_total]/float(distrib_dict['total'])) > 0.50) or \
+                (distrib_dict['total'] > 5 and \
+                 (distrib_dict[iat_total]/float(distrib_dict['total'])) > 0.30)):#0.40:
                 if iat_total != 0:
                     timsts = interval_dict[key]
                     beg_block = timsts[0]
@@ -195,9 +226,9 @@ def get_free_spikes_traces(interval_dict, url_domain):
                     real_count.append(re_count)
 
                     #agressive strategy
-                    eliminate_url = True
+                    #eliminate_url = True
 
-                    if url_domain == 'stream1.bskyb.fyre.co':
+                    if url_domain == 'fupdates.trusteer.com':
                         print '===='
                         print url_domain
                         print 'interval size: ' + str(iat_total)
@@ -208,17 +239,22 @@ def get_free_spikes_traces(interval_dict, url_domain):
                     if theo_count <= 10:
                         error_margin = 0.2
                     elif theo_count > 10 and theo_count <= 100:
-                        error_margin = 0.1
+                        error_margin = 0.15
                     else:
-                        error_margin = 0.05
-                    if url_domain == 'stream1.bskyb.fyre.co':
+                        error_margin = 0.1
+
+                    if url_domain == '=====star.c10r.facebook.com':
                         print 'recont ' + str(re_count)
                         print 'limit ' + str(theo_count - theo_count*error_margin)
                     #take whole interval off
                     if re_count > (theo_count - theo_count*error_margin):
+                        print 'AQUI'
                         filtered_interval_list = []
+                        break
                     #take only spike off
                     else:
+                        print 'ENTROU'
+                        print filtered_interval_list
                         filtered_interval_list = eliminate_spikes(filtered_interval_list, iat_total)
 
         filtered_traces.append(filtered_interval_list)        
@@ -235,7 +271,14 @@ def get_free_spikes_traces(interval_dict, url_domain):
             iat_list.append(iat)
             plot_cdf_interval_times(iat_list, 'kemianny'+str(key), 'main_laptop', 'figs_CDF_theoretic_counts', 'stream1.bskyb.fyre.co')"""
 
+    timsts = filtered_traces
+    for timst in timsts:
+        if timst.day == 13 and timst.hour > 11 and timst.hour < 15:
+            if (timst.hour == 11 and timst.minute < 38) or (timst.hour == 14 and timst.minute > 25):
+                continue
+            print 'not filtered ' + str(timst) + ' ' + str(url_domain)
 
+    print 'SAIU'
     #print filtered_traces
     return filtered_traces
 
@@ -269,9 +312,6 @@ def get_interval_distribution(key, interval_list):
     if len(timsts) > 1:
         for i in range (0, len(timsts)-1):
             iat = (timsts[i+1]-timsts[i]).total_seconds()
-
-            #round interval
-            #iat = round(iat)
             iat = get_approximation(iat)
 
             if iat not in interval_dist.keys():
