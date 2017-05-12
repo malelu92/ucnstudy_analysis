@@ -140,7 +140,7 @@ def get_filtered_traces():
                         #for elem in traces_dict[valid_url]:
                             #print elem
             #get inter event times per query domain
-            valid_dns_list = []
+            """valid_dns_list = []
             for dnsreq in ses.execute(text(sql_domain).bindparams(d_id = elem_id)):
                 if not dnsreq[0]:
                     continue
@@ -188,11 +188,11 @@ def get_filtered_traces():
 
                 #eliminate spikes
                 if traces_dict[dnsreq] and len(traces_dict[dnsreq]) > 1:
-                    traces_dict[dnsreq] = filter_spikes(traces_dict[dnsreq], dnsreq)
+                    traces_dict[dnsreq] = filter_spikes(traces_dict[dnsreq], dnsreq)"""
 
-            if traces_dict:
-                plot_traces(traces_dict, valid_url_list, idt)#user.username, devs[int(elem_id)])
-
+            #if traces_dict:
+                #plot_traces(traces_dict, valid_url_list, idt)#user.username, devs[int(elem_id)])
+    #print user_traces_dict
     return user_traces_dict
 
 def filter_spikes(traces_list, url_domain):
@@ -216,12 +216,12 @@ def filter_spikes(traces_list, url_domain):
             #for elem in traces_list:
                 #print elem
 
-    timsts = traces_list
+    """timsts = traces_list
     for timst in timsts:
         if timst.day == 13 and timst.hour > 11 and timst.hour < 15:
             if (timst.hour == 11 and timst.minute < 38) or (timst.hour == 14 and timst.minute > 25):
                 continue
-            print 'not filtered ' + str(timst) + ' ' + str(url_domain)
+            print 'not filtered ' + str(timst) + ' ' + str(url_domain)"""
 
 
     return traces_list
