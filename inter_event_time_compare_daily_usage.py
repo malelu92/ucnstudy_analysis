@@ -23,8 +23,8 @@ def compare_daily_activity():
         #for elem in traces:
             #print elem
 
-        act_timsts = get_seconds_activities(act_beg[user], act_end[user])
-            
+        #get act timsts in seconds
+        #act_timsts = get_seconds_activities(act_beg[user], act_end[user])
         #for elem in act_timsts:
             #print elem
         
@@ -32,9 +32,10 @@ def compare_daily_activity():
         first_day = first_day.replace(hour=00, minute=00, second=00, microsecond=0)
         last_day = act_end[user][len(act_end[user])-1]
         last_day = last_day.replace(hour=23, minute=59, second=59, microsecond=0)
+        #print first_day
+        #print last_day
 
-        print first_day
-        print last_day
+        tp, fn, tn, fp = get_precision(traces, act_beg[user], act_end[user], first_day, last_day)
 
     """for user_mix, blocks_beg in act_beg.items():
         for user_traces, row in traces.items():
@@ -42,6 +43,100 @@ def compare_daily_activity():
             if user_mix == user_traces:
                 print user_mix
                 traces_beg, traces_end = make_block_usage(sorted(traces[user_traces]), 60*10)"""
+
+def get_precision(traces, act_beg, act_end, first_day, last_day):
+
+    j = 0
+    tp, fn = 0, 0
+    act_duration = 0
+
+    for i in range(0, len(act_beg)):
+        print i
+        if j == len(traces):
+            break
+
+        current_trace = traces[j]
+        current_beg = act_beg[i]
+        current_end = act_end[i]
+
+        while current_trace < current_beg:
+            print '*********'
+            print 'beg ' + str(current_beg)
+            print 'end ' + str(current_end)
+            print 'curr ' + str(current_trace)
+            fn += 1
+            j += 1
+            if j == len(traces):
+                break
+            current_trace = traces[j]
+            
+        while current_trace > current_beg and current_trace < current_end:
+            print '======'
+            print 'beg ' + str(current_beg)
+            print 'end ' + str(current_end)
+            print 'curr ' + str(current_trace)
+            tp += 1
+            j += 1
+            if j == len(traces):
+                break
+            current_trace = traces[j]
+
+        while i == len(act_end) and j < len(traces):
+            fn += 1
+            j += 1
+        
+        act_duration += (current_end - current_beg).total_seconds()
+
+    fp = act_duration - tp
+    non_act_duration = (last_day - first_day).total_seconds() - act_duration
+    tn = non_act_duration - fn
+
+
+    print first_day
+    print last_day
+    print act_duration
+    print non_act_duration
+    print tp
+    print fn
+    print int(tn)
+    print int(fp)
+    return tp, fn, int(tn), int(fp)
+
+
+def get_precision_slow(traces, act_timsts, first_day, last_day):
+
+    total_time = (last_day-first_day).total_seconds()
+    current_time = first_day
+    tp, fn, fp, tn = 0, 0, 0, 0
+
+    print total_time
+    for i in range(0, int(total_time)):
+        print i
+        if (current_time in traces):
+            traces_ok = True
+        else:
+            traces_ok = False
+
+        if (current_time in act_timsts):
+            act_timsts_ok = True
+        else:
+            act_timsts_ok = False
+
+        if traces_ok and act_timsts_ok:
+            tp += 1
+        elif traces_ok and not(act_timsts_ok):
+            fn += 1
+        elif not(traces_ok) and act_timsts_ok:
+            fp += 1
+        else:
+            tn += 1
+
+        current_time += datetime.timedelta(0,1)            
+
+    print tp
+    print tn
+    print fn
+    print fp
 
 
 def get_seconds_activities(act_beg_user, act_end_user):
@@ -58,7 +153,6 @@ def get_seconds_activities(act_beg_user, act_end_user):
 
     return sorted(act_list)
         
-
 
 
 
