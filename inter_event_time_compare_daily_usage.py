@@ -3,12 +3,12 @@ import datetime
 from inter_event_time_analysis_activities import get_activities_inter_times
 from inter_event_time_analysis import make_block_usage
 from inter_event_time_by_url_analysis import get_filtered_traces
-
+from inter_event_time_theoretical_count import get_interval_list
 
 def compare_daily_activity():
 
-    traces_dict = get_filtered_traces()
     act_beg, act_end = get_activities_inter_times()
+    traces_dict = get_filtered_traces()
 
     for user, timsts in traces_dict.iteritems():
         traces = []
@@ -19,32 +19,34 @@ def compare_daily_activity():
             timst = timst.replace(microsecond=0)
             traces.append(timst)
         traces = list(set(traces))
-        traces = sorted(traces)
+        #traces = sorted(traces)
+
+        #for elem in traces:
+            #print elem
+
+        print 'chamou'
+        interval_list = get_interval_list(sorted(traces))
+        traces = get_seconds_interval_list(interval_list)
+
         #for elem in traces:
             #print elem
 
         #get act timsts in seconds
+        act_beg_final, act_end_final = activities_in_seconds(act_beg[user], act_end[user])
         #act_timsts = get_seconds_activities(act_beg[user], act_end[user])
         #for elem in act_timsts:
             #print elem
         
-        first_day = act_beg[user][0]
+        first_day = act_beg_final[0]
         first_day = first_day.replace(hour=00, minute=00, second=00, microsecond=0)
-        last_day = act_end[user][len(act_end[user])-1]
+        last_day = act_end_final[len(act_end_final)-1]
         last_day = last_day.replace(hour=23, minute=59, second=59, microsecond=0)
-        #print first_day
-        #print last_day
 
-        precision, recall = get_precision_and_recall(traces, act_beg[user], act_end[user], first_day, last_day)
+        precision, recall = get_precision_and_recall(traces, act_beg_final, act_end_final, first_day, last_day)
 
         print 'precision ' + str(precision*100) + '%'
         print 'recall ' + str(recall*100) + '%'
-    """for user_mix, blocks_beg in act_beg.items():
-        for user_traces, row in traces.items():
-            #get same user
-            if user_mix == user_traces:
-                print user_mix
-                traces_beg, traces_end = make_block_usage(sorted(traces[user_traces]), 60*10)"""
+
 
 def get_precision_and_recall(traces, act_beg, act_end, first_day, last_day):
 
@@ -53,7 +55,6 @@ def get_precision_and_recall(traces, act_beg, act_end, first_day, last_day):
     act_duration = 0
 
     for i in range(0, len(act_beg)):
-        print i
         if j == len(traces):
             break
 
@@ -61,11 +62,15 @@ def get_precision_and_recall(traces, act_beg, act_end, first_day, last_day):
         current_beg = act_beg[i]
         current_end = act_end[i]
 
+        #print '-------'
+        #print current_beg
+        #print current_end
+
         while current_trace < current_beg:
-            print '*********'
-            print 'beg ' + str(current_beg)
-            print 'end ' + str(current_end)
-            print 'curr ' + str(current_trace)
+            #print '*********'
+            #print 'beg ' + str(current_beg)
+            #print 'end ' + str(current_end)
+            #print 'curr ' + str(current_trace)
             fn += 1
             j += 1
             if j == len(traces):
@@ -142,6 +147,43 @@ def get_precision_slow(traces, act_timsts, first_day, last_day):
     print fn
     print fp
 
+def get_seconds_interval_list(interval_list):
+
+    traces = []
+    for key, values in interval_list.iteritems():
+        beg = values[0]
+        end = values[len(values)-1]
+        #print '+++++'
+        #print beg
+        #print end
+        timst = beg.replace(microsecond=0)
+        end = end.replace(microsecond=0)
+        interval = (end-timst).total_seconds()
+    
+        while timst < end:
+            traces.append(timst)
+            timst += datetime.timedelta(0,1)
+
+    return traces
+
+def activities_in_seconds(act_beg, act_end):
+    
+    act_beg_final = []
+    act_end_final = []
+
+    for i in range(0, len(act_beg)):
+        if act_beg[i] == act_end[i]:
+            continue
+
+        timst_beg = act_beg[i]
+        timst_beg = timst_beg.replace(microsecond=0)
+        act_beg_final.append(timst_beg)
+
+        timst_end = act_end[i]
+        timst_end = timst_end.replace(microsecond=0)
+        act_end_final.append(timst_end)
+
+    return act_beg_final, act_end_final
 
 def get_seconds_activities(act_beg_user, act_end_user):
 

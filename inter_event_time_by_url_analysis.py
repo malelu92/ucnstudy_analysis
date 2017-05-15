@@ -122,23 +122,14 @@ def get_filtered_traces():
                         traces_dict[valid_url].append(row[1])
                         user_traces_dict[idt].append(row[1])
                     #filter by > 1s and percentage of iat 
-                    if iat > 1:
-                        traces_dict[valid_url].append(row[0])
+                    #if iat > 1:
+                    traces_dict[valid_url].append(row[0])
 
                 #eliminate spikes
-                if traces_dict[valid_url] and len(traces_dict[valid_url]) > 1:
+                #if traces_dict[valid_url] and len(traces_dict[valid_url]) > 1:
+                    #traces_dict[valid_url] = filter_spikes(traces_dict[valid_url], valid_url)
 
-                    if valid_url == 'stream1.bskyb.fyre.co':
-                        print 'BEFORE filtering'
-                        print len(traces_dict[valid_url])
-                        #for elem in traces_dict[valid_url]:
-                            #print elem
-                    traces_dict[valid_url] = filter_spikes(traces_dict[valid_url], valid_url)
-                    if valid_url == 'stream1.bskyb.fyre.co':
-                        print 'after FILTERING'
-                        print len(traces_dict[valid_url])
-                        #for elem in traces_dict[valid_url]:
-                            #print elem
+
             #get inter event times per query domain
             valid_dns_list = []
             for dnsreq in ses.execute(text(sql_domain).bindparams(d_id = elem_id)):
@@ -182,13 +173,13 @@ def get_filtered_traces():
                     if row_number == 2:
                         user_traces_dict[idt].append(row[1])
                         traces_dict[dnsreq].append(row[1])
-                    if iat > 1:
-                        user_traces_dict[idt].append(row[0])
-                        traces_dict[dnsreq].append(row[0])
+                    #if iat > 1:
+                    user_traces_dict[idt].append(row[0])
+                    traces_dict[dnsreq].append(row[0])
 
                 #eliminate spikes
-                if traces_dict[dnsreq] and len(traces_dict[dnsreq]) > 1:
-                    traces_dict[dnsreq] = filter_spikes(traces_dict[dnsreq], dnsreq)
+                #if traces_dict[dnsreq] and len(traces_dict[dnsreq]) > 1:
+                    #traces_dict[dnsreq] = filter_spikes(traces_dict[dnsreq], dnsreq)
 
             #if traces_dict:
                 #plot_traces(traces_dict, valid_url_list, idt)#user.username, devs[int(elem_id)])

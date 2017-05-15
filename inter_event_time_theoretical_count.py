@@ -105,13 +105,13 @@ def calculate_gap_interval(traces_list):
 
 
 def get_interval_list(traces_list):
-
     intv = 0
     interval_list = defaultdict(list)
     gap_interval = calculate_gap_interval(traces_list)
 
     interval_list[intv].append(traces_list[0])
     for i in range(0, len(traces_list)-1):
+        #print traces_list[i]
         iat = (traces_list[i+1]-traces_list[i]).total_seconds()
         if iat > gap_interval:
             intv += 1

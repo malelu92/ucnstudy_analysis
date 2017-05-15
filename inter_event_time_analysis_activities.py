@@ -70,7 +70,15 @@ def get_activities_inter_times():
 
             #plot_traces(beg, end, io, device.device_id)
             #plot_cdf_interval_times(io_iat, device.device_id)
-            mix_beg[device.device_id], mix_end[device.device_id] = calculate_block_intervals(beg, end, io, 60)
+            mix_beg[device.device_id], mix_end[device.device_id] = calculate_block_intervals(beg, end, io, 2)
+
+            if device.id == 6:
+                cont = 0
+                for elem in mix_beg[device.device_id]:
+                    print '==='
+                    print elem
+                    print mix_end[device.device_id][cont]
+                    cont+=1
             #plot_traces(mix_beg[device.device_id], mix_end[device.device_id], [], device.device_id)
 
     return mix_beg, mix_end
@@ -141,8 +149,11 @@ def calculate_block_intervals(act_beg, act_end, io, time_itv):
     mix_beg = []
     mix_end = []
     j = 0
+    print len(act_beg)
     for i in range (0, len(act_beg)):
+
         if act_beg[i] <= io[j]:
+
             #if done checking io
             if j == len(io):
                 break
@@ -227,8 +238,28 @@ def calculate_block_intervals(act_beg, act_end, io, time_itv):
         mix_beg.append(block_beg)
         mix_end.append(block_end)        
 
+    mix_beg, mix_end = final_filtering(mix_beg, mix_end)
+
     return mix_beg, mix_end
         
+
+def final_filtering(mix_beg, mix_end):
+
+    mix_beg_final = []
+    mix_end_final = []
+
+    for i in range(0, len(mix_beg)):
+
+        if i > 0:
+            if mix_beg[i] == mix_end[i] and mix_end[i-1] == mix_end[i]:
+                continue
+
+        mix_beg_final.append(mix_beg[i])
+        mix_end_final.append(mix_end[i])
+
+    return mix_beg_final, mix_end_final
+
+
 
 def plot_cdf_interval_times(iat, user):
 
