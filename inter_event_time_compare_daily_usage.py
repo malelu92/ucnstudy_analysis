@@ -19,20 +19,24 @@ def compare_daily_activity():
             timst = timst.replace(microsecond=0)
             traces.append(timst)
         traces = list(set(traces))
-        #traces = sorted(traces)
+        traces = sorted(traces)
 
-        #for elem in traces:
-            #print elem
-
-        print 'chamou'
         interval_list = get_interval_list(sorted(traces))
         traces = get_seconds_interval_list(interval_list)
 
-        #for elem in traces:
-            #print elem
+        for elem in traces:
+            if elem.day == 25 and elem.hour == 13 and elem.minute > 33:
+                print elem
 
         #get act timsts in seconds
+        #for elem in act_beg[user]:
+            #print 'ddddd'
+            #print elem
         act_beg_final, act_end_final = activities_in_seconds(act_beg[user], act_end[user])
+       
+        #for elem in act_beg_final:
+            #print 'eeee'
+            #print elem
         #act_timsts = get_seconds_activities(act_beg[user], act_end[user])
         #for elem in act_timsts:
             #print elem
@@ -56,8 +60,10 @@ def get_precision_and_recall(traces, act_beg, act_end, first_day, last_day):
 
     for i in range(0, len(act_beg)):
         if j == len(traces):
+            print act_beg[i]
+            print traces[j-1]
+            print 'AAAAAA'
             break
-
         current_trace = traces[j]
         current_beg = act_beg[i]
         current_end = act_end[i]
@@ -92,7 +98,8 @@ def get_precision_and_recall(traces, act_beg, act_end, first_day, last_day):
             fn += 1
             j += 1
         
-        act_duration += (current_end - current_beg).total_seconds()
+    for i in range(0, len(act_beg)):    
+        act_duration += (act_end[i] - act_beg[i]).total_seconds()
 
     fp = int(act_duration) - tp
     non_act_duration = (last_day - first_day).total_seconds() - act_duration
@@ -172,8 +179,6 @@ def activities_in_seconds(act_beg, act_end):
     act_end_final = []
 
     for i in range(0, len(act_beg)):
-        if act_beg[i] == act_end[i]:
-            continue
 
         timst_beg = act_beg[i]
         timst_beg = timst_beg.replace(microsecond=0)

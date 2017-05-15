@@ -124,6 +124,9 @@ def get_filtered_traces():
                     #filter by > 1s and percentage of iat 
                     #if iat > 1:
                     traces_dict[valid_url].append(row[0])
+                    user_traces_dict[idt].append(row[0])
+
+
 
                 #eliminate spikes
                 #if traces_dict[valid_url] and len(traces_dict[valid_url]) > 1:
@@ -150,7 +153,8 @@ def get_filtered_traces():
             #=======================
             print len(valid_dns_list)
             for dnsreq in valid_dns_list:
-                valid_url_list.append(dnsreq)
+                if dnsreq not in valid_url_list:
+                    valid_url_list.append(dnsreq)
                 total_domain_traces = 0
                 cdf_domain_dist = defaultdict(list)
                 for row in ses.execute(text(sql_dns).bindparams(d_id = elem_id, qdomain = dnsreq)):
