@@ -88,7 +88,7 @@ def get_filtered_traces():
             idt = user_id[0]
 
             #if idt != 'bowen.laptop' and idt != 'bridgeman.laptop2' and idt != 'bridgeman.stuartlaptop' and idt != 'chrismaley.loungepc' and idt != 'chrismaley.mainpc' and idt != 'clifford.mainlaptop' and idt != 'gluch.laptop' and idt != 'kemianny.mainlaptop' and idt != 'neenagupta.workpc':
-            if idt != 'kemianny.mainlaptop': 
+            if idt != 'neenagupta.workpc':#'kemianny.mainlaptop': 
                 continue
 
             for row in ses.execute(text(sql_url).bindparams(d_id = elem_id)):
@@ -140,7 +140,7 @@ def get_filtered_traces():
                         #for elem in traces_dict[valid_url]:
                             #print elem
             #get inter event times per query domain
-            """valid_dns_list = []
+            valid_dns_list = []
             for dnsreq in ses.execute(text(sql_domain).bindparams(d_id = elem_id)):
                 if not dnsreq[0]:
                     continue
@@ -188,7 +188,7 @@ def get_filtered_traces():
 
                 #eliminate spikes
                 if traces_dict[dnsreq] and len(traces_dict[dnsreq]) > 1:
-                    traces_dict[dnsreq] = filter_spikes(traces_dict[dnsreq], dnsreq)"""
+                    traces_dict[dnsreq] = filter_spikes(traces_dict[dnsreq], dnsreq)
 
             #if traces_dict:
                 #plot_traces(traces_dict, valid_url_list, idt)#user.username, devs[int(elem_id)])

@@ -35,8 +35,10 @@ def compare_daily_activity():
         #print first_day
         #print last_day
 
-        tp, fn, tn, fp = get_precision(traces, act_beg[user], act_end[user], first_day, last_day)
+        precision, recall = get_precision_and_recall(traces, act_beg[user], act_end[user], first_day, last_day)
 
+        print 'precision ' + str(precision*100) + '%'
+        print 'recall ' + str(recall*100) + '%'
     """for user_mix, blocks_beg in act_beg.items():
         for user_traces, row in traces.items():
             #get same user
@@ -44,7 +46,7 @@ def compare_daily_activity():
                 print user_mix
                 traces_beg, traces_end = make_block_usage(sorted(traces[user_traces]), 60*10)"""
 
-def get_precision(traces, act_beg, act_end, first_day, last_day):
+def get_precision_and_recall(traces, act_beg, act_end, first_day, last_day):
 
     j = 0
     tp, fn = 0, 0
@@ -71,10 +73,10 @@ def get_precision(traces, act_beg, act_end, first_day, last_day):
             current_trace = traces[j]
             
         while current_trace > current_beg and current_trace < current_end:
-            print '======'
-            print 'beg ' + str(current_beg)
-            print 'end ' + str(current_end)
-            print 'curr ' + str(current_trace)
+            #print '======'
+            #print 'beg ' + str(current_beg)
+            #print 'end ' + str(current_end)
+            #print 'curr ' + str(current_trace)
             tp += 1
             j += 1
             if j == len(traces):
@@ -87,20 +89,22 @@ def get_precision(traces, act_beg, act_end, first_day, last_day):
         
         act_duration += (current_end - current_beg).total_seconds()
 
-    fp = act_duration - tp
+    fp = int(act_duration) - tp
     non_act_duration = (last_day - first_day).total_seconds() - act_duration
-    tn = non_act_duration - fn
+    tn = int(non_act_duration) - fn
 
-
-    print first_day
-    print last_day
-    print act_duration
-    print non_act_duration
-    print tp
-    print fn
-    print int(tn)
-    print int(fp)
-    return tp, fn, int(tn), int(fp)
+    precision = float(tp)/(tp+fp)
+    recall = float(tp)/(tp + fn)
+    print 'first_day ' + str(first_day)
+    print 'last day ' + str(last_day)
+    print 'act_duration ' + str(act_duration)
+    print 'number of traces ' + str(len(traces))
+    print 'non act duration ' + str(non_act_duration)
+    print 'tp ' + str(tp)
+    print 'fn ' + str(fn)
+    print 'tn ' + str(int(tn))
+    print 'fp ' + str(int(fp))
+    return precision, recall
 
 
 def get_precision_slow(traces, act_timsts, first_day, last_day):
