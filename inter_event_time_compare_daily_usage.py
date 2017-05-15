@@ -24,22 +24,7 @@ def compare_daily_activity():
         interval_list = get_interval_list(sorted(traces))
         traces = get_seconds_interval_list(interval_list)
 
-        for elem in traces:
-            if elem.day == 25 and elem.hour == 13 and elem.minute > 33:
-                print elem
-
-        #get act timsts in seconds
-        #for elem in act_beg[user]:
-            #print 'ddddd'
-            #print elem
         act_beg_final, act_end_final = activities_in_seconds(act_beg[user], act_end[user])
-       
-        #for elem in act_beg_final:
-            #print 'eeee'
-            #print elem
-        #act_timsts = get_seconds_activities(act_beg[user], act_end[user])
-        #for elem in act_timsts:
-            #print elem
         
         first_day = act_beg_final[0]
         first_day = first_day.replace(hour=00, minute=00, second=00, microsecond=0)
@@ -60,9 +45,6 @@ def get_precision_and_recall(traces, act_beg, act_end, first_day, last_day):
 
     for i in range(0, len(act_beg)):
         if j == len(traces):
-            print act_beg[i]
-            print traces[j-1]
-            print 'AAAAAA'
             break
         current_trace = traces[j]
         current_beg = act_beg[i]
@@ -72,27 +54,28 @@ def get_precision_and_recall(traces, act_beg, act_end, first_day, last_day):
         #print current_beg
         #print current_end
 
-        while current_trace < current_beg:
-            #print '*********'
-            #print 'beg ' + str(current_beg)
-            #print 'end ' + str(current_end)
-            #print 'curr ' + str(current_trace)
-            fn += 1
-            j += 1
-            if j == len(traces):
-                break
-            current_trace = traces[j]
+        while current_trace <= current_end and j < len(traces):
+            while current_trace >= current_beg and current_trace <= current_end:
+                #print '======'
+                #print 'beg ' + str(current_beg)
+                #print 'end ' + str(current_end)
+                #print 'curr ' + str(current_trace)
+                tp += 1
+                j += 1
+                if j == len(traces):
+                    break
+                current_trace = traces[j]
             
-        while current_trace > current_beg and current_trace < current_end:
-            #print '======'
-            #print 'beg ' + str(current_beg)
-            #print 'end ' + str(current_end)
-            #print 'curr ' + str(current_trace)
-            tp += 1
-            j += 1
-            if j == len(traces):
-                break
-            current_trace = traces[j]
+            while current_trace < current_beg:
+                print '*********'
+                print 'beg ' + str(current_beg)
+                #print 'end ' + str(current_end)
+                print 'curr ' + str(current_trace)
+                fn += 1
+                j += 1
+                if j == len(traces):
+                    break
+                current_trace = traces[j]
 
         while i == len(act_end) and j < len(traces):
             fn += 1
