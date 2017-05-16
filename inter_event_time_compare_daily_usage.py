@@ -21,8 +21,8 @@ def compare_daily_activity():
         traces = list(set(traces))
         traces = sorted(traces)
 
-        interval_list = get_interval_list(sorted(traces))
-        traces = get_seconds_interval_list(interval_list)
+        #interval_list = get_interval_list(sorted(traces))
+        #traces = get_seconds_interval_list(interval_list)
 
         act_beg_final, act_end_final = activities_in_seconds(act_beg[user], act_end[user])
         
@@ -31,13 +31,15 @@ def compare_daily_activity():
         last_day = act_end_final[len(act_end_final)-1]
         last_day = last_day.replace(hour=23, minute=59, second=59, microsecond=0)
 
-        precision, recall = get_precision_and_recall(traces, act_beg_final, act_end_final, first_day, last_day)
+        error_window = [0, 15, 30, 45, 60, 60*2, 60*3]
+        for i in error_window:
+            precision, recall = get_precision_and_recall(traces, act_beg_final, act_end_final, first_day, last_day, i)
 
-        print 'precision ' + str(precision*100) + '%'
-        print 'recall ' + str(recall*100) + '%'
+            print 'precision ' + str(precision*100) + '%'
+            print 'recall ' + str(recall*100) + '%'
 
 
-def get_precision_and_recall(traces, act_beg, act_end, first_day, last_day):
+def get_precision_and_recall(traces, act_beg, act_end, first_day, last_day, error_window):
 
     j = 0
     tp, fn = 0, 0
@@ -55,7 +57,7 @@ def get_precision_and_recall(traces, act_beg, act_end, first_day, last_day):
         #print current_end
 
         while current_trace <= current_end and j < len(traces):
-            while current_trace >= current_beg and current_trace <= current_end:
+            while current_trace >= (current_beg - datetime.timedelta(0,error_window)) and current_trace <= (current_end + datetime.timedelta(0,error_window)):
                 #print '======'
                 #print 'beg ' + str(current_beg)
                 #print 'end ' + str(current_end)
@@ -66,11 +68,11 @@ def get_precision_and_recall(traces, act_beg, act_end, first_day, last_day):
                     break
                 current_trace = traces[j]
             
-            while current_trace < current_beg:
-                print '*********'
-                print 'beg ' + str(current_beg)
+            while current_trace < (current_beg - datetime.timedelta(0,error_window)):
+                #print '*********'
+                #print 'beg ' + str(current_beg)
                 #print 'end ' + str(current_end)
-                print 'curr ' + str(current_trace)
+                #print 'curr ' + str(current_trace)
                 fn += 1
                 j += 1
                 if j == len(traces):
@@ -84,25 +86,28 @@ def get_precision_and_recall(traces, act_beg, act_end, first_day, last_day):
     for i in range(0, len(act_beg)):    
         act_duration += (act_end[i] - act_beg[i]).total_seconds()
 
-    fp = int(act_duration) - tp
+    #fp = int(act_duration) - tp
+    fp = len(traces) - tp
     non_act_duration = (last_day - first_day).total_seconds() - act_duration
     tn = int(non_act_duration) - fn
 
     precision = float(tp)/(tp+fp)
     recall = float(tp)/(tp + fn)
-    print 'first_day ' + str(first_day)
-    print 'last day ' + str(last_day)
-    print 'act_duration ' + str(act_duration)
-    print 'number of traces ' + str(len(traces))
-    print 'non act duration ' + str(non_act_duration)
-    print 'tp ' + str(tp)
-    print 'fn ' + str(fn)
-    print 'tn ' + str(int(tn))
-    print 'fp ' + str(int(fp))
+
+    print 'error window ' + str(error_window)
+    #print 'first_day ' + str(first_day)
+    #print 'last day ' + str(last_day)
+    #print 'act_duration ' + str(act_duration)
+    #print 'number of traces ' + str(len(traces))
+    #print 'non act duration ' + str(non_act_duration)
+    #print 'tp ' + str(tp)
+    #print 'fn ' + str(fn)
+    #print 'tn ' + str(int(tn))
+    #print 'fp ' + str(int(fp))
     return precision, recall
 
 
-def get_precision_slow(traces, act_timsts, first_day, last_day):
+"""def get_precision_slow(traces, act_timsts, first_day, last_day):
 
     total_time = (last_day-first_day).total_seconds()
     current_time = first_day
@@ -136,6 +141,8 @@ def get_precision_slow(traces, act_timsts, first_day, last_day):
     print tn
     print fn
     print fp
+
+"""
 
 def get_seconds_interval_list(interval_list):
 
@@ -186,34 +193,7 @@ def get_seconds_activities(act_beg_user, act_end_user):
             timst += datetime.timedelta(0,1)
 
     return sorted(act_list)
-        
 
-
-
-"""def get_matching_nonmatching_time(traces_beg, traces_end, act_beg, act_end):
-
-    cont_traces = 0
-    cont_act = 0
-    match_time = 0
-    non_match_time = 0
-    first_daytime = min(act_beg[0], traces_beg[0])
-    last_daytime = max(act_end[len(act_end)-1], traces_end[len(traces_end)-1])
-    for i in range(0,len(act_beg)):
-        a_beg = act_beg[i]
-        current_date = a_beg.date()
-        #t_beg = traces_beg[cont_traces]
-        t_beg_curr_day = get_beginning_of_day_time(current_date, t_beg)
-        a_beg_curr_day = get_beginning_of_day_time(current_date, a_beg)
-        match_time += min(a_beg_curr_day.time().total_seconds(), t_beg_curr_day.time().total_seconds())
-        if a_beg.date() <= t_beg.date():
-
-
-def get_beginning_of_day_time(date, timsts):
-
-    for elem in timsts:
-        if elem.date() == date:
-            return elem
-    return datetime.datetime.now()"""
 
 if __name__ == "__main__":
     compare_daily_activity()
