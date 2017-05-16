@@ -5,10 +5,23 @@ from inter_event_time_analysis import make_block_usage
 from inter_event_time_by_url_analysis import get_filtered_traces
 from inter_event_time_theoretical_count import get_interval_list
 
+from collections import defaultdict
+
 def compare_daily_activity():
 
     act_beg, act_end = get_activities_inter_times()
     traces_dict = get_filtered_traces()
+
+    tp_dict = defaultdict(int)
+    tn_dict = defaultdict(int)
+    fp_dict = defaultdict(int)
+    fn_dict = defaultdict(int)
+    error_window = [0, 15, 30, 45, 60, 60*2, 60*3, 60*4, 60*5]
+
+    initialize_dict(tp_dict, error_window)
+    initialize_dict(tn_dict, error_window)
+    initialize_dict(fp_dict, error_window)
+    initialize_dict(fn_dict, error_window)
 
     for user, timsts in traces_dict.iteritems():
         traces = []
@@ -31,18 +44,37 @@ def compare_daily_activity():
         last_day = act_end_final[len(act_end_final)-1]
         last_day = last_day.replace(hour=23, minute=59, second=59, microsecond=0)
 
-        error_window = [0, 15, 30, 45, 60, 60*2, 60*3]
         for i in error_window:
-            precision, recall = get_precision_and_recall(traces, act_beg_final, act_end_final, first_day, last_day, i)
+            tp, fn, fp, tn = get_tp_fn_fp_tn(traces, act_beg_final, act_end_final, first_day, last_day, i)
 
-            print 'precision ' + str(precision*100) + '%'
-            print 'recall ' + str(recall*100) + '%'
+            tp_dict[i] += tp
+            tn_dict[i] += tn
+            fp_dict[i] += fp
+            fn_dict[i] += fn
+
+    precision_dict = defaultdict(int)
+    recall_dict = defaultdict(int)
+    initialize_dict(precision_dict, error_window)
+    initialize_dict(recall_dict, error_window)
+
+    for i in error_window:
+        precision = float(tp_dict[i])/(tp_dict[i]+fp_dict[i])
+        recall = float(tp_dict[i])/(tp_dict[i] + fn_dict[i])
+
+        print 'error window' + str(i)
+        print 'precision ' + str(precision*100) + '%'
+        print 'recall ' + str(recall*100) + '%'
+
+def initialize_dict(var_dict, error_window):
+    
+    for i in error_window:
+        var_dict[i] = 0
 
 
-def get_precision_and_recall(traces, act_beg, act_end, first_day, last_day, error_window):
+def get_tp_fn_fp_tn(traces, act_beg, act_end, first_day, last_day, error_window):
 
     j = 0
-    tp, fn = 0, 0
+    tp, fn, fp, tn = 0, 0, 0, 0
     act_duration = 0
 
     for i in range(0, len(act_beg)):
@@ -73,28 +105,27 @@ def get_precision_and_recall(traces, act_beg, act_end, first_day, last_day, erro
                 #print 'beg ' + str(current_beg)
                 #print 'end ' + str(current_end)
                 #print 'curr ' + str(current_trace)
-                fn += 1
+                fp += 1
                 j += 1
                 if j == len(traces):
                     break
                 current_trace = traces[j]
 
         while i == len(act_end) and j < len(traces):
-            fn += 1
+            fp += 1
             j += 1
         
     for i in range(0, len(act_beg)):    
         act_duration += (act_end[i] - act_beg[i]).total_seconds()
 
-    #fp = int(act_duration) - tp
-    fp = len(traces) - tp
+    fn = int(act_duration) - tp
+    #fp = len(traces) - tp
     non_act_duration = (last_day - first_day).total_seconds() - act_duration
-    tn = int(non_act_duration) - fn
+    tn = int(non_act_duration) - fp
 
     precision = float(tp)/(tp+fp)
     recall = float(tp)/(tp + fn)
 
-    print 'error window ' + str(error_window)
     #print 'first_day ' + str(first_day)
     #print 'last day ' + str(last_day)
     #print 'act_duration ' + str(act_duration)
@@ -104,7 +135,7 @@ def get_precision_and_recall(traces, act_beg, act_end, first_day, last_day, erro
     #print 'fn ' + str(fn)
     #print 'tn ' + str(int(tn))
     #print 'fp ' + str(int(fp))
-    return precision, recall
+    return tp, fn, fp, tn
 
 
 """def get_precision_slow(traces, act_timsts, first_day, last_day):

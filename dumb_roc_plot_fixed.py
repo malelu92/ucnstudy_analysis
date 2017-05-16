@@ -3,7 +3,7 @@ import seaborn as sns
 
 from collections import defaultdict
 
-def main():
+def main_beginning_of_day():
 
     x = defaultdict(list)
     y = defaultdict(list)
@@ -55,6 +55,39 @@ def main():
     y['interval_end'] = y_interval_filtered_end
 
     plot_roc_curve(x,y,'end')
+
+def main():
+
+    x = defaultdict(list) #precision
+    y = defaultdict(list) #recall
+
+    y_interval_filtered_day = [4.98887679273, 6.37320332592, 6.58257206418, 6.69853741658, 6.78626086682, 7.06631324845, 7.18890519241, 7.32569697543, 7.43629794418]
+    x_interval_filtered_day = [53.6368571041, 68.5166652532, 70.7675345603, 72.0142481554, 72.9573403443, 75.9681112713, 77.2847547323, 78.7553429676, 79.9430093119]
+
+    y_blist_filtered_day = [4.08056042032, 5.32336189079, 5.52168630978, 5.64759154952, 5.74209936732, 6.00053643836, 6.12423281425, 6.3003108187, 6.42148277875]
+    x_blist_filtered_day = [53.5343917534, 69.8333850771, 72.4350615751, 74.0867225499, 75.3265031564, 78.7167546311, 80.3394390976, 82.6492807617, 84.2371057207]
+
+    y_not_filtered_day = [5.78154336473, 7.43566684022, 7.7119325981, 7.87428409145, 7.99750713936, 8.35660529181, 8.52905444849, 8.734794339, 8.8856281851]
+    x_not_filtered_day = [52.8643767041, 67.985170439, 70.5111005323, 71.9954991994, 73.1221419195, 76.4054182715, 77.9810161276, 79.8620928421, 81.2399924989]
+
+    x['blist_day'] = divide_value_per_100(x_blist_filtered_day)
+    y['blist_day'] = divide_value_per_100(y_blist_filtered_day)
+
+    x['interval_day'] = divide_value_per_100(x_interval_filtered_day)
+    y['interval_day'] = divide_value_per_100(y_interval_filtered_day)
+
+    x['not_filtered_day'] = divide_value_per_100(x_not_filtered_day)
+    y['not_filtered_day'] = divide_value_per_100(y_not_filtered_day)
+
+    plot_roc_curve(x,y,'day')
+
+def divide_value_per_100(elem_list):
+
+    perc_list = []
+    for elem in elem_list:
+        perc_list.append(elem/100)
+
+    return perc_list
 
 
 def plot_roc_curve (x, y, beg_end):

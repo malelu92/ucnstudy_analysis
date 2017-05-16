@@ -165,7 +165,7 @@ def get_free_spikes_traces(interval_dict, url_domain):
 
     for key in interval_dict.keys():
 
-        if url_domain == 'stream1.bskyb.fyre.co':#'http.00.s.sophosxl.net':#'content.very.co.uk':
+        if url_domain == 'stream1.bskyb.fyre.co===':#'http.00.s.sophosxl.net':#'content.very.co.uk':
             iat_list = []
             int_list = interval_dict[key]
             for i in range(0, len(int_list)-1):
@@ -210,7 +210,7 @@ def get_free_spikes_traces(interval_dict, url_domain):
                     #agressive strategy
                     eliminate_url = True
 
-                    if url_domain == 'fupdates.trusteer.com':
+                    if url_domain == 'fupdates.trusteer.com===':
                         print '===='
                         print url_domain
                         print 'interval size: ' + str(iat_total)
