@@ -3,6 +3,8 @@ import seaborn as sns
 
 from collections import defaultdict
 
+window_error = ['0s', '15s', '30', '45', '1m', '2', '3', '4', '5m' ]
+
 def main_beginning_of_day():
 
     x = defaultdict(list)
@@ -61,14 +63,20 @@ def main():
     x = defaultdict(list) #precision
     y = defaultdict(list) #recall
 
-    y_interval_filtered_day = [4.98887679273, 6.37320332592, 6.58257206418, 6.69853741658, 6.78626086682, 7.06631324845, 7.18890519241, 7.32569697543, 7.43629794418]
-    x_interval_filtered_day = [53.6368571041, 68.5166652532, 70.7675345603, 72.0142481554, 72.9573403443, 75.9681112713, 77.2847547323, 78.7553429676, 79.9430093119]
+    y_1sec_filtered_day = [4.98887679273, 6.37320332592, 6.58257206418, 6.69853741658, 6.78626086682, 7.06631324845, 7.18890519241, 7.32569697543, 7.43629794418]
+    x_1sec_filtered_day = [53.6368571041, 68.5166652532, 70.7675345603, 72.0142481554, 72.9573403443, 75.9681112713, 77.2847547323, 78.7553429676, 79.9430093119]
 
     y_blist_filtered_day = [4.08056042032, 5.32336189079, 5.52168630978, 5.64759154952, 5.74209936732, 6.00053643836, 6.12423281425, 6.3003108187, 6.42148277875]
     x_blist_filtered_day = [53.5343917534, 69.8333850771, 72.4350615751, 74.0867225499, 75.3265031564, 78.7167546311, 80.3394390976, 82.6492807617, 84.2371057207]
 
     y_not_filtered_day = [5.78154336473, 7.43566684022, 7.7119325981, 7.87428409145, 7.99750713936, 8.35660529181, 8.52905444849, 8.734794339, 8.8856281851]
     x_not_filtered_day = [52.8643767041, 67.985170439, 70.5111005323, 71.9954991994, 73.1221419195, 76.4054182715, 77.9810161276, 79.8620928421, 81.2399924989]
+
+    y_interval_filtered_day = [1.43260598602, 1.87990091668, 1.93117811331, 1.9573689276, 1.96999100677, 2.01606159575, 2.0335747306, 2.05108786545, 2.06954765624]
+    x_interval_filtered_day = [60.368326574, 79.2115410185, 81.3721579577, 82.4757346098, 83.0075787794, 84.9488099987, 85.6867437841, 86.4246775695, 87.2024996676]
+
+    x['1_sec_day'] = divide_value_per_100(x_1sec_filtered_day)
+    y['1_sec_day'] = divide_value_per_100(y_1sec_filtered_day)
 
     x['blist_day'] = divide_value_per_100(x_blist_filtered_day)
     y['blist_day'] = divide_value_per_100(y_blist_filtered_day)
@@ -101,13 +109,24 @@ def plot_roc_curve (x, y, beg_end):
 
     for key, x_values in x.iteritems():
         if key == 'not_filtered_' + str(beg_end):
-            plt.plot(x_values,y[key], 'b', label = 'not filtered')
+            plt.plot(x_values,y[key], marker = 'o', linestyle = '-', color = 'b', label = 'not filtered')
+            cont = -1
+            for label in window_error:
+                cont+=1
+                if label == '30' or label == '45' or label == '2' or label == '3' or label == '4':
+                    continue
+                plt.annotate(label, xy=(x_values[cont], y[key][cont]), xytext=(-20, 20),
+                         textcoords='offset points', ha='right', va='bottom',
+                         bbox=dict(boxstyle='round,pad=0.5', fc='yellow', alpha=0.5),
+                         arrowprops=dict(arrowstyle = '->', connectionstyle='arc3,rad=0'))
         elif key == 'filtered_' + str(beg_end):
-            plt.plot(x_values,y[key], 'g', label = 'filtered by both spikes and blcklist')
+            plt.plot(x_values,y[key], marker = 'o', linestyle = '-', color = 'black', label = 'filtered by both spikes and blcklist')
         elif key == 'interval_' + str(beg_end):
-            plt.plot(x_values,y[key], 'c', label = 'filtered by interval')
+            plt.plot(x_values,y[key], marker = 'o', linestyle = '-', color = 'c', label = 'filtered by interval')
         elif key == 'blist_' + str(beg_end):
-            plt.plot(x_values,y[key], 'r', label = 'filtered by blacklist')
+            plt.plot(x_values,y[key], marker = 'o', linestyle = '-', color = 'r', label = 'filtered by blacklist')
+        elif key == '1_sec_' + str(beg_end):
+            plt.plot(x_values,y[key], marker = 'o', linestyle = '-', color = 'g', label = 'filtered by < 1 second')
 
     plt.legend (loc=2, borderaxespad=0.)
     #plt.grid(True)

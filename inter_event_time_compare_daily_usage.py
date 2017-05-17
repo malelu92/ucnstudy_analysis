@@ -128,13 +128,13 @@ def get_tp_fn_fp_tn(traces, act_beg, act_end, first_day, last_day, error_window)
 
     #print 'first_day ' + str(first_day)
     #print 'last day ' + str(last_day)
-    #print 'act_duration ' + str(act_duration)
-    #print 'number of traces ' + str(len(traces))
-    #print 'non act duration ' + str(non_act_duration)
-    #print 'tp ' + str(tp)
-    #print 'fn ' + str(fn)
-    #print 'tn ' + str(int(tn))
-    #print 'fp ' + str(int(fp))
+    print 'act_duration ' + str(act_duration)
+    print 'number of traces ' + str(len(traces))
+    print 'non act duration ' + str(non_act_duration)
+    print 'tp ' + str(tp)
+    print 'fn ' + str(fn)
+    print 'tn ' + str(int(tn))
+    print 'fp ' + str(int(fp))
     return tp, fn, fp, tn
 
 

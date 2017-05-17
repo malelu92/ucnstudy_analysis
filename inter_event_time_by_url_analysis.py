@@ -49,7 +49,9 @@ def get_filtered_traces():
     #traces = defaultdict(list)
     blacklist = create_blacklist_dict()
     user_traces_dict = defaultdict(list)
-
+    user_traces_dict_url = defaultdict(list)
+    collaborative_blacklist = []
+    
     for user in users:
         print ('user : ' + user.username)
 
@@ -88,7 +90,7 @@ def get_filtered_traces():
             idt = user_id[0]
 
             if idt != 'bowen.laptop' and idt != 'bridgeman.laptop2' and idt != 'bridgeman.stuartlaptop' and idt != 'chrismaley.loungepc' and idt != 'chrismaley.mainpc' and idt != 'clifford.mainlaptop' and idt != 'gluch.laptop' and idt != 'kemianny.mainlaptop' and idt != 'neenagupta.workpc':
-            #if idt != 'neenagupta.workpc':#'kemianny.mainlaptop': 
+            #if idt != 'neenagupta.workpc':#and idt != 'kemianny.mainlaptop': 
                 continue
 
             for row in ses.execute(text(sql_url).bindparams(d_id = elem_id)):
@@ -120,16 +122,19 @@ def get_filtered_traces():
                     #the first event is always considereed:
                     if row_number == 2:
                         traces_dict[valid_url].append(row[1])
-                        user_traces_dict[idt].append(row[1])
+                        #user_traces_dict[idt].append(row[1])
+                        
                     #filter by > 1s and percentage of iat 
-                    #if iat > 1:
-                    traces_dict[valid_url].append(row[0])
-                    user_traces_dict[idt].append(row[0])
+                    if iat > 1:
+                        traces_dict[valid_url].append(row[0])
+                        #user_traces_dict[idt].append(row[0])
 
                 #eliminate spikes
-                #if traces_dict[valid_url] and len(traces_dict[valid_url]) > 1:
-                    #traces_dict[valid_url] = filter_spikes(traces_dict[valid_url], valid_url)
+                if traces_dict[valid_url] and len(traces_dict[valid_url]) > 1:
+                    traces_dict[valid_url], collaborative_blacklist = filter_spikes(traces_dict[valid_url], valid_url, collaborative_blacklist)
 
+                for timst in traces_dict[valid_url]:
+                    user_traces_dict[idt].append(timst)
 
             #get inter event times per query domain
             valid_dns_list = []
@@ -175,22 +180,26 @@ def get_filtered_traces():
                     iat = (row[0]-row[1]).total_seconds()
                     #always consider fisrt event
                     if row_number == 2:
-                        user_traces_dict[idt].append(row[1])
+                        #user_traces_dict[idt].append(row[1])
                         traces_dict[dnsreq].append(row[1])
-                    #if iat > 1:
-                    user_traces_dict[idt].append(row[0])
-                    traces_dict[dnsreq].append(row[0])
+                    if iat > 1:
+                        #user_traces_dict[idt].append(row[0])
+                        traces_dict[dnsreq].append(row[0])
+                        #user_traces_dict_url[idt].append(valid_url)
 
                 #eliminate spikes
-                #if traces_dict[dnsreq] and len(traces_dict[dnsreq]) > 1:
-                    #traces_dict[dnsreq] = filter_spikes(traces_dict[dnsreq], dnsreq)
+                if traces_dict[dnsreq] and len(traces_dict[dnsreq]) > 1:
+                    traces_dict[dnsreq], collaborative_blacklist = filter_spikes(traces_dict[dnsreq], dnsreq, collaborative_blacklist)
+
+                for timst in traces_dict[dnsreq]:
+                    user_traces_dict[idt].append(timst)
 
             #if traces_dict:
                 #plot_traces(traces_dict, valid_url_list, idt)#user.username, devs[int(elem_id)])
     #print user_traces_dict
     return user_traces_dict
 
-def filter_spikes(traces_list, url_domain):
+def filter_spikes(traces_list, url_domain, collaborative_blacklist):
 
     pre_filtered_list = []
     cont = 0
@@ -203,13 +212,13 @@ def filter_spikes(traces_list, url_domain):
 
         #if url_domain == 'su.ff.avast.com':
             #print interval_list
-        if traces_list != pre_filtered_list and url_domain == '===u-ads.adap.tv':
-            print '===== round ' + str(cont)
-            print url_domain
-            print len(pre_filtered_list)
-            print len(traces_list)
-            #for elem in traces_list:
-                #print elem
+        if traces_list != pre_filtered_list:
+            if url_domain not in collaborative_blacklist:
+                collaborative_blacklist.append(url_domain)
+            #print '===== round ' + str(cont)
+            #print url_domain
+            #print len(pre_filtered_list)
+            #print len(traces_list)
 
     """timsts = traces_list
     for timst in timsts:
@@ -219,7 +228,7 @@ def filter_spikes(traces_list, url_domain):
             print 'not filtered ' + str(timst) + ' ' + str(url_domain)"""
 
 
-    return traces_list
+    return traces_list, collaborative_blacklist
 
 
 def plot_traces(traces_dict, url_list, user_id):
