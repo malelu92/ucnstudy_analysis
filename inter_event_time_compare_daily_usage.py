@@ -26,16 +26,17 @@ def compare_daily_activity():
     for user, timsts in traces_dict.iteritems():
         traces = []
         print user
-
+        
         #get traces in seconds
         for timst in timsts:
             timst = timst.replace(microsecond=0)
             traces.append(timst)
-        traces = list(set(traces))
-        traces = sorted(traces)
 
-        #interval_list = get_interval_list(sorted(traces))
-        #traces = get_seconds_interval_list(interval_list)
+        traces = list(set(traces))
+        #traces = sorted(traces)
+
+        interval_list = get_interval_list(sorted(traces))
+        traces = get_seconds_interval_list(interval_list)
 
         act_beg_final, act_end_final = activities_in_seconds(act_beg[user], act_end[user])
         

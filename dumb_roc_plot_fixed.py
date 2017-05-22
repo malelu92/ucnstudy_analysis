@@ -75,6 +75,9 @@ def main():
     y_interval_filtered_day = [1.43260598602, 1.87990091668, 1.93117811331, 1.9573689276, 1.96999100677, 2.01606159575, 2.0335747306, 2.05108786545, 2.06954765624]
     x_interval_filtered_day = [60.368326574, 79.2115410185, 81.3721579577, 82.4757346098, 83.0075787794, 84.9488099987, 85.6867437841, 86.4246775695, 87.2024996676]
 
+    y_filtered_day = [1.06325239425, 1.4100440195, 1.45153910478, 1.4711033275, 1.47930767896, 1.51449172465, 1.52774490778, 1.5411558669, 1.55551348196]
+    x_filtered_day = [63.022538109, 83.5702262951, 86.02954928, 87.1890779877, 87.6753319618, 89.7606134281, 90.5461006172, 91.3409388442, 92.191883299]
+
     x['1_sec_day'] = divide_value_per_100(x_1sec_filtered_day)
     y['1_sec_day'] = divide_value_per_100(y_1sec_filtered_day)
 
@@ -86,6 +89,9 @@ def main():
 
     x['not_filtered_day'] = divide_value_per_100(x_not_filtered_day)
     y['not_filtered_day'] = divide_value_per_100(y_not_filtered_day)
+
+    x['filtered_day'] = divide_value_per_100(x_filtered_day)
+    y['filtered_day'] = divide_value_per_100(y_filtered_day)
 
     plot_roc_curve(x,y,'day')
 
@@ -120,7 +126,7 @@ def plot_roc_curve (x, y, beg_end):
                          bbox=dict(boxstyle='round,pad=0.5', fc='yellow', alpha=0.5),
                          arrowprops=dict(arrowstyle = '->', connectionstyle='arc3,rad=0'))
         elif key == 'filtered_' + str(beg_end):
-            plt.plot(x_values,y[key], marker = 'o', linestyle = '-', color = 'black', label = 'filtered by both spikes and blcklist')
+            plt.plot(x_values,y[key], marker = 'o', linestyle = '-', color = 'black', label = 'filtered by both interval and blacklist')
         elif key == 'interval_' + str(beg_end):
             plt.plot(x_values,y[key], marker = 'o', linestyle = '-', color = 'c', label = 'filtered by interval')
         elif key == 'blist_' + str(beg_end):

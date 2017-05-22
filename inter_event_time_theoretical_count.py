@@ -154,7 +154,6 @@ def calculate_average_periodicity(interval_dict):
     #contains values for a certain url
     return theoretic_count, real_count
 
-#obs: url_domain just for printing, can take it off
 def get_free_spikes_traces(interval_dict, url_domain):
 
     #calculate theoretic periodicity per interval
@@ -162,6 +161,7 @@ def get_free_spikes_traces(interval_dict, url_domain):
     real_count = []
     filtered_traces = []
     eliminate_url = False
+    deleted_url = None
 
     for key in interval_dict.keys():
 
@@ -231,6 +231,7 @@ def get_free_spikes_traces(interval_dict, url_domain):
                     #take whole interval off
                     if re_count > (theo_count - theo_count*error_margin):
                         filtered_interval_list = []
+                        deleted_url = url_domain
                         break
                     #take only spike off
                     else:
@@ -250,7 +251,7 @@ def get_free_spikes_traces(interval_dict, url_domain):
             iat_list.append(iat)
             plot_cdf_interval_times(iat_list, 'kemianny'+str(key), 'main_laptop', 'figs_CDF_theoretic_counts', 'stream1.bskyb.fyre.co')"""
 
-    return filtered_traces
+    return filtered_traces, deleted_url
 
 
 def eliminate_spikes(interval_list, iat_to_eliminate):

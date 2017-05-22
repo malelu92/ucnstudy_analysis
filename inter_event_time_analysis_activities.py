@@ -44,7 +44,7 @@ def get_activities_inter_times():
         #select only users from ucnstudy
         if device.id == 5 or device.id == 6 or device.id == 8 or device.id == 12 or device.id == 14 or device.id == 18 or device.id == 19 or device.id == 21 or device.id == 22:
 
-            sql = """SELECT logged_at, finished_at \
+            sql = """SELECT logged_at, finished_at, name \
             FROM activities \
             WHERE session_id = :d_id AND fullscreen = 1"""
 
@@ -56,8 +56,9 @@ def get_activities_inter_times():
             end = []
             print (device.device_id + '==============')
             for row in ses.execute(text(sql).bindparams(d_id = device.id)):
-                beg.append(row[0])
-                end.append(row[1])
+                if row[2] != 'shellexperiencehost.exe':
+                    beg.append(row[0])
+                    end.append(row[1])
 
             io = []
             io_iat = []
