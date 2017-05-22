@@ -89,8 +89,8 @@ def get_filtered_traces():
             user_id = ses.execute(text(sql_userid).bindparams(d_id = elem_id)).fetchone()
             idt = user_id[0]
 
-            #if idt != 'bowen.laptop' and idt != 'bridgeman.laptop2' and idt != 'bridgeman.stuartlaptop' and idt != 'chrismaley.loungepc' and idt != 'chrismaley.mainpc' and idt != 'clifford.mainlaptop' and idt != 'gluch.laptop' and idt != 'kemianny.mainlaptop' and idt != 'neenagupta.workpc':
-            if idt != 'bridgeman.laptop2':
+            if idt != 'bowen.laptop' and idt != 'bridgeman.laptop2' and idt != 'bridgeman.stuartlaptop' and idt != 'chrismaley.loungepc' and idt != 'chrismaley.mainpc' and idt != 'clifford.mainlaptop' and idt != 'gluch.laptop' and idt != 'kemianny.mainlaptop' and idt != 'neenagupta.workpc':
+            #if idt != 'neenagupta.workpc':
                 continue
 
             idt_list.append(idt)

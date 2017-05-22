@@ -33,7 +33,7 @@ def compare_daily_activity():
             traces.append(timst)
 
         traces = list(set(traces))
-        #traces = sorted(traces)
+        traces = sorted(traces)
 
         interval_list = get_interval_list(sorted(traces))
         traces = get_seconds_interval_list(interval_list)

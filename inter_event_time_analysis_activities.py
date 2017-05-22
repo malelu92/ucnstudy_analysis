@@ -40,6 +40,8 @@ def get_activities_inter_times():
     mix_beg = defaultdict(list)
     mix_end = defaultdict(list)
 
+    online_act = ['outlook.exe', 'chrome.exe', 'firefox.exe', 'iexplore.exe', 'skype.exe', 'OUTLOOK.EXE']
+
     for device in devices:
         #select only users from ucnstudy
         if device.id == 5 or device.id == 6 or device.id == 8 or device.id == 12 or device.id == 14 or device.id == 18 or device.id == 19 or device.id == 21 or device.id == 22:
@@ -48,7 +50,7 @@ def get_activities_inter_times():
             FROM activities \
             WHERE session_id = :d_id AND fullscreen = 1"""
 
-            sql_io = """SELECT logged_at, lag(logged_at) OVER (ORDER BY logged_at) \
+            sql_io = """SELECT name, logged_at, lag(logged_at) OVER (ORDER BY logged_at) \
             FROM io \
             WHERE session_id = :d_id"""
 
@@ -64,10 +66,11 @@ def get_activities_inter_times():
             io_iat = []
             cont = 0
             for row in ses.execute(text(sql_io).bindparams(d_id = device.id)):
-                io.append(row[0])
-                if (row[1]==None):
-                    continue
-                io_iat.append((row[0]-row[1]).total_seconds())
+                if row[0] in online_act:#'solitaire.exe':
+                    io.append(row[1])
+                    if (row[2]==None):
+                        continue
+                    io_iat.append((row[1]-row[2]).total_seconds())
 
             #plot_traces(beg, end, io, device.device_id)
             #plot_cdf_interval_times(io_iat, device.device_id)
@@ -143,7 +146,8 @@ def calculate_block_intervals(act_beg, act_end, io, time_itv):
     mix_end = []
     j = 0
     for i in range (0, len(act_beg)):
-
+        if j >= len(io):
+            break
         if act_beg[i] <= io[j]:
 
             #if done checking io
