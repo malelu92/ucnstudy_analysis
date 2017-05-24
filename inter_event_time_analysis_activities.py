@@ -58,7 +58,7 @@ def get_activities_inter_times():
             end = []
             print (device.device_id + '==============')
             for row in ses.execute(text(sql).bindparams(d_id = device.id)):
-                if row[2] != 'shellexperiencehost.exe':
+                if row[2] in online_act:# 'shellexperiencehost.exe':
                     beg.append(row[0])
                     end.append(row[1])
 

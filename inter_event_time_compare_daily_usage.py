@@ -119,7 +119,11 @@ def get_tp_fn_fp_tn(traces, act_beg, act_end, first_day, last_day, error_window)
     for i in range(0, len(act_beg)):    
         act_duration += (act_end[i] - act_beg[i]).total_seconds()
 
-    fn = int(act_duration) - tp
+    if int(act_duration) - tp > 0:
+        fn = int(act_duration) - tp
+    else:
+        fn = 0
+
     #fp = len(traces) - tp
     non_act_duration = (last_day - first_day).total_seconds() - act_duration
     tn = int(non_act_duration) - fp

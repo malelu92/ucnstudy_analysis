@@ -1,0 +1,33 @@
+from Traces.py import Trace
+
+
+def main():
+
+    get_test_data()
+
+
+def get_test_data(device_id):
+
+    sql_http = """SELECT req_url_host, ts, lag(ts) OVER (ORDER BY ts) FROM httpreqs2 \
+        WHERE devid =:d_id AND matches_urlblacklist = 'f'"""
+
+    sql_dns = """SELECT query, ts, lag(ts) OVER (ORDER BY ts) FROM dnsreqs \
+        WHERE devid =:d_id AND matches_blacklist = 'f'"""
+
+
+    elem = Trace()
+
+    #add httpreqs
+    for row in ses.execute(text(sql_http).bindparams(d_id = device_id)):
+
+
+    #add dnsreqs
+    for row in ses.execute(text(sql_dns).bindparams(d_id = device_id)):
+        dom = row[0]
+        if dom == None:
+            user_traces_dict[idt].append(row[1])
+            valid_dns_list.append(dom)
+                
+            user_traces_dict[idt].append(row[1])
+            valid_dns_list.append(dom)
+
