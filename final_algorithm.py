@@ -71,9 +71,11 @@ def get_test_data(device_id):
         elem = Trace(row[0], row[1])
         traces_list.append(elem)
 
-    for elem in  traces_list:
-        print elem.url_domain
+    traces_list.sort(key = lambda x: x.timst)
+
+    for elem in traces_list:
         print elem.timst
+
     return traces_list
 
 
