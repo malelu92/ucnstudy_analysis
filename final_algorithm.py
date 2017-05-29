@@ -1,3 +1,10 @@
+from blacklist import create_blacklist_dict
+from blacklist import is_in_blacklist
+from collections import defaultdict
+from inter_event_time_by_url_analysis import filter_spikes
+
+import datetime
+
 from Traces import Trace
 
 from sqlalchemy import create_engine, text, func
@@ -28,6 +35,8 @@ users = ses.query(User)
 
 def main():
 
+    blacklist = create_blacklist_dict()
+
     for user in users:
         devids = []
         for d in user.devices:
@@ -48,7 +57,59 @@ def main():
 
             print idt
 
-            get_test_data(elem_id)
+            http_traces_list, dns_traces_list = get_test_data(elem_id)
+            filter_traces(5*60, http_traces_list, blacklist)
+            #filter_traces(10*60, dns_traces_list, blacklist)
+
+def filter_traces(block_length, traces_list, blacklist):
+
+    print datetime.timedelta(0,block_length)
+    i = 0
+    #filtered_url_traces = defaultdict(list)
+    while i < len(traces_list):
+        #print i
+        block_url_dict = defaultdict(list)
+        filtered_block_url_dict = defaultdict(list)
+        elem = traces_list[i]
+        beg_block =elem.timst
+        prev_pos = i
+        #creates blocks of url filtered by blacklist
+        while elem.timst <= beg_block + datetime.timedelta(0,block_length):
+            if i >= len(traces_list):
+                break
+            if elem.url_domain and not (is_in_blacklist(elem.url_domain, blacklist)):
+                block_url_dict[elem.url_domain].append(elem)
+            elem = traces_list[i]
+            i +=1
+        
+        #filters by iat < 1
+        for key, values in block_url_dict.iteritems():
+            print '====='
+            print key
+            for j in range(0, len(values)-1):
+                current_trace = values[j]
+                next_trace = values[j+1]
+                iat = (next_trace.timst - current_trace.timst).total_seconds()
+                if iat > 1:
+                    filtered_block_url_dict[key].append(current_trace.timst)
+                    if j+1 == len(values) - 1:
+                        filtered_block_url_dict[key].append(next_trace.timst)
+                    #print iat
+
+            print len(block_url_dict[key])
+            print len(filtered_block_url_dict[key])
+
+            #filters by spike
+            if filtered_block_url_dict[key] and len(filtered_block_url_dict[key]) > 1:                
+                filtered_block_url_dict[key], deleted_url = filter_spikes(filtered_block_url_dict[key], key, [])
+
+            print len(filtered_block_url_dict[key])
+
+        #only one element
+        if prev_pos == i:
+            i += 1
+
+        
 
 
 def get_test_data(device_id):
@@ -59,24 +120,21 @@ def get_test_data(device_id):
     sql_dns = """SELECT query, ts, lag(ts) OVER (ORDER BY ts) FROM dnsreqs \
         WHERE devid =:d_id AND matches_blacklist = 'f'"""
 
-    traces_list = []
-
+    http_traces_list = []
     #add httpreqs
     for row in ses.execute(text(sql_http).bindparams(d_id = device_id)):
         elem = Trace(row[0], row[1])
-        traces_list.append(elem)
+        http_traces_list.append(elem)
 
+    dns_traces_list = []
     #add dnsreqs
     for row in ses.execute(text(sql_dns).bindparams(d_id = device_id)):
         elem = Trace(row[0], row[1])
-        traces_list.append(elem)
+        dns_traces_list.append(elem)
 
-    traces_list.sort(key = lambda x: x.timst)
+    #traces_list.sort(key = lambda x: x.timst)
 
-    for elem in traces_list:
-        print elem.timst
-
-    return traces_list
+    return http_traces_list, dns_traces_list
 
 
 if __name__ == '__main__':

@@ -3,13 +3,12 @@ from collections import defaultdict
 
 def main():
     blacklist = create_blacklist_dict()
-    #url = 'ad4.liverail.com'
-    url = 'su.ff.avast.com'
+    url = 'wpad.ad.nottingham.ac.uk'
+    #url = 'su.ff.avast.com'
     if is_in_blacklist(url, blacklist):
         print 'yes'
     else:
         print 'no'
-
 
 def is_in_blacklist(url, blacklist):
     if url in blacklist[url[0]]:
