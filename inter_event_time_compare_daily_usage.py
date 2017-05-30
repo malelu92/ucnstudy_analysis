@@ -19,7 +19,7 @@ def compare_daily_activity():
     tn_dict = defaultdict(int)
     fp_dict = defaultdict(int)
     fn_dict = defaultdict(int)
-    error_window = [0, 15, 30, 45, 60, 60*2, 60*3, 60*4, 60*5]
+    error_window = [0]#, 15, 30, 45, 60, 60*2, 60*3, 60*4, 60*5]
 
     initialize_dict(tp_dict, error_window)
     initialize_dict(tn_dict, error_window)
@@ -38,8 +38,8 @@ def compare_daily_activity():
         traces = list(set(traces))
         traces = sorted(traces)
 
-        interval_list = get_interval_list(sorted(traces))
-        traces = get_seconds_interval_list(interval_list)
+        #interval_list = get_interval_list(sorted(traces))
+        #traces = get_seconds_interval_list(interval_list)
 
         act_beg_final, act_end_final = activities_in_seconds(act_beg[user], act_end[user])
         
@@ -49,7 +49,8 @@ def compare_daily_activity():
         last_day = last_day.replace(hour=23, minute=59, second=59, microsecond=0)
 
         for i in error_window:
-            tp, fn, fp, tn = get_tp_fn_fp_tn(traces, act_beg_final, act_end_final, first_day, last_day, i)
+            #tp, fn, fp, tn = get_tp_fn_fp_tn(traces, act_beg_final, act_end_final, first_day, last_day, i)
+            tp, fn, fp, tn = get_tp_fn_fp_tn_sliding_window(traces, act_beg_final, act_end_final, first_day, last_day, i, 5)
 
             tp_dict[i] += tp
             tn_dict[i] += tn
@@ -68,6 +69,59 @@ def compare_daily_activity():
         print 'error window' + str(i)
         print 'precision ' + str(precision*100) + '%'
         print 'recall ' + str(recall*100) + '%'
+
+
+
+def get_tp_fn_fp_tn_sliding_window(traces, act_beg, act_end, first_day, last_day, error_window, sliding_window_size):
+    tp, fn, fp, tn = 0, 0, 0, 0
+    current_bucket_beg = first_day
+    current_bucket_end = first_day + datetime.timedelta(0,sliding_window_size)
+
+    while current_bucket_end <= last_day + datetime.timedelta(0,1):
+        trace_in = trace_in_bucket(traces, current_bucket_beg, current_bucket_end)
+        act_in = act_in_bucket(act_beg, act_end, current_bucket_beg, current_bucket_end)
+
+        if trace_in and act_in:
+            tp += 1
+
+        if trace_in and not act_in:
+            fp += 1
+
+        if not trace_in and act_in:
+            fn += 1
+
+        if not trace_in and not act_in:
+            tn += 1
+
+        current_bucket_beg = current_bucket_end
+        current_bucket_end = current_bucket_end + datetime.timedelta(0,sliding_window_size)
+
+    print 'number of traces ' + str(len(traces))
+    print 'tp ' + str(tp)
+    print 'fn ' + str(fn)
+    print 'tn ' + str(int(tn))
+    print 'fp ' + str(int(fp))
+    return tp, fn, fp, tn
+
+
+
+def trace_in_bucket(traces, bucket_beg, bucket_end):
+    for timst in traces:
+        if timst >= bucket_beg and timst <= bucket_end:
+            return True
+    return False
+
+def act_in_bucket(act_beg, act_end, bucket_beg, bucket_end):
+
+    cont = 0
+    while cont < len(act_beg):
+        if (act_beg[cont] <= bucket_beg and act_end[cont] >= bucket_beg) or (act_beg[cont] <= bucket_end and act_end[cont] >= bucket_end):
+            return True
+        if act_beg[cont] > bucket_end:
+            return False
+        cont += 1
+
+    return False
 
 def initialize_dict(var_dict, error_window):
     

@@ -61,8 +61,8 @@ def final_algorithm_filtered_traces():
             print idt
 
             http_traces_list, dns_traces_list = get_test_data(elem_id)
-            filtered_http_traces = filter_traces(5*60, http_traces_list, blacklist, True, True, True)
-            filtered_dns_traces = filter_traces(5*60, dns_traces_list, blacklist, True, True, True)
+            filtered_http_traces = filter_traces(5*60, http_traces_list, blacklist, False, False, False)
+            filtered_dns_traces = filter_traces(5*60, dns_traces_list, blacklist, False, False, False)
 
             for key, timsts in filtered_http_traces.iteritems():
                 for timst in timsts:
