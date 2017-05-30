@@ -226,7 +226,6 @@ def filter_spikes(traces_list, url_domain, collaborative_blacklist):
     cont = 0
 
     while pre_filtered_list != traces_list and len(traces_list) > 1:
-        print 'entrou'
         pre_filtered_list = traces_list
         interval_list = get_interval_list(traces_list)
         traces_list, deleted_url = get_free_spikes_traces(interval_list, url_domain)

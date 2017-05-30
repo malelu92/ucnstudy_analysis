@@ -1,19 +1,17 @@
 import datetime
 
-from collections import defaultdict
-
 from inter_event_time_analysis_activities import get_activities_inter_times
 from inter_event_time_analysis import make_block_usage
 from inter_event_time_by_url_analysis import get_filtered_traces
 from inter_event_time_theoretical_count import get_interval_list
+from final_algorithm import 
 
-from final_algorithm import final_algorithm_filtered_traces
+from collections import defaultdict
 
 def compare_daily_activity():
 
     act_beg, act_end = get_activities_inter_times()
-    #traces_dict = get_filtered_traces()
-    traces_dict = final_algorithm_filtered_traces()
+    traces_dict = get_filtered_traces()
 
     tp_dict = defaultdict(int)
     tn_dict = defaultdict(int)

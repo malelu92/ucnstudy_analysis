@@ -3,15 +3,17 @@ from blacklist import is_in_blacklist
 from collections import defaultdict
 from inter_event_time_by_url_analysis import filter_spikes
 
+import datautils
 import datetime
+from matplotlib import dates
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 from Traces import Trace
 
 from sqlalchemy import create_engine, text, func
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
-
-import datautils
 
 from IPython.display import display
 
@@ -33,9 +35,10 @@ Session = sessionmaker(bind=engine)
 ses = Session()
 users = ses.query(User)
 
-def main():
+def final_algorithm_filtered_traces():
 
     blacklist = create_blacklist_dict()
+    filtered_traces_user_dict = defaultdict(list)
 
     for user in users:
         devids = []
@@ -58,14 +61,27 @@ def main():
             print idt
 
             http_traces_list, dns_traces_list = get_test_data(elem_id)
-            filter_traces(5*60, http_traces_list, blacklist)
-            #filter_traces(10*60, dns_traces_list, blacklist)
+            filtered_http_traces = filter_traces(5*60, http_traces_list, blacklist, True, True, True)
+            filtered_dns_traces = filter_traces(5*60, dns_traces_list, blacklist, True, True, True)
 
-def filter_traces(block_length, traces_list, blacklist):
+            for key, timsts in filtered_http_traces.iteritems():
+                for timst in timsts:
+                    filtered_traces_user_dict[idt].append(timst)
 
-    print datetime.timedelta(0,block_length)
+            for key, timsts in filtered_dns_traces.iteritems():
+                for timst in timsts:
+                    filtered_traces_user_dict[idt].append(timst)
+
+            #plot_traces(filtered_http_traces, filtered_dns_traces, idt)
+            #plot_traces(filtered_traces_user_dict[idt], idt)
+
+    return filtered_traces_user_dict
+
+def filter_traces(block_length, traces_list, blacklist, filter_blist, filter_iat, filter_spike):
+
+    #print datetime.timedelta(0,block_length)
     i = 0
-    #filtered_url_traces = defaultdict(list)
+    filtered_url_traces = defaultdict(list)
     while i < len(traces_list):
         #print i
         block_url_dict = defaultdict(list)
@@ -77,39 +93,45 @@ def filter_traces(block_length, traces_list, blacklist):
         while elem.timst <= beg_block + datetime.timedelta(0,block_length):
             if i >= len(traces_list):
                 break
-            if elem.url_domain and not (is_in_blacklist(elem.url_domain, blacklist)):
+            if filter_blist: 
+                if elem.url_domain and not (is_in_blacklist(elem.url_domain, blacklist)):
+                    block_url_dict[elem.url_domain].append(elem)
+            else:
                 block_url_dict[elem.url_domain].append(elem)
             elem = traces_list[i]
             i +=1
         
         #filters by iat < 1
         for key, values in block_url_dict.iteritems():
-            print '====='
-            print key
             for j in range(0, len(values)-1):
                 current_trace = values[j]
                 next_trace = values[j+1]
                 iat = (next_trace.timst - current_trace.timst).total_seconds()
-                if iat > 1:
+                if filter_iat:
+                    if iat > 1:
+                        filtered_block_url_dict[key].append(current_trace.timst)
+                        if j+1 == len(values) - 1:
+                            filtered_block_url_dict[key].append(next_trace.timst)
+                else:
                     filtered_block_url_dict[key].append(current_trace.timst)
                     if j+1 == len(values) - 1:
-                        filtered_block_url_dict[key].append(next_trace.timst)
-                    #print iat
+                            filtered_block_url_dict[key].append(next_trace.timst)
 
-            print len(block_url_dict[key])
-            print len(filtered_block_url_dict[key])
+            #print len(block_url_dict[key])
+            #print len(filtered_block_url_dict[key])
 
             #filters by spike
-            if filtered_block_url_dict[key] and len(filtered_block_url_dict[key]) > 1:                
+            if filter_spike and filtered_block_url_dict[key] and len(filtered_block_url_dict[key]) > 1:                
                 filtered_block_url_dict[key], deleted_url = filter_spikes(filtered_block_url_dict[key], key, [])
 
-            print len(filtered_block_url_dict[key])
+            for elem in filtered_block_url_dict[key]:
+                filtered_url_traces[key].append(elem)
 
         #only one element
         if prev_pos == i:
             i += 1
-
-        
+    
+    return filtered_url_traces
 
 
 def get_test_data(device_id):
@@ -137,5 +159,44 @@ def get_test_data(device_id):
     return http_traces_list, dns_traces_list
 
 
+def plot_traces(traces_dict, user_id):
+    x = []
+    y = []
+    sns.set(style='whitegrid')
+    fig, ax = plt.subplots(1, 1, figsize=(12, 8))
+
+    for timst in traces_dict:
+        x.append(timst.hour+timst.minute/60.0+timst.second/3600.0)
+        y.append(timst.date())
+
+    """for key, timsts in http_traces_dict.iteritems():
+        for timst in timsts:
+            x.append(timst.hour+timst.minute/60.0+timst.second/3600.0)
+            y.append(timst.date())
+
+    for key, timsts in dns_traces_dict.iteritems():
+        for timst in timsts:
+            x.append(timst.hour+timst.minute/60.0+timst.second/3600.0)
+            y.append(timst.date())"""
+
+    y_label = list(set(y))
+    hfmt = dates.DateFormatter('%m-%d')
+    ax.yaxis.set_major_formatter(hfmt)
+
+    ax.plot(x,y, '.g')
+
+    ax.set_title('Device usage [user=%s]'%(user_id), fontsize = 30)#, device=%s]'%(username, platform))
+    ax.set_ylabel('Date')
+    ax.set_yticks(y_label)
+
+    ax.set_xlabel('Device Activity')
+    ax.set_xlim(0,24)
+
+    plt.tight_layout()
+    #fig.savefig('figs_device_constant_usage_filtered/%s.png' % (user_id))
+    #plt.close(fig)
+
+    plt.show(fig)
+
 if __name__ == '__main__':
-    main()
+    final_algorithm_filtered_traces()
