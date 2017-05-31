@@ -61,16 +61,21 @@ def final_algorithm_filtered_traces():
             print idt
 
             http_traces_list, dns_traces_list = get_test_data(elem_id)
-            filtered_http_traces = filter_traces(5*60, http_traces_list, blacklist, False, False, False)
+            print 'http traces list ' + str(len(http_traces_list))
+            #print len(dns_traces_list)
+            #filtered_http_traces = filter_traces(5*60, http_traces_list, blacklist, True, True, True)
             filtered_dns_traces = filter_traces(5*60, dns_traces_list, blacklist, False, False, False)
 
-            for key, timsts in filtered_http_traces.iteritems():
-                for timst in timsts:
-                    filtered_traces_user_dict[idt].append(timst)
+            #for key, timsts in filtered_http_traces.iteritems():
+                #for timst in timsts:
+                    #filtered_traces_user_dict[idt].append(timst)
+            #print len(filtered_traces_user_dict[idt])
 
             for key, timsts in filtered_dns_traces.iteritems():
                 for timst in timsts:
                     filtered_traces_user_dict[idt].append(timst)
+
+            print len(filtered_traces_user_dict[idt])
 
             #plot_traces(filtered_http_traces, filtered_dns_traces, idt)
             #plot_traces(filtered_traces_user_dict[idt], idt)
@@ -81,7 +86,12 @@ def filter_traces(block_length, traces_list, blacklist, filter_blist, filter_iat
 
     #print datetime.timedelta(0,block_length)
     i = 0
+    cont_check = 0
+    cont2 = 0
+    cont3 = 0
     filtered_url_traces = defaultdict(list)
+    print 'len traces list'
+    print len(traces_list)
     while i < len(traces_list):
         #print i
         block_url_dict = defaultdict(list)
@@ -91,37 +101,45 @@ def filter_traces(block_length, traces_list, blacklist, filter_blist, filter_iat
         prev_pos = i
         #creates blocks of url filtered by blacklist
         while elem.timst <= beg_block + datetime.timedelta(0,block_length):
+            #cont_check +=1
+
             if i >= len(traces_list):
                 break
             if filter_blist: 
                 if elem.url_domain and not (is_in_blacklist(elem.url_domain, blacklist)):
                     block_url_dict[elem.url_domain].append(elem)
             else:
+                cont_check +=1
                 block_url_dict[elem.url_domain].append(elem)
             elem = traces_list[i]
             i +=1
-        
+
         #filters by iat < 1
         for key, values in block_url_dict.iteritems():
-            for j in range(0, len(values)-1):
-                current_trace = values[j]
-                next_trace = values[j+1]
-                iat = (next_trace.timst - current_trace.timst).total_seconds()
-                if filter_iat:
-                    if iat > 1:
-                        filtered_block_url_dict[key].append(current_trace.timst)
-                        if j+1 == len(values) - 1:
-                            filtered_block_url_dict[key].append(next_trace.timst)
-                else:
-                    filtered_block_url_dict[key].append(current_trace.timst)
-                    if j+1 == len(values) - 1:
-                            filtered_block_url_dict[key].append(next_trace.timst)
+            cont2 += len(values)
+            if filter_iat:
+                for j in range(0, len(values)-1):
+                    current_trace = values[j]
+                    next_trace = values[j+1]
+                    iat = (next_trace.timst - current_trace.timst).total_seconds()
+                    if filter_iat:
+                        if iat > 1:
+                            filtered_block_url_dict[key].append(current_trace.timst)
+                            if j+1 == len(values) - 1:
+                                filtered_block_url_dict[key].append(next_trace.timst)
+            else:
+                #filtered_block_url_dict[key].append(current_trace.timst)
+                #if j+1 == len(values):
+                    #filtered_block_url_dict[key].append(next_trace.timst)
+                for elem in values:
+                    filtered_block_url_dict[key].append(elem.timst)
+            #cont3 += j
 
             #print len(block_url_dict[key])
             #print len(filtered_block_url_dict[key])
 
             #filters by spike
-            if filter_spike and filtered_block_url_dict[key] and len(filtered_block_url_dict[key]) > 1:                
+            if filter_spike and filtered_block_url_dict[key] and len(filtered_block_url_dict[key]) > 1:
                 filtered_block_url_dict[key], deleted_url = filter_spikes(filtered_block_url_dict[key], key, [])
 
             for elem in filtered_block_url_dict[key]:
@@ -131,6 +149,9 @@ def filter_traces(block_length, traces_list, blacklist, filter_blist, filter_iat
         if prev_pos == i:
             i += 1
     
+    print 'cont_check ' + str(cont_check)
+    print cont2
+    print cont3
     return filtered_url_traces
 
 

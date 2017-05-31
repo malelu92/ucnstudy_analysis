@@ -19,7 +19,7 @@ def compare_daily_activity():
     tn_dict = defaultdict(int)
     fp_dict = defaultdict(int)
     fn_dict = defaultdict(int)
-    error_window = [0]#, 15, 30, 45, 60, 60*2, 60*3, 60*4, 60*5]
+    error_window = [0, 15, 30, 45, 60, 60*2, 60*3, 60*4, 60*5]
 
     initialize_dict(tp_dict, error_window)
     initialize_dict(tn_dict, error_window)
@@ -30,6 +30,8 @@ def compare_daily_activity():
         traces = []
         print user
         
+        print '----------'
+        print len(timsts)
         #get traces in seconds
         for timst in timsts:
             timst = timst.replace(microsecond=0)
@@ -77,9 +79,11 @@ def get_tp_fn_fp_tn_sliding_window(traces, act_beg, act_end, first_day, last_day
     current_bucket_beg = first_day
     current_bucket_end = first_day + datetime.timedelta(0,sliding_window_size)
 
+    cont_trace = 0
+    cont_act = 0
     while current_bucket_end <= last_day + datetime.timedelta(0,1):
-        trace_in = trace_in_bucket(traces, current_bucket_beg, current_bucket_end)
-        act_in = act_in_bucket(act_beg, act_end, current_bucket_beg, current_bucket_end)
+        trace_in, cont_trace = trace_in_bucket(traces, current_bucket_beg, current_bucket_end, error_window, cont_trace)
+        act_in, cont_act = act_in_bucket(act_beg, act_end, current_bucket_beg, current_bucket_end, error_window, cont_act)
 
         if trace_in and act_in:
             tp += 1
@@ -103,25 +107,37 @@ def get_tp_fn_fp_tn_sliding_window(traces, act_beg, act_end, first_day, last_day
     print 'fp ' + str(int(fp))
     return tp, fn, fp, tn
 
+def trace_in_bucket(traces, bucket_beg, bucket_end, error_window, cont):
+    beg_limit = bucket_beg - datetime.timedelta(0,error_window)
+    end_limit = bucket_end + datetime.timedelta(0,error_window)
 
+    while cont < len(traces):
+        if traces[cont] >= beg_limit and traces[cont] <= end_limit:
+            return True, cont
 
-def trace_in_bucket(traces, bucket_beg, bucket_end):
-    for timst in traces:
-        if timst >= bucket_beg and timst <= bucket_end:
-            return True
-    return False
+        if traces[cont] > end_limit:
+            return False, cont
 
-def act_in_bucket(act_beg, act_end, bucket_beg, bucket_end):
+        cont += 1
+    return False, cont
+    #for timst in traces:
+        #if timst >= beg_limit and timst <= end_limit:
+            #return True
+    #return False
 
-    cont = 0
+def act_in_bucket(act_beg, act_end, bucket_beg, bucket_end, error_window, cont):
+    
     while cont < len(act_beg):
-        if (act_beg[cont] <= bucket_beg and act_end[cont] >= bucket_beg) or (act_beg[cont] <= bucket_end and act_end[cont] >= bucket_end):
-            return True
+        if (act_beg[cont] <= bucket_beg + datetime.timedelta(0,error_window) and 
+            act_end[cont] >= bucket_beg - datetime.timedelta(0,error_window)) or \
+        (act_beg[cont] <= bucket_end + datetime.timedelta(0,error_window) and
+         act_end[cont] >= bucket_end - datetime.timedelta(0,error_window)):
+            return True, cont
         if act_beg[cont] > bucket_end:
-            return False
+            return False, cont
         cont += 1
 
-    return False
+    return False, cont
 
 def initialize_dict(var_dict, error_window):
     
