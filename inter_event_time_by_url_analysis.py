@@ -65,10 +65,10 @@ def get_filtered_traces():
             devs[d.id] = d.platform
 
         sql_url = """SELECT DISTINCT req_url_host FROM \
-        httpreqs2 WHERE devid =:d_id AND matches_urlblacklist = 'f';"""
+        httpreqs2 WHERE devid =:d_id AND matches_urlblacklist = 'f' and source = 'hostview';"""
 
         sqlq = """SELECT ts, lag(ts) OVER (ORDER BY ts) FROM httpreqs2 \
-        WHERE devid =:d_id AND req_url_host =:url AND matches_urlblacklist = 'f'"""
+        WHERE devid =:d_id AND req_url_host =:url AND matches_urlblacklist = 'f' and source = 'hostview'"""
 
         sql_domain = """SELECT DISTINCT query FROM dnsreqs \
         WHERE devid =:d_id AND matches_blacklist = 'f'"""

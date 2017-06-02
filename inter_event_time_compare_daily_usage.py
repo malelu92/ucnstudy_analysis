@@ -38,10 +38,16 @@ def compare_daily_activity():
             traces.append(timst)
 
         traces = list(set(traces))
-        traces = sorted(traces)
+        #traces = sorted(traces)
 
-        #interval_list = get_interval_list(sorted(traces))
-        #traces = get_seconds_interval_list(interval_list)
+        print 'TOTAL TRACES'
+        print len(traces)
+
+        interval_list = get_interval_list(sorted(traces))
+        traces = get_seconds_interval_list(interval_list)
+
+        print 'POST INterval TOTAL TRACES'
+        print len(traces)
 
         act_beg_final, act_end_final = activities_in_seconds(act_beg[user], act_end[user])
         
@@ -52,7 +58,7 @@ def compare_daily_activity():
 
         for i in error_window:
             #tp, fn, fp, tn = get_tp_fn_fp_tn(traces, act_beg_final, act_end_final, first_day, last_day, i)
-            tp, fn, fp, tn = get_tp_fn_fp_tn_sliding_window(traces, act_beg_final, act_end_final, first_day, last_day, i, 5)
+            tp, fn, fp, tn = get_tp_fn_fp_tn_sliding_window(traces, act_beg_final, act_end_final, first_day, last_day, i, 1)
 
             tp_dict[i] += tp
             tn_dict[i] += tn
@@ -68,6 +74,7 @@ def compare_daily_activity():
         precision = float(tp_dict[i])/(tp_dict[i]+fp_dict[i])
         recall = float(tp_dict[i])/(tp_dict[i] + fn_dict[i])
 
+        print 'finaltp ' + str(tp_dict[i])
         print 'error window' + str(i)
         print 'precision ' + str(precision*100) + '%'
         print 'recall ' + str(recall*100) + '%'

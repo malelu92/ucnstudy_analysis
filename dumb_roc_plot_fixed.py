@@ -58,7 +58,62 @@ def main_beginning_of_day():
 
     plot_roc_curve(x,y,'end')
 
-def main():
+def final_algorithm():
+
+    #sliding window 1s
+
+    1y_filtered_day = [4.29783754366, 22.3979945575, 29.5019610659, 34.2947966095, 37.8947853996]
+    1x_filtered_day = [61.7436743674, 69.8844959528, 70.4566626962, 71.5533786023, 72.5247112913]
+
+    1y_not_filtered_day = [13.8263744739, 49.2963670093, 60.7949837079, 67.8424520269, 72.4749791086]
+    1x_not_filtered_day = [50.121447054, 51.6531080176, 51.5714335102, 52.0024578547, 52.4209175489]
+
+    #sliding window 5s
+    5y_filtered_day = [9.08747721947, 23.5832656126, 30.2522708227, 34.8436854428, 38.3311557611]
+    5x_filtered_day = [64.5552062142, 69.9389871873, 70.6314937255, 71.7025336785, 72.6487861194]
+
+    5y_not_filtered_day = [24.9661546472, 51.2215444436, 61.9070094493, 68.5295872928%, 72.9492566828]
+    5x_not_filtered_day = [50.7327266956, 51.5866355866, 51.6216606962, 52.0444308087, 52.4693631342]
+
+    5y_blist_filtered_day = [18.4118719084, 39.0215300423, 47.7503684368, 53.6418307855, 57.8348458632]
+    5x_blist_filtered_day = [56.7121090617, 62.1573350374, 62.3614657894, 62.6550988236, 62.9013365082]
+
+    5y_interval_filtered_day = [13.5303306431, 34.2999393085, 43.9976111812, 50.6293898912, 55.6764010029]
+    5x_interval_filtered_day = [54.5158921641, 54.2681835197, 53.7073182203, 54.4702918951, 55.0576609137]
+
+
+    #sliding window 10s
+    10y_not_filtered_day = [33.2958523932, 53.4112823011, 63.2607076706, 69.3417213713, 73.5715915673]
+    10x_not_filtered_day = [48.9296980622, 51.5335500803, 51.7139645968, 52.0917808219, 52.5535089589]
+
+    10y_filtered_day = [13.1481434157, 24.929460244, 31.1138268823, 35.4777534646%, 38.8685074339]
+    10x_filtered_day = [64.2081617372, 70.0370687197, 70.7973061047, 71.8676122931, 72.8148635317]
+
+    10y_blist_filtered_day = [24.6505328256, 40.7344254309, 48.9144341118, 54.3927789934, 58.4616194773]
+    10x_blist_filtered_day = [56.5018744142, 62.1269349845, 62.4338882254, 62.6712328767, 62.9596022609]
+
+    10y_interval_filtered_day = [19.5267179474, 36.2056715994, 45.2767858848, 51.5116703136, 56.4552651442]
+    10x_interval_filtered_day = [52.3463725423, 54.0976645435, 53.8335792939, 54.5684592799, 55.1730053351]
+
+    sliding_window = [1, 5, 10]
+
+    for size in sliding_window:
+        x['1_sec_day'] = divide_value_per_100(x_1sec_filtered_day)
+        y['1_sec_day'] = divide_value_per_100(y_1sec_filtered_day)
+
+        x['blist_day'] = divide_value_per_100(x_blist_filtered_day)
+        y['blist_day'] = divide_value_per_100(y_blist_filtered_day)
+
+        x['interval_day'] = divide_value_per_100(x_interval_filtered_day)
+        y['interval_day'] = divide_value_per_100(y_interval_filtered_day)
+
+        x['not_filtered_day'] = divide_value_per_100(x_not_filtered_day)
+        y['not_filtered_day'] = divide_value_per_100(y_not_filtered_day)
+
+        x['filtered_day'] = divide_value_per_100(x_filtered_day)
+        y['filtered_day'] = divide_value_per_100(y_filtered_day)
+
+def first_test():
 
     x = defaultdict(list) #precision
     y = defaultdict(list) #recall
