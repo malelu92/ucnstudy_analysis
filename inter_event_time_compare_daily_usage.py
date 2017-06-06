@@ -19,7 +19,7 @@ def compare_daily_activity():
     tn_dict = defaultdict(int)
     fp_dict = defaultdict(int)
     fn_dict = defaultdict(int)
-    error_window = [0, 15, 30, 45, 60, 60*2, 60*3, 60*4, 60*5]
+    error_window = [0, 15]#, 30, 45, 60, 60*2, 60*3, 60*4, 60*5]
 
     initialize_dict(tp_dict, error_window)
     initialize_dict(tn_dict, error_window)
@@ -38,13 +38,13 @@ def compare_daily_activity():
             traces.append(timst)
 
         traces = list(set(traces))
-        #traces = sorted(traces)
+        traces = sorted(traces)
 
         print 'TOTAL TRACES'
         print len(traces)
 
-        interval_list = get_interval_list(sorted(traces))
-        traces = get_seconds_interval_list(interval_list)
+        #interval_list = get_interval_list(sorted(traces))
+        #traces = get_seconds_interval_list(interval_list)
 
         print 'POST INterval TOTAL TRACES'
         print len(traces)
@@ -88,49 +88,60 @@ def get_tp_fn_fp_tn_sliding_window(traces, act_beg, act_end, first_day, last_day
 
     cont_trace = 0
     cont_act = 0
+    cont = 0
     while current_bucket_end <= last_day + datetime.timedelta(0,1):
+        cont += 1
         trace_in, cont_trace = trace_in_bucket(traces, current_bucket_beg, current_bucket_end, error_window, cont_trace)
         act_in, cont_act = act_in_bucket(act_beg, act_end, current_bucket_beg, current_bucket_end, error_window, cont_act)
 
         if trace_in and act_in:
             tp += 1
 
-        if trace_in and not act_in:
+        elif trace_in and not act_in:
             fp += 1
 
-        if not trace_in and act_in:
+        elif not trace_in and act_in:
             fn += 1
 
-        if not trace_in and not act_in:
+        elif not trace_in and not act_in:
             tn += 1
-
+            
+        else:
+            'tata'
         current_bucket_beg = current_bucket_end
         current_bucket_end = current_bucket_end + datetime.timedelta(0,sliding_window_size)
 
+    print 'error window' + str(error_window)
+    print 'cont ' + str(cont)
     print 'number of traces ' + str(len(traces))
     print 'tp ' + str(tp)
     print 'fn ' + str(fn)
     print 'tn ' + str(int(tn))
     print 'fp ' + str(int(fp))
+    print 'tp + fn + tn + fp = ' + str(tp + fn + tn + fp)
     return tp, fn, fp, tn
 
 def trace_in_bucket(traces, bucket_beg, bucket_end, error_window, cont):
     beg_limit = bucket_beg - datetime.timedelta(0,error_window)
     end_limit = bucket_end + datetime.timedelta(0,error_window)
 
+    in_bucket = False
     while cont < len(traces):
-        if traces[cont] >= beg_limit and traces[cont] <= end_limit:
-            return True, cont
-
-        if traces[cont] > end_limit:
+        if traces[cont] > end_limit and not in_bucket:
             return False, cont
 
-        cont += 1
+        elif traces[cont] > end_limit and in_bucket:
+            return True, cont
+
+        if traces[cont] >= beg_limit and traces[cont] <= end_limit:
+            cont += 1
+            in_bucket = True
+            #return True, cont
+
+
+        #cont += 1
     return False, cont
-    #for timst in traces:
-        #if timst >= beg_limit and timst <= end_limit:
-            #return True
-    #return False
+
 
 def act_in_bucket(act_beg, act_end, bucket_beg, bucket_end, error_window, cont):
     

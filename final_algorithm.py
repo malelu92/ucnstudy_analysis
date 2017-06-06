@@ -55,29 +55,29 @@ def final_algorithm_filtered_traces():
             idt = user_id[0]
 
             #if idt != 'bowen.laptop' and idt != 'bridgeman.laptop2' and idt != 'bridgeman.stuartlaptop' and idt != 'chrismaley.loungepc' and idt != 'chrismaley.mainpc' and idt != 'clifford.mainlaptop' and idt != 'gluch.laptop' and idt != 'kemianny.mainlaptop' and idt != 'neenagupta.workpc':
-            if idt != 'chrismaley.mainpc':#'neenagupta.workpc':
+            if idt != 'neenagupta.workpc':
                 continue
 
             print idt
 
             http_traces_list, dns_traces_list = get_test_data(elem_id)
 
-            print 'TOTAL TRACES'
-            print len(http_traces_list)
-            print len(dns_traces_list)
+            #print 'TOTAL TRACES'
+            #print len(http_traces_list)
+            #print len(dns_traces_list)
 
-            filtered_http_traces = filter_traces(5*60, http_traces_list, blacklist, True, True, True)
-            filtered_dns_traces = filter_traces(5*60, dns_traces_list, blacklist, True, True, True)
+            filtered_http_traces = filter_traces(5*60, http_traces_list, blacklist, False, False, False)
+            filtered_dns_traces = filter_traces(5*60, dns_traces_list, blacklist, False, False, False)
 
-            print 'AFTER FILTERING'
-            cont = 0
-            for key, timsts in filtered_http_traces.iteritems():
-                cont+= len(timsts)
-            print cont
-            cont = 0
-            for key, timsts in filtered_dns_traces.iteritems():
-                cont+= len(timsts)
-            print cont
+            #print 'AFTER FILTERING'
+            #cont = 0
+            #for key, timsts in filtered_http_traces.iteritems():
+                #cont+= len(timsts)
+            #print cont
+            #cont = 0
+            #for key, timsts in filtered_dns_traces.iteritems():
+                #cont+= len(timsts)
+            #print cont
 
             for key, timsts in filtered_http_traces.iteritems():
                 for timst in timsts:
@@ -147,8 +147,8 @@ def filter_traces(block_length, traces_list, blacklist, filter_blist, filter_iat
 
 def get_test_data(device_id):
 
-    sql_http = """SELECT req_url_host, ts, lag(ts) OVER (ORDER BY ts) FROM httpreqs2 \
-        WHERE devid =:d_id AND matches_urlblacklist = 'f'"""
+    sql_http = """SELECT req_url, ts, lag(ts) OVER (ORDER BY ts) FROM httpreqs2 \
+        WHERE devid =:d_id AND matches_urlblacklist = 'f' and source = 'hostview'"""
 
     sql_dns = """SELECT query, ts, lag(ts) OVER (ORDER BY ts) FROM dnsreqs \
         WHERE devid =:d_id AND matches_blacklist = 'f'"""
