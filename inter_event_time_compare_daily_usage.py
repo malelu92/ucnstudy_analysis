@@ -30,8 +30,8 @@ def compare_daily_activity():
         traces = []
         print user
         
-        print '----------'
-        print len(timsts)
+        #print '----------'
+        #print len(timsts)
         #get traces in seconds
         for timst in timsts:
             timst = timst.replace(microsecond=0)
@@ -40,14 +40,14 @@ def compare_daily_activity():
         traces = list(set(traces))
         traces = sorted(traces)
 
-        print 'TOTAL TRACES'
-        print len(traces)
+        #print 'TOTAL TRACES'
+        #print len(traces)
 
         #interval_list = get_interval_list(sorted(traces))
         #traces = get_seconds_interval_list(interval_list)
 
-        print 'POST INterval TOTAL TRACES'
-        print len(traces)
+        #print 'POST INterval TOTAL TRACES'
+        #print len(traces)
 
         act_beg_final, act_end_final = activities_in_seconds(act_beg[user], act_end[user])
         
@@ -58,7 +58,7 @@ def compare_daily_activity():
 
         for i in error_window:
             #tp, fn, fp, tn = get_tp_fn_fp_tn(traces, act_beg_final, act_end_final, first_day, last_day, i, 1)
-            tp, fn, fp, tn = get_tp_fn_fp_tn_sliding_window(traces, act_beg_final, act_end_final, first_day, last_day, i, 1)
+            tp, fn, fp, tn = get_tp_fn_fp_tn_sliding_window(traces, act_beg_final, act_end_final, first_day, last_day, i, 10)
 
             tp_dict[i] += tp
             tn_dict[i] += tn
@@ -103,7 +103,10 @@ def get_daily_activities(act_beg, act_end, bucket_beg):
 def get_tp_fn_fp_tn_sliding_window(traces, act_beg, act_end, first_day, last_day, error_window, sliding_window_size):
     tp, fn, fp, tn = 0, 0, 0, 0
     current_bucket_beg = first_day
-    current_bucket_end = first_day + datetime.timedelta(0,sliding_window_size)
+    if sliding_window_size == 1:
+        current_bucket_end = current_bucket_beg
+    else:
+        current_bucket_end = current_bucket_beg + datetime.timedelta(0,sliding_window_size)
 
     cont_trace = 0
     cont_act = 0
@@ -140,7 +143,10 @@ def get_tp_fn_fp_tn_sliding_window(traces, act_beg, act_end, first_day, last_day
         elif not trace_in and not act_in:
             tn += 1
             
-        current_bucket_beg = current_bucket_end
+        if sliding_window_size == 1:
+            current_bucket_beg = current_bucket_beg + datetime.timedelta(0,sliding_window_size)
+        else:
+            current_bucket_beg = current_bucket_end
         current_bucket_end = current_bucket_end + datetime.timedelta(0,sliding_window_size)
         current_date = current_bucket_beg.date()
 
@@ -156,8 +162,7 @@ def get_tp_fn_fp_tn_sliding_window(traces, act_beg, act_end, first_day, last_day
 
 def trace_in_bucket(traces, bucket_beg, bucket_end, error_window, cont):
     beg_limit = bucket_beg - datetime.timedelta(0,error_window)
-    end_limit = bucket_beg + datetime.timedelta(0,error_window)
-    #lembrar de mudar de volta pra bucket_end!!! 
+    end_limit = bucket_end + datetime.timedelta(0,error_window)
 
     bucket_cont = cont
     in_bucket = False
@@ -197,9 +202,7 @@ def trace_in_bucket(traces, bucket_beg, bucket_end, error_window, cont):
 def act_in_bucket(act_beg, act_end, bucket_beg, bucket_end, error_window, cont):
     
     beg_limit = bucket_beg - datetime.timedelta(0,error_window)
-    end_limit = bucket_beg + datetime.timedelta(0,error_window)
-    #mudar para bucket_end!!!
-
+    end_limit = bucket_end + datetime.timedelta(0,error_window)
 
     for j in range(0, len(act_beg)):
         date_ranges_overlap = max(act_beg[j], beg_limit) <= min(act_end[j], end_limit)

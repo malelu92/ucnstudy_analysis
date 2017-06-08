@@ -109,8 +109,8 @@ def get_interval_list(traces_list):
     interval_list = defaultdict(list)
     gap_interval = calculate_gap_interval(traces_list)
 
-    print 'GAP'
-    print gap_interval
+    #print 'GAP'
+    #print gap_interval
 
     interval_list[intv].append(traces_list[0])
     for i in range(0, len(traces_list)-1):
