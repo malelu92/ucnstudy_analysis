@@ -66,8 +66,8 @@ def final_algorithm_filtered_traces():
             #print len(http_traces_list)
             #print len(dns_traces_list)
 
-            filtered_http_traces = filter_traces(5*60, http_traces_list, blacklist, True, False, False)
-            filtered_dns_traces = filter_traces(5*60, dns_traces_list, blacklist, True, False, False)
+            filtered_http_traces = filter_traces(5*60, http_traces_list, blacklist, False, True, True)
+            filtered_dns_traces = filter_traces(5*60, dns_traces_list, blacklist, False, True, True)
 
             #print 'AFTER FILTERING'
             #cont = 0

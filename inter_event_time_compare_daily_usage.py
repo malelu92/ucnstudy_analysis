@@ -58,7 +58,7 @@ def compare_daily_activity():
 
         for i in error_window:
             #tp, fn, fp, tn = get_tp_fn_fp_tn(traces, act_beg_final, act_end_final, first_day, last_day, i, 1)
-            tp, fn, fp, tn = get_tp_fn_fp_tn_sliding_window(traces, act_beg_final, act_end_final, first_day, last_day, i, 10)
+            tp, fn, fp, tn = get_tp_fn_fp_tn_sliding_window(traces, act_beg_final, act_end_final, first_day, last_day, i, 1)
 
             tp_dict[i] += tp
             tn_dict[i] += tn
