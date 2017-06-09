@@ -122,6 +122,20 @@ def get_interval_list(traces_list):
 
     return interval_list
 
+def get_interval_list_predefined_gap(traces_list, gap_interval):
+    intv = 0
+    interval_list = defaultdict(list)
+
+    interval_list[intv].append(traces_list[0])
+    for i in range(0, len(traces_list)-1):
+        #print traces_list[i]
+        iat = (traces_list[i+1]-traces_list[i]).total_seconds()
+        if iat > gap_interval:
+            intv += 1
+        interval_list[intv].append(traces_list[i+1])
+
+    return interval_list
+
 def calculate_average_periodicity(interval_dict):
 
     #calculate theoretic periodicity per interval
@@ -211,7 +225,7 @@ def get_free_spikes_traces(interval_dict, url_domain):
                     real_count.append(re_count)
 
                     #agressive strategy
-                    eliminate_url = True
+                    #eliminate_url = True
 
                     if url_domain == 'fupdates.trusteer.com===':
                         print '===='
@@ -232,7 +246,7 @@ def get_free_spikes_traces(interval_dict, url_domain):
                         print 'recont ' + str(re_count)
                         print 'limit ' + str(theo_count - theo_count*error_margin)
                     #take whole interval off
-                    if re_count > (theo_count - theo_count*error_margin):
+                    if re_count >= (theo_count - theo_count*error_margin):
                         filtered_interval_list = []
                         deleted_url = url_domain
                         break

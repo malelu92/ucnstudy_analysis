@@ -35,7 +35,7 @@ Session = sessionmaker(bind=engine)
 ses = Session()
 users = ses.query(User)
 
-def final_algorithm_filtered_traces():
+def final_algorithm_filtered_traces(f_blacklist, f_seconds, f_spikes):
 
     blacklist = create_blacklist_dict()
     filtered_traces_user_dict = defaultdict(list)
@@ -66,8 +66,8 @@ def final_algorithm_filtered_traces():
             #print len(http_traces_list)
             #print len(dns_traces_list)
 
-            filtered_http_traces = filter_traces(5*60, http_traces_list, blacklist, False, True, True)
-            filtered_dns_traces = filter_traces(5*60, dns_traces_list, blacklist, False, True, True)
+            filtered_http_traces = filter_traces(5*60, http_traces_list, blacklist, f_blacklist, f_seconds, f_spikes)
+            filtered_dns_traces = filter_traces(5*60, dns_traces_list, blacklist, f_blacklist, f_seconds, f_spikes)
 
             #print 'AFTER FILTERING'
             #cont = 0
