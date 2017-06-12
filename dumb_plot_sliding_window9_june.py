@@ -1,0 +1,92 @@
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+from collections import defaultdict
+
+window_error = ['0s']#, '15s', '30', '45', '1m', '2', '3', '4', '5m' ]
+sliding_window = [0, 3, 5, 7, 10, 15]
+
+def plot_sliding_window():
+
+    x_error_0 = defaultdict(list)
+    y_error_0 = defaultdict(list)
+
+    #x_0 and y_0 ==================
+
+    x_0_not_filtered = [53.1042275015, 58.3178908074, 59.0732262418, 59.2128721097, 59.0841944226, 58.7215777476, ]
+    y_0_not_filtered = [7.23978098612, 15.5728919171, 19.2521320343, 22.2058117701, 25.8030467185, 30.5226193001, ]
+
+    x_0_interval_filtered = [58.9475919176, 63.0209848327, 63.2554271335, 63.1387637859, 62.8215285096, 62.224333825]
+    y_0_interval_filtered = [3.33241977526, 8.12792305466, 10.2334198107, 11.99370153, 14.1884172166, 17.0223250666]
+
+    x_0_filtered = [62.0259019426, 70.4401306938, 72.045424142, 72.9010476143, 73.6087018632, 74.1034587007]
+    y_0_filtered = [2.41439394091, 6.54728515437, 8.36081748682, 9.89095563284, 11.8418201517, 14.4633707199]
+
+    x_0_blist_filtered = [53.5154630628, 63.6538098221, 65.9685065899, 67.1761049724, 68.1146584237, 68.8826683068]
+    y_0_blist_filtered = [5.16487055816, 11.436043832, 14.1854455883, 16.3812426848, 19.063002725, 22.6824526794]
+
+    x_error_0['blist'] = divide_value_per_100(x_0_blist_filtered)
+    y_error_0['blist'] = divide_value_per_100(y_0_blist_filtered)
+
+    x_error_0['interval'] = divide_value_per_100(x_0_interval_filtered)
+    y_error_0['interval'] = divide_value_per_100(y_0_interval_filtered)
+
+    x_error_0['not_filtered'] = divide_value_per_100(x_0_not_filtered)
+    y_error_0['not_filtered'] = divide_value_per_100(y_0_not_filtered)
+
+    x_error_0['filtered'] = divide_value_per_100(x_0_filtered)
+    y_error_0['filtered'] = divide_value_per_100(y_0_filtered)
+
+    plot_roc_curve (x_error_0, y_error_0)
+
+def plot_roc_curve(x, y):
+
+    sns.set(style='whitegrid')
+    plt.title('ROC curve')
+    plt.ylabel('Recall')
+    plt.ylim((0.0, 1.0))
+    plt.xlabel('Precision')
+    plt.xlim((0.0, 1.0))
+
+    plot_prec_rec(x, y, '-', 'o')
+
+    plt.legend (loc=2, borderaxespad=0.)
+    plt.savefig('figs_ROC_curves_12_june/roc_curve_all.png')
+    plt.close()
+
+
+def plot_prec_rec(x, y, line_type, marker_type):
+    for key, x_values in x.iteritems():
+        if key == 'not_filtered':
+            plt.plot(x_values,y[key], marker = marker_type, linestyle = line_type, color = 'b', label = 'not filtered')
+            cont = -1
+            for label in sliding_window:
+                cont+=1
+                if label == '3' or label == '7' or label == '15':
+                    continue
+                plt.annotate(label, xy=(x_values[cont], y[key][cont]), xytext=(-20, 20),
+                         textcoords='offset points', ha='right', va='bottom',
+                         bbox=dict(boxstyle='round,pad=0.5', fc='yellow', alpha=0.5),
+                         arrowprops=dict(arrowstyle = '->', connectionstyle='arc3,rad=0'))
+
+        elif key == 'filtered':
+            plt.plot(x_values,y[key], marker = marker_type, linestyle = line_type, color = 'black', label = 'filtered by both interval and blacklist')
+        elif key == 'interval':
+            plt.plot(x_values,y[key], marker = marker_type, linestyle = line_type, color = 'c', label = 'filtered by interval')
+        elif key == 'blist':
+            plt.plot(x_values,y[key], marker = marker_type, linestyle = line_type, color = 'r', label = 'filtered by blacklist')
+        elif key == '1_sec':
+            plt.plot(x_values,y[key], marker = marker_type, linestyle = line_type, color = 'g', label = 'filtered by < 1 second')
+
+
+def divide_value_per_100(elem_list):
+
+    perc_list = []
+    for elem in elem_list:
+        perc_list.append(elem/100)
+
+    return perc_list
+
+
+if __name__ == "__main__":
+    plot_sliding_window()

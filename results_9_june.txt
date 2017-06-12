@@ -1,3 +1,913 @@
 
 =========not filtered============
-***gap size 1 seconds***
+***sliding window size 0 seconds***
+error window0
+precision 53.1042275015
+recall 7.23978098612
+finalfn 463687 finalfp 31959 finaltp 36190 final tn 7935373
+error window15
+precision 58.7892357831
+recall 40.3026547894
+finalfn 393584 finalfp 186264 finaltp 265715 final tn 7621646
+error window30
+precision 59.6709544112
+recall 51.7485371377
+finalfn 335780 finalfp 243387 finaltp 360116 final tn 7527926
+error window45
+precision 60.6764540322
+recall 59.1477592376
+finalfn 294820 finalfp 276638 finaltp 426854 final tn 7468897
+error window60
+precision 61.466280792
+recall 64.2964155482
+finalfn 265243 finalfp 299449 finaltp 477660 final tn 7424857
+error window120
+precision 63.9476044683
+recall 74.4621995301
+finalfn 205874 finalfp 338426 finaltp 600280 final tn 7322629
+error window180
+precision 66.2540827409
+recall 78.2404177502
+finalfn 185265 finalfp 339299 finaltp 666153 final tn 7276492
+error window240
+precision 68.1703939588
+recall 80.1842799778
+finalfn 176221 finalfp 332945 finaltp 713078 final tn 7244965
+error window300
+precision 69.8305648798
+recall 81.368329952
+finalfn 172010 finalfp 324548 finaltp 751203 final tn 7219448
+=========not filtered============
+***sliding window size 3 seconds***
+error window0
+precision 58.3178908074
+recall 15.5728919171
+finalfn 472601 finalfp 62306 finaltp 87173 final tn 7845102
+error window15
+precision 58.885650929
+recall 41.7547992204
+finalfn 386726 finalfp 193568 finaltp 277236 final tn 7609652
+error window30
+precision 59.7894100262
+recall 52.6325430433
+finalfn 330991 finalfp 247347 finaltp 367782 final tn 7521062
+error window45
+precision 60.7583218021
+recall 59.7418868258
+finalfn 291447 finalfp 279336 finaltp 432499 final tn 7463900
+error window60
+precision 61.5399049047
+recall 64.725340966
+finalfn 262750 finalfp 301306 finaltp 482119 final tn 7421007
+error window120
+precision 64.0099003062
+recall 74.5948081446
+finalfn 205136 finalfp 338660 finaltp 602321 final tn 7321065
+error window180
+precision 66.3051187555
+recall 78.3046679876
+finalfn 184936 finalfp 339203 finaltp 667487 final tn 7275556
+error window240
+precision 68.2140789748
+recall 80.2204937406
+finalfn 176074 finalfp 332756 finaltp 714110 final tn 7244242
+error window300
+precision 69.8682556626
+recall 81.3894771929
+finalfn 171967 finalfp 324339 finaltp 752064 final tn 7218812
+=========not filtered============
+***sliding window size 5 seconds***
+error window0
+precision 59.0732262418
+recall 19.2521320343
+finalfn 468118 finalfp 77325 finaltp 111610 final tn 7810111
+error window15
+precision 58.940168249
+recall 42.665503032
+finalfn 382350 finalfp 198211 finaltp 284526 final tn 7602077
+error window30
+precision 59.8678230145
+recall 53.2031776299
+finalfn 327881 finalfp 249883 finaltp 372767 final tn 7516633
+error window45
+precision 60.8123180566
+recall 60.1259366678
+finalfn 289264 finalfp 281076 finaltp 436180 final tn 7460644
+error window60
+precision 61.5871226117
+recall 65.0034845073
+finalfn 261130 finalfp 302521 finaltp 485030 final tn 7418483
+error window120
+precision 64.0518167041
+recall 74.6823353593
+finalfn 204648 finalfp 338803 finaltp 603673 final tn 7320040
+error window180
+precision 66.3389941539
+recall 78.3469094225
+finalfn 184721 finalfp 339138 finaltp 668372 final tn 7274933
+error window240
+precision 68.2431329343
+recall 80.2444840105
+finalfn 175977 finalfp 332630 finaltp 714797 final tn 7243760
+error window300
+precision 69.8932150363
+recall 81.4034556418
+finalfn 171939 finalfp 324201 finaltp 752636 final tn 7218388
+=========not filtered============
+***sliding window size 7 seconds***
+error window0
+precision 59.2128721097
+recall 22.2058117701
+finalfn 461938 finalfp 90826 finaltp 131857 final tn 7782525
+error window15
+precision 58.9945350326
+recall 43.5394973995
+finalfn 378103 finalfp 202665 finaltp 291574 final tn 7594804
+error window30
+precision 59.9448877517
+recall 53.7572188509
+finalfn 324856 finalfp 252342 finaltp 377645 final tn 7512303
+error window45
+precision 60.8659669401
+recall 60.5009024278
+finalfn 287130 finalfp 282770 finaltp 439798 final tn 7457448
+error window60
+precision 61.6342437028
+recall 65.2778706882
+finalfn 259525 finalfp 303711 finaltp 487909 final tn 7416001
+error window120
+precision 64.0938473958
+recall 74.7693037775
+finalfn 204162 finalfp 338939 finaltp 605019 final tn 7319026
+error window180
+precision 66.3728469308
+recall 78.3889674301
+finalfn 184507 finalfp 339072 finaltp 669256 final tn 7274311
+error window240
+precision 68.272190659
+recall 80.2683303342
+finalfn 175881 finalfp 332503 finaltp 715483 final tn 7243279
+error window300
+precision 69.9182192022
+recall 81.4174176511
+finalfn 171911 finalfp 324062 finaltp 753208 final tn 7217965
+=========not filtered============
+***sliding window size 10 seconds***
+error window0
+precision 59.0841944226
+recall 25.8030467185
+finalfn 451993 finalfp 108852 finaltp 157187 final tn 7749087
+error window15
+precision 59.0807730184
+recall 44.7934819072
+finalfn 371923 finalfp 209006 finaltp 301771 final tn 7584419
+error window30
+precision 60.0535992171
+recall 54.5578813927
+finalfn 320466 finalfp 255929 finaltp 384752 final tn 7505972
+error window45
+precision 60.9457603586
+recall 61.0464829221
+finalfn 284021 finalfp 285226 finaltp 445107 final tn 7452765
+error window60
+precision 61.7031120116
+recall 65.6772428519
+finalfn 257189 finalfp 305451 finaltp 492136 final tn 7412343
+error window120
+precision 64.1570117086
+recall 74.8977129151
+finalfn 203445 finalfp 339127 finaltp 607019 final tn 7317528
+error window180
+precision 66.4231255739
+recall 78.4513620134
+finalfn 184190 finalfp 338975 finaltp 670574 final tn 7273380
+error window240
+precision 68.3157215278
+recall 80.3040186137
+finalfn 175737 finalfp 332312 finaltp 716511 final tn 7242559
+error window300
+precision 69.9557851339
+recall 81.4383299044
+finalfn 171869 finalfp 323852 finaltp 754066 final tn 7217332
+=========not filtered============
+***sliding window size 15 seconds***
+error window0
+precision 58.7215777476
+recall 30.5226193001
+finalfn 435660 finalfp 134540 finaltp 191393 final tn 7705481
+error window15
+precision 59.2193889152
+recall 46.7361998744
+finalfn 362123 finalfp 218810 finaltp 317744 final tn 7568397
+error window30
+precision 60.2273642983
+recall 55.8223367136
+finalfn 313490 finalfp 261589 finaltp 396122 final tn 7495873
+error window45
+precision 61.0756532848
+recall 61.9181238024
+finalfn 279032 finalfp 289139 finaltp 453684 final tn 7445219
+error window60
+precision 61.8101178788
+recall 66.3092407535
+finalfn 253495 finalfp 308263 finaltp 498922 final tn 7406394
+error window120
+precision 64.2621428331
+recall 75.1057433044
+finalfn 202286 finalfp 339401 finaltp 610295 final tn 7315092
+error window180
+precision 66.5068804619
+recall 78.5539222841
+finalfn 183670 finalfp 338803 finaltp 672757 final tn 7271844
+error window240
+precision 68.3870593007
+recall 80.3620181893
+finalfn 175507 finalfp 332001 finaltp 718205 final tn 7241361
+error window300
+precision 70.0177757842
+recall 81.472962014
+finalfn 171799 finalfp 323507 finaltp 755489 final tn 7216279
+=========totally_filtered============
+***sliding window size 0 seconds***
+error window0
+precision 58.9966077486
+recall 3.30521308242
+finalfn 483355 finalfp 11483 finaltp 16522 final tn 7955849
+error window15
+precision 62.3993162678
+recall 22.7015360254
+finalfn 509628 finalfp 90189 finaltp 149671 final tn 7717721
+error window30
+precision 63.7041588694
+recall 29.4975111224
+finalfn 490624 finalfp 116955 finaltp 205272 final tn 7654358
+error window45
+precision 65.858348207
+recall 33.7452921956
+finalfn 478143 finalfp 126249 finaltp 243531 final tn 7619286
+error window60
+precision 67.43076299
+recall 36.9197593764
+finalfn 468625 finalfp 132477 finaltp 274278 final tn 7591829
+error window120
+precision 71.867896059
+recall 44.785115499
+finalfn 445117 finalfp 141325 finaltp 361037 final tn 7519730
+error window180
+precision 74.8600871358
+recall 49.5037690065
+finalfn 429934 finalfp 141545 finaltp 421484 final tn 7474246
+error window240
+precision 76.9103147516
+recall 52.9096513096
+finalfn 418774 finalfp 141259 finaltp 470525 final tn 7436651
+error window300
+precision 78.503424009
+recall 55.6784837302
+finalfn 409182 finalfp 140757 finaltp 514031 final tn 7403239
+=========totally_filtered============
+***sliding window size 3 seconds***
+error window0
+precision 63.0378296826
+recall 8.06128902021
+finalfn 514649 finalfp 26459 finaltp 45125 final tn 7880949
+error window15
+precision 62.5724727502
+recall 23.5691199195
+finalfn 507472 finalfp 93604 finaltp 156490 final tn 7709616
+error window30
+precision 63.9514334637
+recall 29.9848448638
+finalfn 489247 finalfp 118107 finaltp 209526 final tn 7650302
+error window45
+precision 66.0315277841
+recall 34.0971564177
+finalfn 477101 finalfp 126984 finaltp 246845 final tn 7616252
+error window60
+precision 67.5830810551
+recall 37.1936541862
+finalfn 467825 finalfp 132887 finaltp 277044 final tn 7589426
+error window120
+precision 71.9551428265
+recall 44.9289559692
+finalfn 444675 finalfp 141396 finaltp 362782 final tn 7518329
+error window180
+precision 74.9187572427
+recall 49.6009610252
+finalfn 429613 finalfp 141548 finaltp 422810 final tn 7473211
+error window240
+precision 76.9533614508
+recall 52.9835404815
+finalfn 418533 finalfp 141254 finaltp 471651 final tn 7435744
+error window300
+precision 78.537316528
+recall 55.7410952663
+finalfn 408966 finalfp 140757 finaltp 515065 final tn 7402394
+=========totally_filtered============
+***sliding window size 5 seconds***
+error window0
+precision 63.2495725944
+recall 10.1468274777
+finalfn 520904 finalfp 34179 finaltp 58824 final tn 7853257
+error window15
+precision 62.6657416574
+recall 24.1100294508
+finalfn 506092 finalfp 95790 finaltp 160784 final tn 7704498
+error window30
+precision 64.1107796004
+recall 30.3003790777
+finalfn 488349 finalfp 118845 finaltp 212299 final tn 7647671
+error window45
+precision 66.1463147717
+recall 34.3272533786
+finalfn 476419 finalfp 127451 finaltp 249025 final tn 7614269
+error window60
+precision 67.6844511973
+recall 37.3732175405
+finalfn 467296 finalfp 133142 finaltp 278864 final tn 7587862
+error window120
+precision 72.0138511007
+recall 45.0241921217
+finalfn 444381 finalfp 141435 finaltp 363940 final tn 7517408
+error window180
+precision 74.9574515514
+recall 49.6649251606
+finalfn 429405 finalfp 141550 finaltp 423688 final tn 7472521
+error window240
+precision 76.9820305027
+recall 53.0326435213
+finalfn 418373 finalfp 141250 finaltp 472401 final tn 7435140
+error window300
+precision 78.5598086853
+recall 55.7827109753
+finalfn 408822 finalfp 140757 finaltp 515753 final tn 7401832
+=========totally_filtered============
+***sliding window size 7 seconds***
+error window0
+precision 63.1170549427
+recall 11.8902988405
+finalfn 523191 finalfp 41258 finaltp 70604 final tn 7832093
+error window15
+precision 62.7516944541
+recall 24.6226165749
+finalfn 504785 finalfp 97877 finaltp 164892 final tn 7699592
+error window30
+precision 64.2684224369
+recall 30.6102055371
+finalfn 487464 finalfp 119555 finaltp 215037 final tn 7645090
+error window45
+precision 66.2584018318
+recall 34.5529405938
+finalfn 475753 finalfp 127909 finaltp 251175 final tn 7612309
+error window60
+precision 67.7840597596
+recall 37.550606475
+finalfn 466768 finalfp 133393 finaltp 280666 final tn 7586319
+error window120
+precision 72.0724882295
+recall 45.1189536086
+finalfn 444087 finalfp 141471 finaltp 365094 final tn 7516494
+error window180
+precision 74.996158038
+recall 49.7287889028
+finalfn 429197 finalfp 141551 finaltp 424566 final tn 7471832
+error window240
+precision 77.0106299347
+recall 53.0816815577
+finalfn 418213 finalfp 141246 finaltp 473151 final tn 7434536
+error window300
+precision 78.58225375
+recall 55.8242777416
+finalfn 408678 finalfp 140757 finaltp 516441 final tn 7401270
+=========totally_filtered============
+***sliding window size 10 seconds***
+error window0
+precision 62.7856190183
+recall 14.0641518106
+finalfn 523504 finalfp 50782 finaltp 85676 final tn 7807157
+error window15
+precision 62.8720123078
+recall 25.3560221703
+finalfn 502872 finalfp 100876 finaltp 170822 final tn 7692549
+error window30
+precision 64.5000206104
+recall 31.0633024115
+finalfn 486154 finalfp 120570 finaltp 219064 final tn 7641331
+error window45
+precision 66.4246748126
+recall 34.8857813717
+finalfn 474766 finalfp 128571 finaltp 254362 final tn 7609420
+error window60
+precision 67.9325622878
+recall 37.8132319087
+finalfn 465981 finalfp 133752 finaltp 283344 final tn 7584042
+error window120
+precision 72.1597201867
+recall 45.2599992103
+finalfn 443648 finalfp 141523 finaltp 366816 final tn 7515132
+error window180
+precision 75.0537948974
+recall 49.8242789823
+finalfn 428884 finalfp 141553 finaltp 425880 final tn 7470802
+error window240
+precision 77.0533990993
+recall 53.1551765877
+finalfn 417972 finalfp 141240 finaltp 474276 final tn 7433631
+error window300
+precision 78.6158333713
+recall 55.8865363119
+finalfn 408462 finalfp 140757 finaltp 517473 final tn 7400427
+=========totally_filtered============
+***sliding window size 15 seconds***
+error window0
+precision 62.1782061831
+recall 16.8709821977
+finalfn 521263 finalfp 64350 finaltp 105790 final tn 7775671
+error window15
+precision 63.0868137945
+recall 26.5144506205
+finalfn 499604 finalfp 105475 finaltp 180263 final tn 7681732
+error window30
+precision 64.8774470337
+recall 31.7952627633
+finalfn 483989 finalfp 122145 finaltp 225623 final tn 7635317
+error window45
+precision 66.6888523411
+recall 35.4179518395
+finalfn 473203 finalfp 129627 finaltp 259513 final tn 7604731
+error window60
+precision 68.1710906067
+recall 38.2363769027
+finalfn 464720 finalfp 134325 finaltp 287697 final tn 7580332
+error window120
+precision 72.301318901
+recall 45.4904803337
+finalfn 442934 finalfp 141612 finaltp 369647 final tn 7512881
+error window180
+precision 75.1497042781
+recall 49.9832443396
+finalfn 428357 finalfp 141553 finaltp 428070 final tn 7469094
+error window240
+precision 77.1235266391
+recall 53.2773421415
+finalfn 417566 finalfp 141235 finaltp 476146 final tn 7432127
+error window300
+precision 78.6706690447
+recall 55.989077827
+finalfn 408108 finalfp 140761 finaltp 519180 final tn 7399025
+=========only blacklist============
+***sliding window size 0 seconds***
+error window0
+precision 53.1371732731
+recall 7.14955879146
+finalfn 464138 finalfp 31519 finaltp 35739 final tn 7935813
+error window15
+precision 58.7576262782
+recall 39.7180945216
+finalfn 397438 finalfp 183802 finaltp 261861 final tn 7624108
+error window30
+precision 59.6606871614
+recall 51.0229976893
+finalfn 340829 finalfp 240077 finaltp 355067 final tn 7531236
+error window45
+precision 60.6506502614
+recall 58.359591727
+finalfn 300508 finalfp 273247 finaltp 421166 final tn 7472288
+error window60
+precision 61.4220288587
+recall 63.5099064077
+finalfn 271086 finalfp 296339 finaltp 471817 final tn 7427967
+error window120
+precision 63.8998370034
+recall 73.8687645289
+finalfn 210658 finalfp 336425 finaltp 595496 final tn 7324630
+error window180
+precision 66.2125354222
+recall 77.7734320862
+finalfn 189241 finalfp 337901 finaltp 662177 final tn 7277890
+error window240
+precision 68.1490023399
+recall 79.8115144625
+finalfn 179536 finalfp 331724 finaltp 709763 final tn 7246186
+error window300
+precision 69.8260549295
+recall 81.1145423645
+finalfn 174353 finalfp 323605 finaltp 748860 final tn 7220391
+=========only blacklist============
+***sliding window size 3 seconds***
+error window0
+precision 58.3114672959
+recall 15.363878994
+finalfn 473771 finalfp 61486 finaltp 86003 final tn 7845922
+error window15
+precision 58.8573028988
+recall 41.1461800525
+finalfn 390767 finalfp 190970 finaltp 273195 final tn 7612250
+error window30
+precision 59.7788191932
+recall 51.8981128349
+finalfn 336123 finalfp 244003 finaltp 362650 final tn 7524406
+error window45
+precision 60.7307164151
+recall 58.9513582505
+finalfn 297170 finalfp 275959 finaltp 426776 final tn 7467277
+error window60
+precision 61.4935093441
+recall 63.9395652121
+finalfn 268603 finalfp 298232 finaltp 476266 final tn 7424081
+error window120
+precision 63.9615859702
+recall 74.0046838407
+finalfn 209901 finalfp 336686 finaltp 597556 final tn 7323039
+error window180
+precision 66.2640760255
+recall 77.840931087
+finalfn 188889 finalfp 337814 finaltp 663534 final tn 7276945
+error window240
+precision 68.1934745464
+recall 79.8502332102
+finalfn 179370 finalfp 331535 finaltp 710814 final tn 7245463
+error window300
+precision 69.8640642443
+recall 81.1389444726
+finalfn 174282 finalfp 323405 finaltp 749749 final tn 7219746
+=========only blacklist============
+***sliding window size 5 seconds***
+error window0
+precision 59.0441397365
+recall 18.9852827533
+finalfn 469665 finalfp 76345 finaltp 110063 final tn 7811091
+error window15
+precision 58.9134760655
+recall 42.0424486711
+finalfn 386505 finalfp 195532 finaltp 280371 final tn 7604756
+error window30
+precision 59.8563430831
+recall 52.4627202247
+finalfn 333069 finalfp 246523 finaltp 367579 final tn 7519993
+error window45
+precision 60.7834747576
+recall 59.3346970958
+finalfn 295004 finalfp 277713 finaltp 430440 final tn 7464007
+error window60
+precision 61.5393407926
+recall 64.2174600622
+finalfn 266995 finalfp 299467 finaltp 479165 final tn 7421537
+error window120
+precision 64.0028297612
+recall 74.0940789612
+finalfn 209403 finalfp 336850 finaltp 598918 final tn 7321993
+error window180
+precision 66.2983403363
+recall 77.8855294792
+finalfn 188657 finalfp 337755 finaltp 664436 final tn 7276316
+error window240
+precision 68.2230310608
+recall 79.8758158635
+finalfn 179261 finalfp 331409 finaltp 711513 final tn 7244981
+error window300
+precision 69.8891590056
+recall 81.1548008544
+finalfn 174238 finalfp 323273 finaltp 750337 final tn 7219316
+=========only blacklist============
+***sliding window size 7 seconds***
+error window0
+precision 59.1760845126
+recall 21.8954352933
+finalfn 463781 finalfp 89693 finaltp 130014 final tn 7783658
+error window15
+precision 58.9693963208
+recall 42.903668485
+finalfn 382361 finalfp 199913 finaltp 287316 final tn 7597556
+error window30
+precision 59.9329227372
+recall 53.0115971365
+finalfn 330094 finalfp 248966 finaltp 372407 final tn 7515679
+error window45
+precision 60.8361155262
+recall 59.7094897982
+finalfn 292883 finalfp 279421 finaltp 434045 final tn 7460797
+error window60
+precision 61.5858511912
+recall 64.492383274
+finalfn 265396 finalfp 300671 finaltp 482038 final tn 7419041
+error window120
+precision 64.0441957827
+recall 74.183155561
+finalfn 208905 finalfp 337008 finaltp 600276 final tn 7320957
+error window180
+precision 66.3325460529
+recall 77.9298236162
+finalfn 188427 finalfp 337695 finaltp 665336 final tn 7275688
+error window240
+precision 68.2525900988
+recall 79.9012524625
+finalfn 179153 finalfp 331282 finaltp 712211 final tn 7244500
+error window300
+precision 69.9142975518
+recall 81.1706385881
+finalfn 174194 finalfp 323140 finaltp 750925 final tn 7218887
+=========only blacklist============
+***sliding window size 10 seconds***
+error window0
+precision 59.0449849136
+recall 25.4417413572
+finalfn 454194 finalfp 107502 finaltp 154986 final tn 7750437
+error window15
+precision 59.0566599805
+recall 44.1399210918
+finalfn 376326 finalfp 206162 finaltp 297368 final tn 7587263
+error window30
+precision 60.0410455378
+recall 53.8057735339
+finalfn 325770 finalfp 252533 finaltp 379448 final tn 7509368
+error window45
+precision 60.9145360768
+recall 60.2555381223
+finalfn 289788 finalfp 281900 finaltp 439340 final tn 7456091
+error window60
+precision 61.6541038791
+recall 64.894271511
+finalfn 263056 finalfp 302436 finaltp 486269 final tn 7415358
+error window120
+precision 64.1063822087
+recall 74.3143433885
+finalfn 208173 finalfp 337227 finaltp 602291 final tn 7319428
+error window180
+precision 66.3832469366
+recall 77.9952127137
+finalfn 188089 finalfp 337607 finaltp 666675 final tn 7274748
+error window240
+precision 68.2968703919
+recall 79.9393218029
+finalfn 178991 finalfp 331091 finaltp 713257 final tn 7243780
+error window300
+precision 69.9520630921
+recall 81.1943602953
+finalfn 174128 finalfp 322939 finaltp 751807 final tn 7218245
+=========only blacklist============
+***sliding window size 15 seconds***
+error window0
+precision 58.6698307742
+recall 30.0831030232
+finalfn 438416 finalfp 132886 finaltp 188637 final tn 7707135
+error window15
+precision 59.1991485211
+recall 46.0591556878
+finalfn 366726 finalfp 215821 finaltp 313141 final tn 7571386
+error window30
+precision 60.2111943484
+recall 55.0581162664
+finalfn 318913 finalfp 258182 finaltp 390699 final tn 7499280
+error window45
+precision 61.0422867672
+recall 61.1285955268
+finalfn 284817 finalfp 285853 finaltp 447899 final tn 7448505
+error window60
+precision 61.7599460891
+recall 65.5305502135
+finalfn 259354 finalfp 305291 finaltp 493063 final tn 7409366
+error window120
+precision 64.2100776451
+recall 74.5266010404
+finalfn 206992 finalfp 337548 finaltp 605589 final tn 7316945
+error window180
+precision 66.4679590117
+recall 78.1025119479
+finalfn 187536 finalfp 337445 finaltp 668891 final tn 7273202
+error window240
+precision 68.3694457912
+recall 80.0012755787
+finalfn 178731 finalfp 330780 finaltp 714981 final tn 7242582
+error window300
+precision 70.0143789404
+recall 81.2336620338
+finalfn 174018 finalfp 322609 finaltp 753270 final tn 7217177
+=========only interval============
+***sliding window size 0 seconds***
+error window0
+precision 58.9475919176
+recall 3.33241977526
+finalfn 483219 finalfp 11601 finaltp 16658 final tn 7955731
+error window15
+precision 62.4442808822
+recall 22.9052372292
+finalfn 508285 finalfp 90824 finaltp 151014 final tn 7717086
+error window30
+precision 63.759401737
+recall 29.7594755538
+finalfn 488801 finalfp 117712 finaltp 207095 final tn 7653601
+error window45
+precision 65.9111952015
+recall 34.0312939083
+finalfn 476079 finalfp 127020 finaltp 245595 final tn 7618515
+error window60
+precision 67.4737173557
+recall 37.209029981
+finalfn 466476 finalfp 133254 finaltp 276427 final tn 7591052
+error window120
+precision 71.8664055709
+recall 45.0239036214
+finalfn 443192 finalfp 142089 finaltp 362962 final tn 7518966
+error window180
+precision 74.862084574
+recall 49.7279831998
+finalfn 428025 finalfp 142171 finaltp 423393 final tn 7473620
+error window240
+precision 76.9189942497
+recall 53.1270135241
+finalfn 416841 finalfp 141770 finaltp 472458 final tn 7436140
+error window300
+precision 78.5056114127
+recall 55.8878611978
+finalfn 407249 finalfp 141268 finaltp 515964 final tn 7402728
+=========only interval============
+***sliding window size 3 seconds***
+error window0
+precision 63.0209848327
+recall 8.12792305466
+finalfn 514276 finalfp 26697 finaltp 45498 final tn 7880711
+error window15
+precision 62.6144651419
+recall 23.7789210828
+finalfn 506079 finalfp 94268 finaltp 157883 final tn 7708952
+error window30
+precision 64.0084059823
+recall 30.2504532946
+finalfn 487391 finalfp 118859 finaltp 211382 final tn 7649550
+error window45
+precision 66.0833275814
+recall 34.3843325331
+finalfn 475022 finalfp 127758 finaltp 248924 final tn 7615478
+error window60
+precision 67.6250384519
+recall 37.482027041
+finalfn 465677 finalfp 133661 finaltp 279192 final tn 7588652
+error window120
+precision 71.9533367793
+recall 45.1673587572
+finalfn 442750 finalfp 142159 finaltp 364707 final tn 7517566
+error window180
+precision 74.9206186804
+recall 49.8242069958
+finalfn 427710 finalfp 142171 finaltp 424713 final tn 7472588
+error window240
+precision 76.9618541673
+recall 53.2006865996
+finalfn 416600 finalfp 141765 finaltp 473584 final tn 7435233
+error window300
+precision 78.5393746601
+recall 55.9502873821
+finalfn 407033 finalfp 141268 finaltp 516998 final tn 7401883
+=========only interval============
+***sliding window size 5 seconds***
+error window0
+precision 63.2554271335
+recall 10.2334198107
+finalfn 520402 finalfp 34462 finaltp 59326 final tn 7852974
+error window15
+precision 62.7057973087
+recall 24.324312166
+finalfn 504663 finalfp 96476 finaltp 162213 final tn 7703812
+error window30
+precision 64.1691683594
+recall 30.5688448408
+finalfn 486468 finalfp 119594 finaltp 214180 final tn 7646922
+error window45
+precision 66.1976100785
+recall 34.6154906512
+finalfn 474328 finalfp 128227 finaltp 251116 final tn 7613493
+error window60
+precision 67.7254925589
+recall 37.6608234159
+finalfn 465150 finalfp 133915 finaltp 281010 final tn 7587089
+error window120
+precision 72.0120221784
+recall 45.2623400852
+finalfn 442456 finalfp 142196 finaltp 365865 final tn 7516647
+error window180
+precision 74.9593137946
+recall 49.8877613578
+finalfn 427504 finalfp 142171 finaltp 425589 final tn 7471900
+error window240
+precision 76.9903992079
+recall 53.2496458136
+finalfn 416440 finalfp 141761 finaltp 474334 final tn 7434629
+error window300
+precision 78.5617812472
+recall 55.991780007
+finalfn 406889 finalfp 141268 finaltp 517686 final tn 7401321
+=========only interval============
+***sliding window size 7 seconds***
+error window0
+precision 63.1387637859
+recall 11.99370153
+finalfn 522577 finalfp 41578 finaltp 71218 final tn 7831773
+error window15
+precision 62.7921460277
+recall 24.8416774057
+finalfn 503318 finalfp 98577 finaltp 166359 final tn 7698892
+error window30
+precision 64.3270154547
+recall 30.8809524826
+finalfn 485562 finalfp 120305 finaltp 216939 final tn 7644340
+error window45
+precision 66.3093904138
+recall 34.8422402219
+finalfn 473650 finalfp 128686 finaltp 253278 final tn 7611532
+error window60
+precision 67.824124592
+recall 37.8375883356
+finalfn 464623 finalfp 134166 finaltp 282811 final tn 7585546
+error window120
+precision 72.0706373503
+recall 45.3568484678
+finalfn 442162 finalfp 142230 finaltp 367019 final tn 7515735
+error window180
+precision 74.998021578
+recall 49.9512159698
+finalfn 427298 finalfp 142170 finaltp 426465 final tn 7471213
+error window240
+precision 77.0188752045
+recall 53.2985402148
+finalfn 416280 finalfp 141757 finaltp 475084 final tn 7434025
+error window300
+precision 78.5841410947
+recall 56.0332238339
+finalfn 406745 finalfp 141268 finaltp 518374 final tn 7400759
+=========only interval============
+***sliding window size 10 seconds***
+error window0
+precision 62.8215285096
+recall 14.1884172166
+finalfn 522747 finalfp 51152 finaltp 86433 final tn 7806787
+error window15
+precision 62.9143182548
+recall 25.5828313745
+finalfn 501344 finalfp 101594 finaltp 172350 final tn 7691831
+error window30
+precision 64.5581860036
+recall 31.3368348511
+finalfn 484225 finalfp 121323 finaltp 220993 final tn 7640578
+error window45
+precision 66.4757338171
+recall 35.1762653471
+finalfn 472648 finalfp 129345 finaltp 256480 final tn 7608646
+error window60
+precision 67.971076948
+recall 38.0990891803
+finalfn 463839 finalfp 134525 finaltp 285486 final tn 7583269
+error window120
+precision 72.1578411804
+recall 45.4975174715
+finalfn 441723 finalfp 142279 finaltp 368741 final tn 7514376
+error window180
+precision 75.0556632658
+recall 50.0460945945
+finalfn 426988 finalfp 142169 finaltp 427776 final tn 7470186
+error window240
+precision 77.0614602887
+recall 53.3718203907
+finalfn 416039 finalfp 141751 finaltp 476209 final tn 7433120
+error window300
+precision 78.6175935484
+recall 56.0952982661
+finalfn 406529 finalfp 141268 finaltp 519406 final tn 7399916
+=========only interval============
+***sliding window size 15 seconds***
+error window0
+precision 62.224333825
+recall 17.0223250666
+finalfn 520314 finalfp 64800 finaltp 106739 final tn 7775221
+error window15
+precision 63.1322808625
+recall 26.7514087314
+finalfn 497993 finalfp 106210 finaltp 181874 final tn 7680997
+error window30
+precision 64.9337643477
+recall 32.0720337311
+finalfn 482025 finalfp 122904 finaltp 227587 final tn 7634558
+error window45
+precision 66.7383408323
+recall 35.709469972
+finalfn 471067 finalfp 130403 finaltp 261649 final tn 7603955
+error window60
+precision 68.2071484379
+recall 38.5203949406
+finalfn 462583 finalfp 135098 finaltp 289834 final tn 7579559
+error window120
+precision 72.2995230933
+recall 45.7276259228
+finalfn 441007 finalfp 142363 finaltp 371574 final tn 7512130
+error window180
+precision 75.151584007
+recall 50.2040454119
+finalfn 426466 finalfp 142164 finaltp 429961 final tn 7468483
+error window240
+precision 77.1312870568
+recall 53.4936310579
+finalfn 415633 finalfp 141746 finaltp 478079 final tn 7431616
+error window300
+precision 78.672222348
+recall 56.1975351779
+finalfn 406175 finalfp 141272 finaltp 521113 final tn 7398514

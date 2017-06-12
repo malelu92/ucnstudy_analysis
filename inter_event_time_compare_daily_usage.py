@@ -3,6 +3,7 @@ import datautils
 from matplotlib import dates
 import matplotlib.pyplot as plt
 import seaborn as sns
+from matplotlib.markers import TICKDOWN
 
 from collections import defaultdict
 
@@ -15,16 +16,16 @@ from final_algorithm import final_algorithm_filtered_traces
 
 def compare_daily_activity():
 
-    results_file = open('results_9_june.txt','w')
+    results_file = open('results_12_june2.txt','w')
 
     f_blacklist = [False, True, True, False]
     f_seconds = [False, True, False, True]
     f_spike = [False, True, False, True]
-    filter_type = ['not filtered', 'totally_filtered', 'only blacklist', 'only interval']
+    filter_type = ['not_filtered', 'totally_filtered', 'only_blacklist', 'only_interval']
 
-    sliding_window = [0, 3, 5, 7, 10, 15]
+    sliding_window = [0]#, 3, 5, 7, 10, 15]
 
-    for f_type in range (0, 4):
+    for f_type in range (0, 1):
         act_beg, act_end = get_activities_inter_times()
         traces_dict = final_algorithm_filtered_traces(f_blacklist[f_type], f_seconds[f_type], f_spike[f_type])
 
@@ -38,7 +39,7 @@ def compare_daily_activity():
             tn_dict = defaultdict(int)
             fp_dict = defaultdict(int)
             fn_dict = defaultdict(int)
-            error_window = [0, 15, 30, 45, 60, 60*2, 60*3, 60*4, 60*5]
+            error_window = [0]#, 15, 30, 45, 60, 60*2, 60*3, 60*4, 60*5]
 
             initialize_dict(tp_dict, error_window)
             initialize_dict(tn_dict, error_window)
@@ -49,6 +50,8 @@ def compare_daily_activity():
                 traces = []
                 print user
         
+                if user != 'clifford.mainlaptop':
+                    continue
                 #print '----------'
                 #print len(timsts)
                 #get traces in seconds
@@ -77,7 +80,7 @@ def compare_daily_activity():
 
                 for i in error_window:
                     #tp, fn, fp, tn = get_tp_fn_fp_tn(traces, act_beg_final, act_end_final, first_day, last_day, i, filter_type[f_type], gap_int[gap_size], user)
-                    tp, fn, fp, tn = get_tp_fn_fp_tn_sliding_window(traces, act_beg_final, act_end_final, first_day, last_day, i, sliding_window[cont_sliding_window])
+                    tp, fn, fp, tn = get_tp_fn_fp_tn_sliding_window(traces, act_beg_final, act_end_final, first_day, last_day, i, sliding_window[cont_sliding_window], user, filter_type[f_type])
 
                     tp_dict[i] += tp
                     tn_dict[i] += tn
@@ -125,10 +128,14 @@ def get_daily_activities(act_beg, act_end, bucket_beg):
 
     return daily_list_beg, daily_list_end
     
-def get_tp_fn_fp_tn_sliding_window(traces, act_beg, act_end, first_day, last_day, error_window, sliding_window_size):
+def get_tp_fn_fp_tn_sliding_window(traces, act_beg, act_end, first_day, last_day, error_window, sliding_window_size, user_id, filter_type):
     tp, fn, fp, tn = 0, 0, 0, 0
     current_bucket_beg = first_day
     current_bucket_end = current_bucket_beg + datetime.timedelta(0,sliding_window_size)
+    tp_traces = []
+    fn_traces = []
+    fp_traces = []
+    tn_traces = []
 
     cont = 0
 
@@ -148,21 +155,26 @@ def get_tp_fn_fp_tn_sliding_window(traces, act_beg, act_end, first_day, last_day
         act_in = act_in_bucket(daily_act_beg, daily_act_end, current_bucket_beg, current_bucket_end, error_window)
 
         if trace_in and act_in:
+            tp_traces.append(current_bucket_beg)
             tp += 1
 
         elif trace_in and not act_in:
             fp += 1
+            fp_traces.append(current_bucket_beg)
 
         elif not trace_in and act_in:
             fn += 1
+            fn_traces.append(current_bucket_beg)
 
         elif not trace_in and not act_in:
             tn += 1
-            
+            tn_traces.append(current_bucket_beg)
+
         current_bucket_beg = current_bucket_beg + datetime.timedelta(0,1)
         current_bucket_end = current_bucket_end + datetime.timedelta(0,1)
         current_date = current_bucket_beg.date()
 
+    plot_traces(tp_traces, fn_traces, fp_traces, tn_traces, user_id, error_window, filter_type, sliding_window_size)
     print 'error window' + str(error_window)
     print 'cont ' + str(cont)
     print 'number of traces ' + str(len(traces))
@@ -449,7 +461,7 @@ def get_seconds_activities(act_beg_user, act_end_user):
 
     return sorted(act_list)
 
-def plot_traces(traces_tp, traces_fn, traces_fp, traces_tn, user_id, error_window, filtering, gap_size):
+def plot_traces(traces_tp, traces_fn, traces_fp, traces_tn, user_id, error_window, filtering, sli_window):
     x_tp = []
     y_tp = []
     x_fp = []
@@ -481,10 +493,10 @@ def plot_traces(traces_tp, traces_fn, traces_fp, traces_tn, user_id, error_windo
     hfmt = dates.DateFormatter('%m-%d')
     ax.yaxis.set_major_formatter(hfmt)
 
-    ax.plot(x_tp,y_tp, '.g')
-    ax.plot(x_tn,y_tn, '.b')
-    ax.plot(x_fp,y_fp, '.r')
-    ax.plot(x_fn,y_fn, '.black')
+    ax.plot(x_tn,y_tn, '3b', label = 'true negative')
+    ax.plot(x_fp,y_fp, '3r', label = 'false positive')
+    ax.plot(x_fn,y_fn, '3k', label = 'false negative')
+    ax.plot(x_tp,y_tp, '3g', label = 'true positive')
 
     ax.set_title('TP + TN + FN + FP [user=%s]'%(user_id), fontsize = 30)#, device=%s]'%(username, platform))
     ax.set_ylabel('Date')
@@ -493,8 +505,9 @@ def plot_traces(traces_tp, traces_fn, traces_fp, traces_tn, user_id, error_windo
     ax.set_xlabel('Matches during day')
     ax.set_xlim(0,24)
 
+    plt.legend (loc=2, borderaxespad=0.)
     plt.tight_layout()
-    fig.savefig('figs_device_tps_along_day/%s-%s-gap:%d-error:%d.png' % (user_id, filtering, gap_size, error_window))
+    fig.savefig('figs_device_tps_along_day/%s-%s-swindow-%d-error-%d.png' % (user_id, filtering, sli_window, error_window))
     plt.close(fig)
 
 if __name__ == "__main__":

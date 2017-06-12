@@ -1,0 +1,8 @@
+
+=========not_filtered============
+***sliding window size 0 seconds***
+error window0
+precision 65.317439235
+recall 7.66730200306
+finalfn 236886 finalfp 10445 finaltp 19671 final tn 1115399
+=========not_filtered============

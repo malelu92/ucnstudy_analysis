@@ -1,0 +1,37 @@
+
+=========only blacklist============
+***sliding window size 0 seconds***
+error window0
+precision 53.5154630628
+recall 5.16487055816
+finalfn 474059 finalfp 22426 finaltp 25818 final tn 7944906
+=========only blacklist============
+***sliding window size 3 seconds***
+error window0
+precision 63.6538098221
+recall 11.436043832
+finalfn 495758 finalfp 36553 finaltp 64016 final tn 7870855
+=========only blacklist============
+***sliding window size 5 seconds***
+error window0
+precision 65.9685065899
+recall 14.1854455883
+finalfn 497491 finalfp 42424 finaltp 82237 final tn 7845012
+=========only blacklist============
+***sliding window size 7 seconds***
+error window0
+precision 67.1761049724
+recall 16.3812426848
+finalfn 496524 finalfp 47529 finaltp 97271 final tn 7825822
+=========only blacklist============
+***sliding window size 10 seconds***
+error window0
+precision 68.1146584237
+recall 19.063002725
+finalfn 493052 finalfp 54361 finaltp 116128 final tn 7803578
+=========only blacklist============
+***sliding window size 15 seconds***
+error window0
+precision 68.8826683068
+recall 22.6824526794
+finalfn 484822 finalfp 64252 finaltp 142231 final tn 7775769
