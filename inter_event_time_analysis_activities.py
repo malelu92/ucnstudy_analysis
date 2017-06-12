@@ -40,8 +40,6 @@ Session = sessionmaker(bind=engine)
 ses = Session()
 devices = ses.query(Devices)
 
-
-
 DB_ucn='postgresql+psycopg2:///ucnstudy'
 
 engine_ucn = create_engine(DB_ucn, echo=False, poolclass=NullPool)
@@ -84,45 +82,52 @@ def get_activities_inter_times():
 
             io = []
             io_iat = []
-            #cont = 0
+            cont_teste = 0
             for row in ses.execute(text(sql_io).bindparams(d_id = device.id)):
                 if (row[2]==None):
                     continue
+                print row[0]
+                dat = row[2]
+                if dat.day != 13:
+                    continue
                 is_online = check_online_activity(ucn_devid, row[0], row[2], row[2])
                 if is_online:
-                    io.append(row[1])
+                    cont_teste +=1
+                    io.append(row[2])
                     io_iat.append((row[1]-row[2]).total_seconds())
+                    print 'point'
+                    print row[2]
+                    if cont_teste == 5:
+                        print 'BREAK'
+                        break
 
             #plot_traces(beg, end, io, device.device_id)
             #plot_cdf_interval_times(io_iat, device.device_id)
             mix_beg[device.device_id], mix_end[device.device_id] = calculate_block_intervals(beg, end, io, 2)
             #plot_traces(mix_beg[device.device_id], mix_end[device.device_id], [], device.device_id)
 
-            for i in range(0, len(mix_beg)):
-                activity_file.write('\nbeg:'+ mix_beg[i])
-                activity_file.write('\nend:'+ mix_end[i])
+            for i in range(0, len(mix_beg[device.device_id])):
+                activity_file.write('\nbeg:'+ str(mix_beg[device.device_id][i]))
+                activity_file.write('\nend:'+ str(mix_end[device.device_id][i]))
 
-    traces_
     return mix_beg, mix_end
 
 def check_online_activity(device_id, appname, start_time, end_time):
-    print 'checking'
     start_time_sockets = start_time - datetime.timedelta(0,30)
     end_time_sockets = end_time + datetime.timedelta(0,30)
 
     sql_socket = """SELECT srcip, dstip, srcport, dstport \
     FROM sockets \
-    WHERE devid = :d_id AND appname = :name AND ts >= :st_time AND ts <= :e_time  order by ts"""
+    WHERE devid = :d_id AND appname = :name AND ts >= :st_time AND ts <= :e_time order by ts"""
 
     sql_dev_app_traffic = """SELECT srcip, dstip, srcport, dstport \
     FROM deviceapptraffic \
-    WHERE devid = :d_id and ts >= :start_time and ts <= :end_time"""
+    WHERE devid = :d_id and ts >= :st_time and ts <= :e_time"""
 
     for row_socket in ses_ucn.execute(text(sql_socket).bindparams(d_id = device_id, name = appname, st_time = start_time_sockets, e_time = end_time_sockets)):
         for row_apptraffic in ses_ucn.execute(text(sql_dev_app_traffic).bindparams(d_id = device_id, st_time = start_time_sockets, e_time = end_time_sockets)):
             if (row_apptraffic[0] == row_socket[0]) and (row_apptraffic[1] == row_socket[1]) and (row_apptraffic[2] == row_socket[2]) and (row_apptraffic[3] == row_socket[3]):
                 return True
-
     return False
 
 
