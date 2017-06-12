@@ -42,7 +42,7 @@ def final_algorithm_filtered_traces(f_blacklist, f_seconds, f_spikes):
 
     file_type = get_file_type(f_blacklist, f_seconds, f_spikes)
 
-    bucket_list = [0, 5, 10]
+    bucket_list = [1, 5, 10]
 
     for bucket in bucket_list:
         traces_bucket = defaultdict(list)
@@ -61,8 +61,8 @@ def final_algorithm_filtered_traces(f_blacklist, f_seconds, f_spikes):
                 user_id = ses.execute(text(sql_userid).bindparams(d_id = elem_id)).fetchone()
                 idt = user_id[0]
 
-                #if idt != 'bowen.laptop' and idt != 'bridgeman.laptop2' and idt != 'bridgeman.stuartlaptop' and idt != 'chrismaley.loungepc' and idt != 'chrismaley.mainpc' and idt != 'clifford.mainlaptop' and idt != 'gluch.laptop' and idt != 'kemianny.mainlaptop' and idt != 'neenagupta.workpc':
-                if idt != 'neenagupta.workpc':
+                if idt != 'bowen.laptop' and idt != 'bridgeman.laptop2' and idt != 'bridgeman.stuartlaptop' and idt != 'chrismaley.loungepc' and idt != 'chrismaley.mainpc' and idt != 'clifford.mainlaptop' and idt != 'gluch.laptop' and idt != 'kemianny.mainlaptop' and idt != 'neenagupta.workpc':
+                #if idt != 'neenagupta.workpc':
                     continue
 
                 print idt
@@ -83,7 +83,7 @@ def final_algorithm_filtered_traces(f_blacklist, f_seconds, f_spikes):
                 #plot_traces(filtered_http_traces, filtered_dns_traces, idt)
                 #plot_traces(filtered_traces_user_dict[idt], idt)
 
-                traces_bucket[idt] = get_block_traces(filtered_traces_user_dict[idt], bucket)
+                traces_bucket[idt] = get_block_traces(filtered_traces_user_dict[idt], bucket-1)
 
                 traces_file.write('\n' + idt)
                 print len(traces_bucket[idt])

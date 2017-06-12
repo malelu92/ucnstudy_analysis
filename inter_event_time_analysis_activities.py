@@ -12,8 +12,12 @@ from bokeh.charts import *
 
 from collections import defaultdict
 from datetime import datetime, timedelta
+import datetime
 
-from model_io.Base import Base
+from model.Base import Base
+from model.Socket import Socket
+from model.DeviceAppTraffic import DeviceAppTraffic
+from model_io.Base import Base_io
 from model_io.Devices import Devices
 from model_io.Activities import Activities;
 
@@ -30,21 +34,33 @@ output_notebook()
 DB='postgresql+psycopg2:///ucnstudy_hostview_data'
 
 engine = create_engine(DB, echo=False, poolclass=NullPool)
-Base.metadata.bind = engine
+Base_io.metadata.bind = engine
 Session = sessionmaker(bind=engine) 
 
 ses = Session()
 devices = ses.query(Devices)
 
+
+
+DB_ucn='postgresql+psycopg2:///ucnstudy'
+
+engine_ucn = create_engine(DB_ucn, echo=False, poolclass=NullPool)
+Base.metadata.bind = engine_ucn
+Session_ucn = sessionmaker(bind=engine_ucn)
+
+ses_ucn = Session_ucn()
+
+
 def get_activities_inter_times():
     mix_beg = defaultdict(list)
     mix_end = defaultdict(list)
 
-    online_act = ['outlook.exe', 'chrome.exe', 'firefox.exe', 'iexplore.exe', 'skype.exe', 'OUTLOOK.EXE']
+    activity_file = open('user_online_activities.txt', 'w')
+    #online_act = ['outlook.exe', 'chrome.exe', 'firefox.exe', 'iexplore.exe', 'skype.exe', 'OUTLOOK.EXE']
 
     for device in devices:
         #select only users from ucnstudy
-        if device.id == 5 or device.id == 6 or device.id == 8 or device.id == 12 or device.id == 14 or device.id == 18 or device.id == 19 or device.id == 21 or device.id == 22:
+        if device.id == 5: #or device.id == 6 or device.id == 8 or device.id == 12 or device.id == 14 or device.id == 18 or device.id == 19 or device.id == 21 or device.id == 22:
 
             sql = """SELECT logged_at, finished_at, name \
             FROM activities \
@@ -54,22 +70,27 @@ def get_activities_inter_times():
             FROM io \
             WHERE session_id = :d_id"""
 
+            ucn_devid = get_ucn_study_devid(device.id)
+
             beg = []
             end = []
+            activity_file.write('\n'+ device.device_id)
             print (device.device_id + '==============')
             for row in ses.execute(text(sql).bindparams(d_id = device.id)):
-                if True:#row[2] in online_act:# 'shellexperiencehost.exe':
+                is_online = check_online_activity(ucn_devid, row[2], row[0], row[1])
+                if is_online:
                     beg.append(row[0])
                     end.append(row[1])
 
             io = []
             io_iat = []
-            cont = 0
+            #cont = 0
             for row in ses.execute(text(sql_io).bindparams(d_id = device.id)):
-                if True:#row[0] in online_act:#'solitaire.exe':
+                if (row[2]==None):
+                    continue
+                is_online = check_online_activity(ucn_devid, row[0], row[2], row[2])
+                if is_online:
                     io.append(row[1])
-                    if (row[2]==None):
-                        continue
                     io_iat.append((row[1]-row[2]).total_seconds())
 
             #plot_traces(beg, end, io, device.device_id)
@@ -77,7 +98,54 @@ def get_activities_inter_times():
             mix_beg[device.device_id], mix_end[device.device_id] = calculate_block_intervals(beg, end, io, 2)
             #plot_traces(mix_beg[device.device_id], mix_end[device.device_id], [], device.device_id)
 
+            for i in range(0, len(mix_beg)):
+                activity_file.write('\nbeg:'+ mix_beg[i])
+                activity_file.write('\nend:'+ mix_end[i])
+
+    traces_
     return mix_beg, mix_end
+
+def check_online_activity(device_id, appname, start_time, end_time):
+    print 'checking'
+    start_time_sockets = start_time - datetime.timedelta(0,30)
+    end_time_sockets = end_time + datetime.timedelta(0,30)
+
+    sql_socket = """SELECT srcip, dstip, srcport, dstport \
+    FROM sockets \
+    WHERE devid = :d_id AND appname = :name AND ts >= :st_time AND ts <= :e_time  order by ts"""
+
+    sql_dev_app_traffic = """SELECT srcip, dstip, srcport, dstport \
+    FROM deviceapptraffic \
+    WHERE devid = :d_id and ts >= :start_time and ts <= :end_time"""
+
+    for row_socket in ses_ucn.execute(text(sql_socket).bindparams(d_id = device_id, name = appname, st_time = start_time_sockets, e_time = end_time_sockets)):
+        for row_apptraffic in ses_ucn.execute(text(sql_dev_app_traffic).bindparams(d_id = device_id, st_time = start_time_sockets, e_time = end_time_sockets)):
+            if (row_apptraffic[0] == row_socket[0]) and (row_apptraffic[1] == row_socket[1]) and (row_apptraffic[2] == row_socket[2]) and (row_apptraffic[3] == row_socket[3]):
+                return True
+
+    return False
+
+
+def get_ucn_study_devid(device_id):
+
+    if device_id == 5:
+        return 28
+    elif device_id == 6:
+        return 18
+    elif device_id == 8:
+        return 39
+    elif device_id == 12:
+        return 23
+    elif device_id == 14:
+        return 22
+    elif device_id == 18:
+        return 21
+    elif device_id == 19:
+        return 45
+    elif device_id == 21:
+        return 46
+    elif device_id == 22:
+        return 42
 
 def plot_traces(beg, end, io, user): 
 
