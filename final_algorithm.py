@@ -339,4 +339,4 @@ def plot_traces(traces_dict, user_id):
     plt.show(fig)
 
 if __name__ == '__main__':
-    final_algorithm_filtered_traces(True, True, True)
+    final_algorithm_filtered_traces(False, True, True)

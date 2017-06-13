@@ -52,8 +52,6 @@ def compare_daily_activity():
                 traces = []
                 print user
         
-                if user != 'clifford.mainlaptop':
-                    continue
                 #print '----------'
                 #print len(timsts)
                 #get traces in seconds
@@ -112,7 +110,17 @@ def compare_daily_activity():
 
 def get_traces_from_final_alg(filter_type, sli_window):
 
-    traces_file_1 = open('traces_bucket_%d_%s'%(sli_window, file_type), 'r')
+    traces_file = open('traces_bucket_%d_%s'%(sli_window, file_type), 'r')
+    content = traces_file.readlines()
+    traces = defaultdict(list)
+
+    for line in content:
+        if line == 'bowen.laptop' or line == 'bridgeman.laptop2' or line == 'bridgeman.stuartlaptop' or line == 'chrismaley.loungepc' or line == 'chrismaley.mainpc' or line == 'clifford.mainlaptop' or line == 'gluch.laptop' or line == 'kemianny.mainlaptop' or line == 'neenagupta.workpc':
+            user = line
+        else:
+            traces[user].append(line)
+
+    return traces
 
 
 def get_daily_traces(traces, bucket_beg):
