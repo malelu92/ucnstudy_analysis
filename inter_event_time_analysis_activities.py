@@ -7,6 +7,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib import dates
 
+from Packet import make_packet
+
 from bokeh.plotting import figure, show, output_notebook
 from bokeh.charts import *
 
@@ -58,7 +60,7 @@ def get_activities_inter_times():
 
     for device in devices:
         #select only users from ucnstudy
-        if device.id == 5: #or device.id == 6 or device.id == 8 or device.id == 12 or device.id == 14 or device.id == 18 or device.id == 19 or device.id == 21 or device.id == 22:
+        if device.id == 5 or device.id == 6 or device.id == 8 or device.id == 12 or device.id == 14 or device.id == 18 or device.id == 19 or device.id == 21 or device.id == 22:
 
             sql = """SELECT logged_at, finished_at, name \
             FROM activities \
@@ -82,25 +84,22 @@ def get_activities_inter_times():
 
             io = []
             io_iat = []
-            cont_teste = 0
             for row in ses.execute(text(sql_io).bindparams(d_id = device.id)):
                 if (row[2]==None):
                     continue
-                print row[0]
                 dat = row[2]
-                if dat.day != 13:
-                    continue
+                if dat.day > 13:
+                    break
+                #print 'entrou'
+                print row[2]
                 is_online = check_online_activity(ucn_devid, row[0], row[2], row[2])
+                #print 'saiu1'
                 if is_online:
-                    cont_teste +=1
+                    #print row[2]
+                    #print 'is online'
                     io.append(row[2])
                     io_iat.append((row[1]-row[2]).total_seconds())
-                    print 'point'
-                    print row[2]
-                    if cont_teste == 5:
-                        print 'BREAK'
-                        break
-
+            print 'saiu'
             #plot_traces(beg, end, io, device.device_id)
             #plot_cdf_interval_times(io_iat, device.device_id)
             mix_beg[device.device_id], mix_end[device.device_id] = calculate_block_intervals(beg, end, io, 2)
@@ -116,7 +115,10 @@ def check_online_activity(device_id, appname, start_time, end_time):
     start_time_sockets = start_time - datetime.timedelta(0,30)
     end_time_sockets = end_time + datetime.timedelta(0,30)
 
-    sql_socket = """SELECT srcip, dstip, srcport, dstport \
+    sockets_list = []
+    apptraffic_list = defaultdict(list)
+
+    sql_socket = """SELECT srcip, dstip, srcport, dstport, ts \
     FROM sockets \
     WHERE devid = :d_id AND appname = :name AND ts >= :st_time AND ts <= :e_time order by ts"""
 
@@ -125,9 +127,19 @@ def check_online_activity(device_id, appname, start_time, end_time):
     WHERE devid = :d_id and ts >= :st_time and ts <= :e_time"""
 
     for row_socket in ses_ucn.execute(text(sql_socket).bindparams(d_id = device_id, name = appname, st_time = start_time_sockets, e_time = end_time_sockets)):
-        for row_apptraffic in ses_ucn.execute(text(sql_dev_app_traffic).bindparams(d_id = device_id, st_time = start_time_sockets, e_time = end_time_sockets)):
-            if (row_apptraffic[0] == row_socket[0]) and (row_apptraffic[1] == row_socket[1]) and (row_apptraffic[2] == row_socket[2]) and (row_apptraffic[3] == row_socket[3]):
+        socket = make_packet(row_socket[0], row_socket[1], row_socket[2], row_socket[3])
+        sockets_list.append(socket)
+    for row_apptraffic in ses_ucn.execute(text(sql_dev_app_traffic).bindparams(d_id = device_id, st_time = start_time_sockets, e_time = end_time_sockets)):
+        apptraffic = make_packet(row_apptraffic[0], row_apptraffic[1], row_apptraffic[2], row_apptraffic[3])
+        apptraffic_list[row_apptraffic[0]].append(apptraffic)
+
+    for elem in sockets_list:
+        for elem_app in apptraffic_list[elem.srcip]:
+            if (elem.srcip == elem_app.srcip) and (elem.dstip == elem_app.dstip) and (elem.srcport == elem_app.srcport) and (elem.dstport == elem_app.dstport):
                 return True
+
+            #if (row_apptraffic[0] == row_socket[0]) and (row_apptraffic[1] == row_socket[1]) and (row_apptraffic[2] == row_socket[2]) and (row_apptraffic[3] == row_socket[3]):
+                #return True
     return False
 
 

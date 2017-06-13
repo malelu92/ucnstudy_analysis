@@ -44,53 +44,97 @@ def final_algorithm_filtered_traces(f_blacklist, f_seconds, f_spikes):
 
     bucket_list = [1, 5, 10]
 
-    for bucket in bucket_list:
-        traces_bucket = defaultdict(list)
-        traces_file = open('traces_bucket_%s_%s'%(str(bucket), file_type), 'w')
-        for user in users:
-            devids = []
-            for d in user.devices:
-                devids.append(str(d.id))
+    traces_file_1 = open('traces_bucket_1_%s'%(file_type), 'w')
+    traces_file_5 = open('traces_bucket_5_%s'%(file_type), 'w')
+    traces_file_10 = open('traces_bucket_10_%s'%(file_type), 'w')
 
-            devs = {}
-            for d in user.devices:
-                devs[d.id] = d.platform
+    for user in users:
+        devids = []
+        for d in user.devices:
+            devids.append(str(d.id))
 
-            for elem_id in devids:
-                sql_userid = """SELECT login FROM devices WHERE id =:d_id"""
-                user_id = ses.execute(text(sql_userid).bindparams(d_id = elem_id)).fetchone()
-                idt = user_id[0]
+        devs = {}
+        for d in user.devices:
+            devs[d.id] = d.platform
 
-                if idt != 'bowen.laptop' and idt != 'bridgeman.laptop2' and idt != 'bridgeman.stuartlaptop' and idt != 'chrismaley.loungepc' and idt != 'chrismaley.mainpc' and idt != 'clifford.mainlaptop' and idt != 'gluch.laptop' and idt != 'kemianny.mainlaptop' and idt != 'neenagupta.workpc':
-                #if idt != 'neenagupta.workpc':
-                    continue
+        for elem_id in devids:
+            sql_userid = """SELECT login FROM devices WHERE id =:d_id"""
+            user_id = ses.execute(text(sql_userid).bindparams(d_id = elem_id)).fetchone()
+            idt = user_id[0]
 
-                print idt
+            if idt != 'bowen.laptop' and idt != 'bridgeman.laptop2' and idt != 'bridgeman.stuartlaptop' and idt != 'chrismaley.loungepc' and idt != 'chrismaley.mainpc' and idt != 'clifford.mainlaptop' and idt != 'gluch.laptop' and idt != 'kemianny.mainlaptop' and idt != 'neenagupta.workpc':
+            #if idt != 'neenagupta.workpc':
+                continue
 
-                http_traces_list, dns_traces_list = get_test_data(elem_id)
+            print idt
 
-                filtered_http_traces = filter_traces(5*60, http_traces_list, blacklist, f_blacklist, f_seconds, f_spikes)
-                filtered_dns_traces = filter_traces(5*60, dns_traces_list, blacklist, f_blacklist, f_seconds, f_spikes)
+            http_traces_list, dns_traces_list = get_test_data(elem_id)
+            
+            filtered_http_traces = filter_traces(5*60, http_traces_list, blacklist, f_blacklist, f_seconds, f_spikes)
+            filtered_dns_traces = filter_traces(5*60, dns_traces_list, blacklist, f_blacklist, f_seconds, f_spikes)
 
-                for key, timsts in filtered_http_traces.iteritems():
-                    for timst in timsts:
-                        filtered_traces_user_dict[idt].append(timst)
+            for key, timsts in filtered_http_traces.iteritems():
+                for timst in timsts:
+                    filtered_traces_user_dict[idt].append(timst)
 
-                for key, timsts in filtered_dns_traces.iteritems():
-                    for timst in timsts:
-                        filtered_traces_user_dict[idt].append(timst)
+            for key, timsts in filtered_dns_traces.iteritems():
+                for timst in timsts:
+                    filtered_traces_user_dict[idt].append(timst)
 
-                #plot_traces(filtered_http_traces, filtered_dns_traces, idt)
-                #plot_traces(filtered_traces_user_dict[idt], idt)
+            #plot_traces(filtered_http_traces, filtered_dns_traces, idt)
+            #plot_traces(filtered_traces_user_dict[idt], idt)
 
-                traces_bucket[idt] = get_block_traces(filtered_traces_user_dict[idt], bucket-1)
+            for bucket in bucket_list:
+                traces_bucket = []
+                #traces_bucket[idt] = get_block_traces(filtered_traces_user_dict[idt], bucket-1)
+                traces_bucket = get_interval_list_predefined_gap(sorted(filtered_traces_user_dict[idt]), bucket)
+                if bucket == 1:
+                    traces_file_1.write('\n' + idt)
+                elif bucket == 5:
+                    traces_file_5.write('\n' + idt)
+                elif bucket == 10:
+                    traces_file_10.write('\n' + idt)
 
-                traces_file.write('\n' + idt)
-                print len(traces_bucket[idt])
-                for timst in traces_bucket[idt]:
-                    traces_file.write('\n' +str(timst))
+                print len(traces_bucket)
+                for timst in traces_bucket:
+                    if bucket == 1:
+                        traces_file_1.write('\n' +str(timst))
+                    elif bucket == 5:
+                        traces_file_5.write('\n' +str(timst))
+                    elif bucket == 10:
+                        traces_file_10.write('\n' +str(timst))
+
+    traces_file_1.close()
+    traces_file_5.close()
+    traces_file_10.close()
 
     return filtered_traces_user_dict
+
+
+def get_interval_list_predefined_gap(traces_list, gap_interval):
+    intv = 0
+    interval_list = []
+    pre_traces = []
+
+    for timst in traces_list:
+        timst = timst.replace(microsecond=0)
+        pre_traces.append(timst)
+
+    for i in range(0, len(pre_traces)-1):
+        #print traces_list[i]
+        iat = (pre_traces[i+1]-pre_traces[i]).total_seconds()
+        if iat <= gap_interval:
+            current_trace = pre_traces[i]
+            while current_trace < pre_traces[i+1]:
+                interval_list.append(current_trace)
+                current_trace = current_trace + datetime.timedelta(0,1)
+        else:
+            interval_list.append(pre_traces[i])
+
+        if i == len(pre_traces)-2:
+            interval_list.append(pre_traces[i+1])
+
+    return interval_list
 
 
 def get_file_type(f_blacklist, f_seconds, f_spikes):
@@ -157,11 +201,11 @@ def filter_traces(block_length, traces_list, blacklist, filter_blist, filter_iat
         #only one element
         if prev_pos == i:
             i += 1
-    
+
     return filtered_url_traces
 
 def get_block_traces(traces, bucket_size):
-
+    print 'BUCKET SIZE ' + str(bucket_size)
     print len(traces)
     pre_traces = []
     final_traces = []
