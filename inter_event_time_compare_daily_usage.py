@@ -18,18 +18,20 @@ def compare_daily_activity():
 
     results_file = open('results_12_june2.txt','w')
 
-    f_blacklist = [False, True, True, False]
-    f_seconds = [False, True, False, True]
-    f_spike = [False, True, False, True]
+    #f_blacklist = [False, True, True, False]
+    #f_seconds = [False, True, False, True]
+    #f_spike = [False, True, False, True]
     filter_type = ['not_filtered', 'totally_filtered', 'only_blacklist', 'only_interval']
 
-    sliding_window = [0]#, 3, 5, 7, 10, 15]
+    sliding_window = [0, 5, 7]
 
     for f_type in range (0, 1):
         act_beg, act_end = get_activities_inter_times()
-        traces_dict = final_algorithm_filtered_traces(f_blacklist[f_type], f_seconds[f_type], f_spike[f_type])
+        #traces_dict = final_algorithm_filtered_traces(f_blacklist[f_type], f_seconds[f_type], f_spike[f_type])
 
-        for cont_sliding_window in range (0, 6):
+        for cont_sliding_window in range (0, 3):
+            traces = get_traces_from_final_alg('not_filtered', sliding_window[cont_sliding_window])
+
             results_file.write('\n=========' + filter_type[f_type] + '============')
             results_file.write('\n***sliding window size ' + str(sliding_window[cont_sliding_window]) + ' seconds***')
 
@@ -106,6 +108,11 @@ def compare_daily_activity():
 
                 results_file.write('\nerror window' + str(i) + '\nprecision ' + str(precision*100) + '\nrecall ' + str(recall*100))
                 results_file.write('\nfinalfn ' + str(fn_dict[i]) + ' finalfp ' + str(fp_dict[i]) + ' finaltp ' + str(tp_dict[i]) + ' final tn ' + str(tn_dict[i]))
+
+
+def get_traces_from_final_alg(filter_type, sli_window):
+
+    traces_file_1 = open('traces_bucket_%d_%s'%(sli_window, file_type), 'r')
 
 
 def get_daily_traces(traces, bucket_beg):
