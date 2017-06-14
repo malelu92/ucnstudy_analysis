@@ -42,11 +42,14 @@ def final_algorithm_filtered_traces(f_blacklist, f_seconds, f_spikes):
 
     file_type = get_file_type(f_blacklist, f_seconds, f_spikes)
 
-    bucket_list = [1, 5, 10]
+    #bucket_list = [1, 5, 10]
+    bucket_list = [4, 9]
+    #traces_file_1 = open('traces_bucket_1_%s'%(file_type), 'w')
+    #traces_file_5 = open('traces_bucket_5_%s'%(file_type), 'w')
+    #traces_file_10 = open('traces_bucket_10_%s'%(file_type), 'w')
+    traces_file_4 = open('traces_bucket_4_%s'%(file_type), 'w')
+    traces_file_9 = open('traces_bucket_9_%s'%(file_type), 'w')
 
-    traces_file_1 = open('traces_bucket_1_%s'%(file_type), 'w')
-    traces_file_5 = open('traces_bucket_5_%s'%(file_type), 'w')
-    traces_file_10 = open('traces_bucket_10_%s'%(file_type), 'w')
 
     for user in users:
         devids = []
@@ -90,8 +93,12 @@ def final_algorithm_filtered_traces(f_blacklist, f_seconds, f_spikes):
                 traces_bucket = get_interval_list_predefined_gap(sorted(filtered_traces_user_dict[idt]), bucket)
                 if bucket == 1:
                     traces_file_1.write('\n' + idt)
+                elif bucket == 4:
+                    traces_file_4.write('\n' + idt)
                 elif bucket == 5:
                     traces_file_5.write('\n' + idt)
+                elif bucket == 9:
+                    traces_file_9.write('\n' + idt)
                 elif bucket == 10:
                     traces_file_10.write('\n' + idt)
 
@@ -99,14 +106,20 @@ def final_algorithm_filtered_traces(f_blacklist, f_seconds, f_spikes):
                 for timst in traces_bucket:
                     if bucket == 1:
                         traces_file_1.write('\n' +str(timst))
+                    elif bucket == 4:
+                        traces_file_4.write('\n' + str(timst))
                     elif bucket == 5:
                         traces_file_5.write('\n' +str(timst))
+                    elif bucket == 9:
+                        traces_file_9.write('\n' +str(timst))
                     elif bucket == 10:
                         traces_file_10.write('\n' +str(timst))
 
-    traces_file_1.close()
-    traces_file_5.close()
-    traces_file_10.close()
+    #traces_file_1.close()
+    traces_file_4.close()
+    #traces_file_5.close()
+    traces_file_9.close()
+    #traces_file_10.close()
 
     return filtered_traces_user_dict
 
@@ -339,4 +352,4 @@ def plot_traces(traces_dict, user_id):
     plt.show(fig)
 
 if __name__ == '__main__':
-    final_algorithm_filtered_traces(False, True, True)
+    final_algorithm_filtered_traces(False, False, False)

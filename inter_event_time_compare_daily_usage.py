@@ -7,118 +7,194 @@ from matplotlib.markers import TICKDOWN
 
 from collections import defaultdict
 
-from inter_event_time_analysis_activities import get_activities_inter_times
+#from inter_event_time_analysis_activities import get_activities_inter_times
 from inter_event_time_analysis import make_block_usage
-from inter_event_time_by_url_analysis import get_filtered_traces
+#from inter_event_time_by_url_analysis import get_filtered_traces
 from inter_event_time_theoretical_count import get_interval_list_predefined_gap
 
 from final_algorithm import final_algorithm_filtered_traces
 
 def compare_daily_activity():
 
-    results_file = open('results_12_june2.txt','w')
+    results_file = open('results_14_june.txt','w')
 
     #f_blacklist = [False, True, True, False]
     #f_seconds = [False, True, False, True]
     #f_spike = [False, True, False, True]
-    filter_type = ['not_filtered', 'totally_filtered', 'only_blacklist', 'only_interval']
+    filter_type = ['interval_filtered', 'filtered', 'not_filtered', 'blist_filtered']
 
-    sliding_window = [0, 5, 7]
+    sliding_window = [0, 5, 10]
 
-    for f_type in range (0, 1):
-        act_beg, act_end = get_activities_inter_times()
+    #act_file = open('user_online_activities_devtraffic.txt', 'r')
+    act_file = open('user_activities_devtraffic.txt', 'r')
+    act_dict = get_timst_from_file(act_file)
+
+    for f_type in range (0, 4):
+        #act_beg, act_end = get_activities_inter_times()
         #traces_dict = final_algorithm_filtered_traces(f_blacklist[f_type], f_seconds[f_type], f_spike[f_type])
-
+        #traces_dict = get_filtered_traces()
         for cont_sliding_window in range (0, 3):
-            traces = get_traces_from_final_alg('not_filtered', sliding_window[cont_sliding_window])
+            tp, tn, fn, fp = 0, 0, 0, 0
+            traces_file = open('traces_bucket_%d_%s'%(sliding_window[cont_sliding_window], filter_type[f_type]), 'r')
+            traces_dict = get_timst_from_file(traces_file)
 
             results_file.write('\n=========' + filter_type[f_type] + '============')
-            results_file.write('\n***sliding window size ' + str(sliding_window[cont_sliding_window]) + ' seconds***')
+            results_file.write('\n***sliding window size ' + str(sliding_window[cont_sliding_window]+1) + ' seconds***')
 
-            #traces_dict = get_filtered_traces()
+            #tp_dict = defaultdict(int)
+            #tn_dict = defaultdict(int)
+            #fp_dict = defaultdict(int)
+            #fn_dict = defaultdict(int)
+            #error_window = [0]#, 15, 30, 45, 60, 60*2, 60*3, 60*4, 60*5]
 
-            tp_dict = defaultdict(int)
-            tn_dict = defaultdict(int)
-            fp_dict = defaultdict(int)
-            fn_dict = defaultdict(int)
-            error_window = [0]#, 15, 30, 45, 60, 60*2, 60*3, 60*4, 60*5]
-
-            initialize_dict(tp_dict, error_window)
-            initialize_dict(tn_dict, error_window)
-            initialize_dict(fp_dict, error_window)
-            initialize_dict(fn_dict, error_window)
+            #initialize_dict(tp_dict, error_window)
+            #initialize_dict(tn_dict, error_window)
+            #initialize_dict(fp_dict, error_window)
+            #initialize_dict(fn_dict, error_window)
 
             for user, timsts in traces_dict.iteritems():
                 traces = []
                 print user
         
-                #print '----------'
-                #print len(timsts)
                 #get traces in seconds
                 for timst in timsts:
-                    timst = timst.replace(microsecond=0)
+                    #timst = timst.replace(microsecond=0)
                     traces.append(timst)
 
                 traces = list(set(traces))
                 traces = sorted(traces)
 
-                #print 'TOTAL TRACES'
-                #print len(traces)
-
                 #interval_list = get_interval_list_predefined_gap(sorted(traces), 1)
                 #traces = get_seconds_interval_list(interval_list)
 
-                #print 'POST INterval TOTAL TRACES'
-                #print len(traces)
+                #act_beg_final, act_end_final = activities_in_seconds(act_beg[user], act_end[user])
 
-                act_beg_final, act_end_final = activities_in_seconds(act_beg[user], act_end[user])
-        
-                first_day = act_beg_final[0]
-                first_day = first_day.replace(hour=00, minute=00, second=00, microsecond=0)
-                last_day = act_end_final[len(act_end_final)-1]
-                last_day = last_day.replace(hour=23, minute=59, second=59, microsecond=0)
+                #first_day = act_beg_final[0]
+                #first_day = first_day.replace(hour=00, minute=00, second=00, microsecond=0)
+                #last_day = act_end_final[len(act_end_final)-1]
+                #last_day = last_day.replace(hour=23, minute=59, second=59, microsecond=0)
 
-                for i in error_window:
+                #for i in error_window:
                     #tp, fn, fp, tn = get_tp_fn_fp_tn(traces, act_beg_final, act_end_final, first_day, last_day, i, filter_type[f_type], gap_int[gap_size], user)
-                    tp, fn, fp, tn = get_tp_fn_fp_tn_sliding_window(traces, act_beg_final, act_end_final, first_day, last_day, i, sliding_window[cont_sliding_window], user, filter_type[f_type])
+                    #tp, fn, fp, tn = get_tp_fn_fp_tn_sliding_window(traces, act_beg_final, act_end_final, first_day, last_day, i, sliding_window[cont_sliding_window], user, filter_type[f_type])
 
-                    tp_dict[i] += tp
-                    tn_dict[i] += tn
-                    fp_dict[i] += fp
-                    fn_dict[i] += fn
+                #for i in error_window:
+                tp_user, fn_user, fp_user, tn_user = get_tp_fn_fp_tn_second(traces, act_dict[user])
+                tp += tp_user
+                fn += fn_user
+                fp += fp_user
+                tn += tn_user
+                #tp_dict[i] += tp
+                #tn_dict[i] += tn
+                #fp_dict[i] += fp
+                #fn_dict[i] += fn
 
-            precision_dict = defaultdict(int)
-            recall_dict = defaultdict(int)
-            initialize_dict(precision_dict, error_window)
-            initialize_dict(recall_dict, error_window)
+            #precision_dict = defaultdict(int)
+            #recall_dict = defaultdict(int)
+            #initialize_dict(precision_dict, error_window)
+            #initialize_dict(recall_dict, error_window)
 
-            for i in error_window:
-                precision = float(tp_dict[i])/(tp_dict[i]+fp_dict[i])
-                recall = float(tp_dict[i])/(tp_dict[i] + fn_dict[i])
+            if tp+fp > 0:
+                precision = float(tp)/(tp+fp)
+            else: 
+                precision = -1
+            if tp+fn > 0:
+                recall = float(tp)/(tp+fn)
+            else:
+                recall = -1
+            
+            #for i in error_window:
+                #precision = float(tp_dict[i])/(tp_dict[i]+fp_dict[i])
+                #recall = float(tp_dict[i])/(tp_dict[i] + fn_dict[i])
 
-                print '======error window' + str(i)
-                print 'sum of tp + fp ... ' + str(fn_dict[i]+fp_dict[i]+tn_dict[i]+tp_dict[i])
-                print 'finalfn ' + str(fn_dict[i])
-                print 'finalfp ' + str(fp_dict[i])
-                print 'finaltp ' + str(tp_dict[i])
-                print 'precision ' + str(precision*100) + '%'
-                print 'recall ' + str(recall*100) + '%'
+            #print '======error window' + str(i)
+            print 'sum of tp + fp ... ' + str(fn+fp+tn+tp)
+            print 'finalfn ' + str(fn)
+            print 'finalfp ' + str(fp)
+            print 'finaltp ' + str(tp)
+            print 'precision ' + str(precision*100) + '%'
+            print 'recall ' + str(recall*100) + '%'
 
-                results_file.write('\nerror window' + str(i) + '\nprecision ' + str(precision*100) + '\nrecall ' + str(recall*100))
-                results_file.write('\nfinalfn ' + str(fn_dict[i]) + ' finalfp ' + str(fp_dict[i]) + ' finaltp ' + str(tp_dict[i]) + ' final tn ' + str(tn_dict[i]))
+            results_file.write('\nprecision ' + str(precision*100) + '\nrecall ' + str(recall*100))
+            results_file.write('\nfinalfn ' + str(fn) + ' finalfp ' + str(fp) + ' finaltp ' + str(tp) + ' final tn ' + str(tn))
 
 
-def get_traces_from_final_alg(filter_type, sli_window):
 
-    traces_file = open('traces_bucket_%d_%s'%(sli_window, file_type), 'r')
-    content = traces_file.readlines()
+def get_tp_fn_fp_tn_second(traces, acts):
+
+    tp, fn, fp, tn = 0, 0, 0, 0
+
+    if acts and traces:
+        first_day = min(acts[0], traces[0])
+        last_day = max(acts[len(acts)-1], traces[len(traces)-1])
+    elif acts and not traces:
+        first_day = acts[0]
+        last_day = acts[len(acts)-1]
+    else:
+        first_day = traces[0]
+        last_day = traces[len(traces)-1]
+
+    first_day = first_day.replace(hour=00, minute=00, second=00, microsecond=0)
+    last_day = last_day.replace(hour=23, minute=59, second=59, microsecond=0)
+
+    current_second = first_day
+
+    daily_traces = get_daily_traces(traces, current_second)
+    daily_act = get_daily_traces(acts, current_second)
+    current_date = current_second.date()
+    previous_date = current_second.date()
+
+    while current_second <= last_day + datetime.timedelta(0,1):
+        if current_date != previous_date:
+            previous_date = current_date
+            print current_date
+            daily_traces = get_daily_traces(traces, current_second)
+            daily_act = get_daily_traces(acts, current_second)
+
+        trace_in = timst_in_second(daily_traces, current_second)
+        act_in = timst_in_second(daily_act, current_second)
+
+        if trace_in and act_in:
+            tp += 1
+
+        elif trace_in and not act_in:
+            fp += 1
+
+        elif not trace_in and act_in:
+            fn += 1
+
+        elif not trace_in and not act_in:
+            tn += 1
+
+        current_second = current_second + datetime.timedelta(0,1)
+        current_date = current_second.date()
+
+    print 'number of traces ' + str(len(traces))
+    print 'tp ' + str(tp)
+    print 'fn ' + str(fn)
+    print 'tn ' + str(int(tn))
+    print 'fp ' + str(int(fp))
+    print 'tp + fn + tn + fp = ' + str(tp + fn + tn + fp)
+    return tp, fn, fp, tn
+
+
+def get_timst_from_file(data_file):
+
+    content = data_file.read().splitlines()
     traces = defaultdict(list)
+    cont = 0
+    user = None
 
     for line in content:
+        if cont == 0:
+            cont += 1
+            continue
+
         if line == 'bowen.laptop' or line == 'bridgeman.laptop2' or line == 'bridgeman.stuartlaptop' or line == 'chrismaley.loungepc' or line == 'chrismaley.mainpc' or line == 'clifford.mainlaptop' or line == 'gluch.laptop' or line == 'kemianny.mainlaptop' or line == 'neenagupta.workpc':
             user = line
         else:
-            traces[user].append(line)
+            timst = datetime.datetime.strptime(line, "%Y-%m-%d %H:%M:%S")
+            traces[user].append(timst)
 
     return traces
 
@@ -200,6 +276,19 @@ def get_tp_fn_fp_tn_sliding_window(traces, act_beg, act_end, first_day, last_day
     print 'tp + fn + tn + fp = ' + str(tp + fn + tn + fp)
     return tp, fn, fp, tn
 
+
+def timst_in_second(timsts, second_timst):
+
+    if timsts:
+        for elem in timsts:
+            if elem == second_timst:
+                return True
+
+            elif elem > second_timst:
+                return False
+
+    return False
+
 def trace_in_bucket(traces, bucket_beg, bucket_end, error_window):
     beg_limit = bucket_beg - datetime.timedelta(0,error_window)
     end_limit = bucket_end + datetime.timedelta(0,error_window)
@@ -215,24 +304,6 @@ def trace_in_bucket(traces, bucket_beg, bucket_end, error_window):
                 return False
 
     return False
-
-    """while cont < len(traces):
-        if traces[cont] > end_limit and not in_bucket:
-            return False, bucket_cont
-
-        elif traces[cont] > end_limit and in_bucket:
-            return True, bucket_cont
-
-        if traces[cont] >= beg_limit and traces[cont] <= end_limit:
-            cont += 1
-            in_bucket = True
-            if traces[bucket_cont] >= bucket_beg and traces[bucket_cont] <= bucket_end:
-                bucket_cont += 1
-            #return True, cont
-
-
-        #cont += 1
-    return False, bucket_cont"""
 
 
 def act_in_bucket(act_beg, act_end, bucket_beg, bucket_end, error_window):
@@ -250,70 +321,6 @@ def act_in_bucket(act_beg, act_end, bucket_beg, bucket_end, error_window):
 
     return False
 
-    """if (act_beg[cont] <= bucket_beg and  #+ datetime.timedelta(0,error_window) and
-            act_end[cont] >= bucket_beg) or \
-            #- datetime.timedelta(0,error_window)) or \
-        (act_beg[cont] <= bucket_end and # + datetime.timedelta(0,error_window) and
-         act_end[cont] >= bucket_end): # - datetime.timedelta(0,error_window)):
-    #original:
-    in_bucket = False
-    cont2 = 0
-
-    if cont >= len(act_beg):
-        return False, cont
-    #while cont < len(act_beg):
-
-    #activity is bigger than bucket
-    if (act_beg[cont] <= bucket_beg and act_end[cont] >= bucket_end):
-        in_bucket = True
-        el = act_beg[cont]
-        if el.day == 19 and el.hour == 9 and el.minute == 46:
-            print '**act_beg ' + str(el)
-            print '**act_end ' + str(act_end[cont])
-            print '**beg and end of bucket: ' + str(bucket_beg) + ' ' + str(bucket_end)
-
-        if (cont+1) < len(act_beg):
-            if act_end[cont] <= bucket_end:
-                cont += 1
-    else:
-        #activity intersects or is contained in bucket
-        while (act_beg[cont] <= bucket_beg and act_end[cont] > bucket_beg and act_end[cont] <= bucket_end) or (act_beg[cont] >= bucket_beg and act_beg[cont] < bucket_end and act_end[cont] >= bucket_end) or (act_beg[cont] >= bucket_beg and act_end[cont] <= bucket_end):# or (act_beg[cont] <= bucket_beg and act_end[cont] >= bucket_end):
-            in_bucket = True
-            el = act_beg[cont]
-            if el.day == 19 and el.hour == 9 and el.minute == 46:
-                print 'act_beg ' + str(el)
-                print 'act_end ' + str(act_end[cont])
-                print 'beg and end of bucket: ' + str(bucket_beg) + ' ' + str(bucket_end)
-
-            if cont+1 >= len(act_beg):
-                return True, cont
-
-            cont+=1
-
-        el = act_beg[cont]
-        if el.day == 19 and el.hour == 9 and el.minute == 46 and in_bucket == False:
-            print '==act_beg ' + str(el)
-            print '==act_end ' + str(act_end[cont])
-            print '==beg and end of bucket: ' + str(bucket_beg) + ' ' + str(bucket_end)
-
-    #activity is bigger than bucket
-    if (act_beg[cont] <= bucket_beg and act_end[cont] >= bucket_end):
-        in_bucket = True
-
-    if in_bucket:
-        return True, cont
-        #cont2+=1
-
-    return False, cont
-    #fim do original
-    while cont < len(act_beg):
-        if (act_beg[cont] <= bucket_beg and act_end[cont] >= bucket_beg) or (act_beg[cont] <= bucket_end and act_end[cont] >= bucket_end):
-            return True, cont
-        if act_beg[cont] > bucket_end:
-            return False, cont
-        cont += 1
-
-    return False, cont"""
 
 def initialize_dict(var_dict, error_window):
     

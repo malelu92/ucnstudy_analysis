@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from matplotlib import dates
 
 from Packet import make_packet
+from final_algorithm import get_interval_list_predefined_gap
 
 from bokeh.plotting import figure, show, output_notebook
 from bokeh.charts import *
@@ -19,6 +20,7 @@ import datetime
 from model.Base import Base
 from model.Socket import Socket
 from model.DeviceAppTraffic import DeviceAppTraffic
+from model.DeviceTraffic import DeviceTraffic
 from model_io.Base import Base_io
 from model_io.Devices import Devices
 from model_io.Activities import Activities;
@@ -55,7 +57,7 @@ def get_activities_inter_times():
     mix_beg = defaultdict(list)
     mix_end = defaultdict(list)
 
-    activity_file = open('user_online_activities.txt', 'w')
+    activity_file = open('user_activities_devapptraffic_sockets.txt', 'w')
     #online_act = ['outlook.exe', 'chrome.exe', 'firefox.exe', 'iexplore.exe', 'skype.exe', 'OUTLOOK.EXE']
 
     for device in devices:
@@ -87,29 +89,61 @@ def get_activities_inter_times():
             for row in ses.execute(text(sql_io).bindparams(d_id = device.id)):
                 if (row[2]==None):
                     continue
-                dat = row[2]
-                if dat.day > 13:
-                    break
-                #print 'entrou'
-                print row[2]
                 is_online = check_online_activity(ucn_devid, row[0], row[2], row[2])
-                #print 'saiu1'
                 if is_online:
-                    #print row[2]
-                    #print 'is online'
                     io.append(row[2])
                     io_iat.append((row[1]-row[2]).total_seconds())
-            print 'saiu'
+
+            io = get_interval_list_predefined_gap(io, 150)
             #plot_traces(beg, end, io, device.device_id)
             #plot_cdf_interval_times(io_iat, device.device_id)
-            mix_beg[device.device_id], mix_end[device.device_id] = calculate_block_intervals(beg, end, io, 2)
+
+            mix_beg[device.device_id], mix_end[device.device_id] = calculate_block_intervals(beg, end, io, 1)
             #plot_traces(mix_beg[device.device_id], mix_end[device.device_id], [], device.device_id)
 
-            for i in range(0, len(mix_beg[device.device_id])):
-                activity_file.write('\nbeg:'+ str(mix_beg[device.device_id][i]))
-                activity_file.write('\nend:'+ str(mix_end[device.device_id][i]))
+            #online_activity = intersect_activity_devtraffic(mix_beg[device.device_id], mix_end[device.device_id], device.id)
+            online_activity = get_activity_seconds(mix_beg[device.device_id], mix_end[device.device_id], device.id)
+
+            for i in range(0, len(online_activity)):
+                activity_file.write('\n' + str(online_activity[i]))
 
     return mix_beg, mix_end
+
+def get_activity_seconds(mix_beg, mix_end, user_id):
+
+    device_id = get_ucn_study_devid(user_id)
+    act = []
+
+    for i in range(0, len(mix_beg)):
+        elem = mix_beg[i]
+        elem = elem.replace(microsecond=00)
+        while elem <= mix_end[i]:
+            act.append(elem)
+            elem = elem + datetime.timedelta(0,1) 
+
+    return act
+
+
+def intersect_activity_devtraffic(mix_beg, mix_end, user_id):
+
+    sql = """SELECT ts \
+    FROM devicetraffic \
+    WHERE devid = :d_id order by ts"""
+
+    device_id = get_ucn_study_devid(user_id)
+
+    online_act = []
+
+    for row in ses_ucn.execute(text(sql).bindparams(d_id = device_id)):
+        for i in range(0, len(mix_beg)):
+            if row[0] >= mix_beg[i] and row[0] <= mix_end[i]:
+                online_act.append(row[0])
+                #break
+
+            #if row[0] > mix_end[i]:
+                #break
+
+    return online_act
 
 def check_online_activity(device_id, appname, start_time, end_time):
     start_time_sockets = start_time - datetime.timedelta(0,30)
@@ -135,7 +169,7 @@ def check_online_activity(device_id, appname, start_time, end_time):
 
     for elem in sockets_list:
         for elem_app in apptraffic_list[elem.srcip]:
-            if (elem.srcip == elem_app.srcip) and (elem.dstip == elem_app.dstip) and (elem.srcport == elem_app.srcport) and (elem.dstport == elem_app.dstport):
+            if (elem.srcip == elem_app.srcip) and (elem.srcport == elem_app.srcport):
                 return True
 
             #if (row_apptraffic[0] == row_socket[0]) and (row_apptraffic[1] == row_socket[1]) and (row_apptraffic[2] == row_socket[2]) and (row_apptraffic[3] == row_socket[3]):

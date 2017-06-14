@@ -1,0 +1,61 @@
+
+=========interval_filtered============
+***sliding window size 1 seconds***
+precision 44.4322041678
+recall 7.14282200501
+finalfn 188761 finalfp 18159 finaltp 14520 final tn 8159369
+=========interval_filtered============
+***sliding window size 6 seconds***
+precision 44.0700947059
+recall 10.5528800035
+finalfn 181829 finalfp 27225 finaltp 21452 final tn 8150303
+=========interval_filtered============
+***sliding window size 11 seconds***
+precision 42.1951505556
+recall 14.1592180282
+finalfn 174498 finalfp 39431 finaltp 28783 final tn 8138097
+=========filtered============
+***sliding window size 1 seconds***
+precision 50.7554733272
+recall 4.85829959514
+finalfn 193405 finalfp 9582 finaltp 9876 final tn 8167946
+=========filtered============
+***sliding window size 6 seconds***
+precision 49.5696071452
+recall 7.53538205735
+finalfn 187963 finalfp 15584 finaltp 15318 final tn 8161944
+=========filtered============
+***sliding window size 11 seconds***
+precision 47.1185407484
+recall 9.88631500239
+finalfn 183184 finalfp 22555 finaltp 20097 final tn 8154973
+=========not_filtered============
+***sliding window size 1 seconds***
+precision 40.4906895186
+recall 13.5743133889
+finalfn 175687 finalfp 40555 finaltp 27594 final tn 8223373
+=========not_filtered============
+***sliding window size 6 seconds***
+precision 40.4710490103
+recall 18.8079554902
+finalfn 165048 finalfp 56237 finaltp 38233 final tn 8207691
+=========not_filtered============
+***sliding window size 11 seconds***
+precision 39.6724379248
+recall 25.2379710844
+finalfn 151977 finalfp 78015 finaltp 51304 final tn 8185913
+=========blist_filtered============
+***sliding window size 1 seconds***
+precision 43.0333305696
+recall 10.2129564494
+finalfn 182520 finalfp 27483 finaltp 20761 final tn 8236445
+=========blist_filtered============
+***sliding window size 6 seconds***
+precision 42.2313300961
+recall 13.989994146
+finalfn 174842 finalfp 38902 finaltp 28439 final tn 8225026
+=========blist_filtered============
+***sliding window size 11 seconds***
+precision 42.6452341296
+recall 18.7671253093
+finalfn 165131 finalfp 51309 finaltp 38150 final tn 8212619
